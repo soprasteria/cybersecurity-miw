@@ -1,0 +1,79 @@
+Q	:= @
+CC      := g++ -std=gnu++0x
+DEPSDIR := .deps
+DEPCFLAGS = -MD -MF $(DEPSDIR)/$*.d -MP
+TOP	:= $(shell echo $${PWD-'pwd'})
+MAXCPUS := $(shell grep -c processor /proc/cpuinfo)
+O       := obj
+
+OPTFLAGS := -g @OPT_LEVEL@ -fno-omit-frame-pointer
+
+CFLAGS	:= -D_GNU_SOURCE -Wall $(OPTFLAGS) -include config.h \
+	   -I$(TOP) -I$(TOP)/lib -DJTLS=__thread -DJSHARED_ATTR=  \
+	   -DJOS_CLINE=64 -DCACHE_LINE_SIZE=64 \
+	   -DJOS_NCPU=$(MAXCPUS) -D__STDC_FORMAT_MACROS
+
+LIB := -L$(O) -lmetis -ldl @MEM_ALLOCATOR@ -lnuma -lc -lm -lpthread -ldl
+LDEPS := $(O)/libmetis.a
+
+PROGS := obj/kmeans 			    \
+	 obj/matrix_mult 		    \
+	 obj/pca 			    \
+	 obj/wc 			    \
+	 obj/wr				    \
+	 obj/linear_regression		    \
+	 obj/hist			    \
+	 obj/string_match		    \
+	 obj/wrmem			    \
+         obj/matrix_mult2                   \
+	 obj/sf_sample                    \
+         obj/btree_unit                 \
+         obj/search_unit              \
+         obj/misc
+
+all: $(PROGS)
+
+include lib/Makefrag
+
+$(O)/%: $(O)/%.o $(LDEPS) $(DEPSDIR)/stamp
+	@echo "MAKE	$@"
+	$(Q)$(CC) $(DEPCFLAGS) $(CFLAGS) -o $@ $< $(LIB)
+
+$(O)/%.o: app/%.cc $(DEPSDIR)/stamp
+	$(Q)mkdir -p $(@D)
+	@echo "CC	$<"
+	$(Q)$(CC) $(DEPCFLAGS) $(CFLAGS) -o $@ -c $<
+
+$(O)/%.o: micro/%.cc $(DEPSDIR)/stamp
+	$(Q)mkdir -p $(@D)
+	$(Q)$(CC) $(DEPCFLAGS) $(CFLAGS) -o $@ -c $<
+
+$(DEPSDIR)/stamp:
+	@echo "MAKE	$@"
+	@mkdir -p $(@D)
+	@touch $@ 
+
+DTOP = ./data
+sanity_data:
+	mkdir -p $(DTOP)
+	dd if=/dev/urandom of=$(DTOP)/lr_10MB.txt count=1024 bs=10240
+
+data_gen: $(DTOP)/lr_10MB.txt
+	cd data_tool && g++ gen.cc -o gen
+	bash data_tool/data-gen.sh
+
+data_clean:
+	rm data_tool/gen $(DTOP)/wr/800MB.txt $(DTOP)/wr/500MB.txt $(DTOP)/hist-2.6g.bmp -rf
+	rm $(DTOP)/lr_4GB.txt $(DTOP)/lr_10MB.txt $(DTOP)/sm_1GB.txt $(DTOP)/*~ -rf
+
+clean:
+	@rm -rf $(PROGS) *.o *.a *~ *.tmp *.bak *.log *.orig $(O) $(DEPSDIR)
+
+.PRECIOUS: $(O)/%.o
+
+DEPFILES := $(wildcard $(DEPSDIR)/*.d)
+ifneq ($(DEPFILES),)
+include $(DEPFILES)
+endif
+
+.PHONY: default clean
