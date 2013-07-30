@@ -80,7 +80,7 @@ struct defsplitter {
 };
 
 bool defsplitter::split(split_t *ma, int ncores, const char *stop, size_t align) {
-  pthread_mutex_lock(&mu_);
+    pthread_mutex_lock(&mu_);
     if (pos_ >= size_) {
 	pthread_mutex_unlock(&mu_);
 	return false;
@@ -96,6 +96,7 @@ bool defsplitter::split(split_t *ma, int ncores, const char *stop, size_t align)
     }
     pos_ += ma->length;
     for (; pos_ < size_ && stop && !strchr(stop, d_[pos_]); ++pos_, ++ma->length);
+
     pthread_mutex_unlock(&mu_);
     return true;
 }

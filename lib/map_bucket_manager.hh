@@ -22,8 +22,8 @@
 
 struct map_bucket_manager_base {
     virtual ~map_bucket_manager_base() {}
-    virtual void init(size_t rows, size_t cols) = 0;
-    virtual void real_init(size_t row) = 0;
+    virtual void global_init(size_t rows, size_t cols) = 0;
+    virtual void per_worker_init(size_t row) = 0;
     virtual void reset(void) = 0;
     virtual void rehash(size_t row, map_bucket_manager_base *backup) = 0;
     virtual bool emit(size_t row, void *key, void *val, size_t keylen,
@@ -85,8 +85,8 @@ struct map_insert_analyzer<DT, false> {
    and outputs pairs of OPT type. */
 template <bool S, typename DT, typename OPT>
 struct map_bucket_manager : public map_bucket_manager_base {
-    void init(size_t rows, size_t cols);
-    void real_init(size_t row);
+    void global_init(size_t rows, size_t cols);
+    void per_worker_init(size_t row);
     void reset(void);
     void rehash(size_t row, map_bucket_manager_base *backup);
     bool emit(size_t row, void *key, void *val, size_t keylen,
@@ -142,7 +142,7 @@ void map_bucket_manager<S, DT, OPT>::psrs_output_and_reduce(size_t ncpus, size_t
 }
 
 template <bool S, typename DT, typename OPT>
-void map_bucket_manager<S, DT, OPT>::init(size_t rows, size_t cols) {
+void map_bucket_manager<S, DT, OPT>::global_init(size_t rows, size_t cols) {
     mapdt_.resize(rows);
     output_.resize(rows * cols);
     for (size_t i = 0; i < output_.size(); ++i)
@@ -152,9 +152,7 @@ void map_bucket_manager<S, DT, OPT>::init(size_t rows, size_t cols) {
 }
 
 template <bool S, typename DT, typename OPT>
-void map_bucket_manager<S, DT, OPT>::real_init(size_t row) {
-  //if (mapdt_[row])
-  //free(mapdt_[row]);
+void map_bucket_manager<S, DT, OPT>::per_worker_init(size_t row) {
     mapdt_[row] = safe_malloc<xarray<DT> >();
     mapdt_[row]->init();
     mapdt_[row]->resize(cols_);
@@ -166,10 +164,14 @@ template <bool S, typename DT, typename OPT>
 void map_bucket_manager<S, DT, OPT>::reset() {
     for (size_t i = 0; i < output_.size(); ++i)
         output_[i].shallow_free();
-    for (size_t i = 0; i < rows_; ++i)
+    output_.shallow_free();
+    for (size_t i = 0; i < rows_; ++i) {
         for (size_t j = 0; j < cols_; ++j)
             mapdt_bucket(i, j)->shallow_free();
-    mapdt_.resize(0);
+        mapdt_[i]->shallow_free();
+        free(mapdt_[i]);
+    }
+    mapdt_.shallow_free();
 }
 
 template <bool S, typename DT, typename OPT>

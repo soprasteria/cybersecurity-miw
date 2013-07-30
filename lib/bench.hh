@@ -27,6 +27,7 @@
 #include <unistd.h>
 #include <assert.h>
 #include <fcntl.h>
+#include <math.h>
 #include <sys/stat.h>
 #include <algorithm>
 #include <iostream>
@@ -49,9 +50,7 @@ inline T round_up(T n, M b) {
 template <typename T>
 inline T *safe_malloc(int n = 1) {
     void *x = malloc(sizeof(T) * n);
-    //assert(n ==0 || x);
-    if (!x)
-      std::cerr << "failed allocating memory\n";
+    //assert(n == 0 || x);
     return (T *)x;
 }
 

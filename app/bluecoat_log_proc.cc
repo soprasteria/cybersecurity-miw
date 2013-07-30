@@ -431,16 +431,16 @@ public:
   
   int final_output_compare(const keyval_t *kv1, const keyval_t *kv2) {
 #ifdef HADOOP
-    return strcmp((char *) kv1->key, (char *) kv2->key);
+    return strcmp((char *) kv1->key_, (char *) kv2->key_);
 #else
     if (alphanumeric)
-      return strcmp((char *) kv1->key, (char *) kv2->key);
+      return strcmp((char *) kv1->key_, (char *) kv2->key_);
     size_t i1 = (size_t) kv1->val;
     size_t i2 = (size_t) kv2->val;
     if (i1 != i2)
       return i2 - i1;
     else
-      return strcmp((char *) kv1->key, (char *) kv2->key);
+      return strcmp((char *) kv1->key_, (char *) kv2->key_);
 #endif
   }
   
@@ -550,7 +550,7 @@ static void print_top(xarray<keyval_t> *wc_vals, int ndisp) {
       {
 	for (int i = 0; i < ndisp; i++) {
 	  keyval_t *w = wc_vals->at(i);
-	  printf("%15s - %d\n", (char *)w->key, ptr2int<unsigned>(w->val));
+	  printf("%15s - %d\n", (char *)w->key_, ptr2int<unsigned>(w->val));
 	}
       }
     else
@@ -573,8 +573,8 @@ static void output_all(xarray<keyval_t> *wc_vals, FILE *fout)
     {
       keyval_t *w = wc_vals->at(i);
       if (count_users)
-	fprintf(fout, "%18s - %d\n", (char *)w->key,ptr2int<unsigned>(w->val));
-      else fprintf(fout, "%45s - %ld\n", (char*)w->key,static_cast<log_record*>(w->val)->_sum);
+	fprintf(fout, "%18s - %d\n", (char *)w->key_,ptr2int<unsigned>(w->val));
+      else fprintf(fout, "%45s - %ld\n", (char*)w->key_,static_cast<log_record*>(w->val)->_sum);
     }
 }
 
@@ -584,7 +584,7 @@ static void output_json(xarray<keyval_t> *wc_vals, FILE *fout)
   for (uint32_t i = 0; i < wc_vals->size(); i++) 
     {
       log_record *lr = (log_record*)wc_vals->at(i)->val;
-      std::string key = (const char*)wc_vals->at(i)->key;
+      std::string key = (const char*)wc_vals->at(i)->key_;
       Json::Value jrec = lr->to_json(key);
       fprintf(fout,"%s",writer.write(jrec).c_str());
     }

@@ -1,0 +1,11 @@
+.deps
+obj
+data_tool/gen
+GNUmakefile
+config.h
+*.swp
+config.log
+config.status
+autom4te.cache
+data
+*.tar.gz

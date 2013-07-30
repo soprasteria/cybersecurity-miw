@@ -4,6 +4,9 @@
 /* Define data structure for map phase */
 #define DEFAULT_MAP_DS index_btree
 
+/* Define if the C++ compiler understands constexpr. */
+/* #undef HAVE_CXX_CONSTEXPR */
+
 /* map -> merge -> reduce */
 /* #undef MAP_MERGE_REDUCE */
 
