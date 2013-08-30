@@ -1,0 +1,43 @@
+message int_field
+{
+	repeated int32 int_reap = 1;
+	optional int32 ext_val = 2; /* storage of sum, mean, ... */
+}
+
+message string_field
+{
+	repeated string str_reap = 1;
+}
+
+message bool_field
+{
+	repeated bool bool_reap = 1;
+}
+
+message float_field
+{
+	repeated float float_reap = 1;
+	optional float ext_val = 2; /* storage of sum, mean, ... */
+}
+
+message field
+{
+	required string name = 1;
+	required uint32 pos = 2; /* field position, allows to skip fields */
+	required string type = 3; /* field type: double, float, string, ... */
+	optional bool key = 4 [default = false]; /* whether this field is use as key or part of the key */
+	optional bool aggregated = 5; /* whether to aggregate values of this field. Obviously stored. */
+	optional string aggregation = 6; /* type of aggregation (e.g. sum, union, ...) */
+	
+	optional int_field int_fi = 7;
+	optional string_field str_fi = 8;
+	optional bool_field bool_fi = 9;
+	optional float_field real_fi = 10;
+}
+
+message logdef
+{
+	required string format_name = 1;  /* log format name */
+	required string delims = 2; /* field delimiters */
+	repeated field fields = 3;  /* definition of log fields */
+}

@@ -1,0 +1,20 @@
+{
+    "format_name":"anon_bluecoat",
+    "delims":" ",
+    "fields":[
+	{
+	    "name":"username",
+	    "pos":9,
+	    "type":"string",
+	    "key":true,
+	},
+	{
+	    "name":"ip_address",
+	    "pos":4,
+	    "type":"string",
+	    "key":false,
+	    "aggregated":true,
+	    "aggregation":"union"
+	}
+     ]
+}
