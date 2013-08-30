@@ -14,7 +14,7 @@ CFLAGS	:= -D_GNU_SOURCE -Wall $(OPTFLAGS) -include config.h \
 	   -DJOS_NCPU=$(MAXCPUS) -D__STDC_FORMAT_MACROS `pkg-config --cflags protobuf`
 
 LIB := `pkg-config --libs protobuf` -L$(O) -L$(TOP)/miw/ $(O)/curl_mget.o $(O)/MurmurHash3.o -lmetis -lmiw -lc -lm -lcurl -lidn -lz -lssl -lcrypto -lpthread -ldl -ljsoncpp -lrt
-LDEPS := $(O)/libmetis.a $(TOP)/miw/libmiw.la $(O)/curl_mget.o $(O)/MurmurHash3.o
+LDEPS := $(O)/libmetis.a $(O)/curl_mget.o $(O)/MurmurHash3.o
 
 PROGS := obj/kmeans 			    \
 	 obj/matrix_mult 		    \

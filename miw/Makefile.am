@@ -7,10 +7,10 @@ miwdir = $(libdir)/miw
 
 AM_CXXFLAGS=-Wall -g -pipe -std=c++11 -fpermissive -fopenmp
 AM_CPPFLAGS=`pkg-config --cflags protobuf`
-miw_LTLIBRARIES=libmiw.la
-libmiw_la_SOURCES=log_format.cc log_format.h \
+miw_LIBRARIES=libmiw.a
+libmiw_a_SOURCES=log_format.cc log_format.h \
 		 log_record.cc log_record.h
-nodist_libmiw_la_SOURCES=$(protoc_outputs)
+nodist_libmiw_a_SOURCES=$(protoc_outputs)
 
 clean-local:
 	rm -f log_definition.pb.h log_definition.pb.cc
