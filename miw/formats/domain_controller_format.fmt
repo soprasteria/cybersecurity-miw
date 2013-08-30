@@ -1,0 +1,24 @@
+
+domain_controller,
+datestring
+timestring
+	Date/Timestring
+Workstationstring
+Hostnamestring
+SourceAddressstring
+Domainstring
+DeviceHostNamestring
+EventDescription	string
+	EventType
+string
+UserNamestring 
+	EventUserstring
+ReferenceIDstring
+	LogonTypestring
+EventLogstring
+DeviceAddressstring
+
+ResultCodestring
+EventCategoryNamestring
+	MessageIDstring
+Messagestring
