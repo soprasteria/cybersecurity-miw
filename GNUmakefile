@@ -9,12 +9,12 @@ O       := obj
 OPTFLAGS := -g -O3 -fno-omit-frame-pointer
 
 CFLAGS	:= -D_GNU_SOURCE -Wall $(OPTFLAGS) -include config.h \
-	   -I$(TOP) -I$(TOP)/lib -DJTLS=__thread -DJSHARED_ATTR=  \
+	   -I$(TOP) -I$(TOP)/lib -I$(TOP)/miw -DJTLS=__thread -DJSHARED_ATTR=  \
 	   -DJOS_CLINE=64 -DCACHE_LINE_SIZE=64 \
-	   -DJOS_NCPU=$(MAXCPUS) -D__STDC_FORMAT_MACROS
+	   -DJOS_NCPU=$(MAXCPUS) -D__STDC_FORMAT_MACROS `pkg-config --cflags protobuf`
 
-LIB := -L$(O) $(O)/curl_mget.o $(O)/MurmurHash3.o -lmetis -lc -lm -lcurl -lidn -lz -lssl -lcrypto -lpthread -ldl -ljsoncpp -lrt
-LDEPS := $(O)/libmetis.a $(O)/curl_mget.o $(O)/MurmurHash3.o
+LIB := `pkg-config --libs protobuf` -L$(O) -L$(TOP)/miw/ $(O)/curl_mget.o $(O)/MurmurHash3.o -lmetis -lmiw -lc -lm -lcurl -lidn -lz -lssl -lcrypto -lpthread -ldl -ljsoncpp -lrt
+LDEPS := $(O)/libmetis.a $(TOP)/miw/libmiw.la $(O)/curl_mget.o $(O)/MurmurHash3.o
 
 PROGS := obj/kmeans 			    \
 	 obj/matrix_mult 		    \
@@ -31,6 +31,7 @@ PROGS := obj/kmeans 			    \
          obj/search_unit              \
          obj/misc		\
 	 obj/bluecoat_log_proc	\
+	 obj/log_compacter \
 	 obj/solr_commit 	
 
 all: $(PROGS)
@@ -47,6 +48,10 @@ $(O)/%.o: app/%.cc $(DEPSDIR)/stamp
 	$(Q)$(CC) $(DEPCFLAGS) $(CFLAGS) -o $@ -c $<
 
 $(O)/%.o: micro/%.cc $(DEPSDIR)/stamp
+	$(Q)mkdir -p $(@D)
+	$(Q)$(CC) $(DEPCFLAGS) $(CFLAGS) -o $@ -c $<
+
+$(O)/%.o: miw/%.cc $(DEPSDIR)/stamp
 	$(Q)mkdir -p $(@D)
 	$(Q)$(CC) $(DEPCFLAGS) $(CFLAGS) -o $@ -c $<
 

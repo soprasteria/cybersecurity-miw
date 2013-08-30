@@ -62,7 +62,7 @@
 #define DEFAULT_NDISP 10
 //#define DEBUG
 
-/* Hadoop print all the key/value paris at the end.  This option 
+/* Hadoop print all the key/value pairs at the end.  This option 
  * enables wordcount to print all pairs for fair comparison. */
 //#define HADOOP
 

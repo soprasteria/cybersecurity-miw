@@ -1,10 +1,15 @@
 dnl Process this file with autoconf to produce a configure script
 
-AC_INIT([metis], [0.1])
+AC_INIT([miw], [0.2])
 AC_PREREQ(2.60)
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([GNUmakefile])
 AC_SUBST(ac_configure_args)
+AM_INIT_AUTOMAKE
+
+AC_PROG_CXX
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_LIBTOOL
 
 dnl Memory allocator
 AC_CHECK_LIB([flow], [malloc], [have_flow=true], [have_flow=])
@@ -114,5 +119,7 @@ if test "$ac_cv_cxx_constexpr" = yes; then
 fi
 
 AC_SUBST([OPT_LEVEL])
+
+AC_CONFIG_FILES(GNUmakefile Makefile miw/Makefile miw/formats/Makefile)
 
 AC_OUTPUT
