@@ -1,0 +1,552 @@
+gcc  -g -O2 `pkg-config --libs protobuf` -L../miw/ -L../metis  -o matrix_mult matrix_mult.o curl_mget.o MurmurHash3.o -lmetis -lmiw -lc -lm -lcurl -lidn -lz -lssl -lcrypto -lpthread -ldl -ljsoncpp -lrt 
+matrix_mult.o: In function `reduce_bucket_manager_base::~reduce_bucket_manager_base()':
+/home/beniz/projects/xplr/dev/miw_steria/app/../metis/reduce_bucket_manager.hh:24: undefined reference to `operator delete(void*)'
+matrix_mult.o: In function `reduce_bucket_manager<keyval_t>::~reduce_bucket_manager()':
+/home/beniz/projects/xplr/dev/miw_steria/app/../metis/reduce_bucket_manager.hh:34: undefined reference to `operator delete(void*)'
+matrix_mult.o: In function `psrs<xarray<keyval_t> >::copy_elem(xarray<xarray<keyval_t> >&, int, int)':
+/home/beniz/projects/xplr/dev/miw_steria/app/../metis/psrs.hh:152: undefined reference to `operator new(unsigned long)'
+matrix_mult.o: In function `xarray<keyval_t>* psrs<xarray<keyval_t> >::do_psrs<int (void const*, void const*)>(xarray<xarray<keyval_t> >&, int, int, int (&)(void const*, void const*))':
+/home/beniz/projects/xplr/dev/miw_steria/app/../metis/psrs.hh:191: undefined reference to `operator new(unsigned long)'
+matrix_mult.o: In function `psrs<xarray<keyval_t> >::init(int, unsigned long)':
+/home/beniz/projects/xplr/dev/miw_steria/app/../metis/psrs.hh:31: undefined reference to `operator new(unsigned long)'
+matrix_mult.o: In function `reduce_bucket_manager<keyval_t>::merge_reduced_buckets(int, int)':
+/home/beniz/projects/xplr/dev/miw_steria/app/../metis/reduce_bucket_manager.hh:79: undefined reference to `operator delete(void*)'
+/home/beniz/projects/xplr/dev/miw_steria/app/../metis/reduce_bucket_manager.hh:79: undefined reference to `operator delete(void*)'
+matrix_mult.o: In function `__static_initialization_and_destruction_0':
+/usr/include/c++/4.7/iostream:75: undefined reference to `std::ios_base::Init::Init()'
+/usr/include/c++/4.7/iostream:75: undefined reference to `std::ios_base::Init::~Init()'
+matrix_mult.o: In function `app_impl_base<keyval_t, 0>::~app_impl_base()':
+/home/beniz/projects/xplr/dev/miw_steria/app/../metis/application.hh:37: undefined reference to `operator delete(void*)'
+matrix_mult.o: In function `map_only::~map_only()':
+/home/beniz/projects/xplr/dev/miw_steria/app/../metis/application.hh:131: undefined reference to `operator delete(void*)'
+matrix_mult.o: In function `mm::~mm()':
+/home/beniz/projects/xplr/dev/miw_steria/app/mm.hh:24: undefined reference to `operator delete(void*)'
+matrix_mult.o:(.rodata._ZTI2mm[_ZTI2mm]+0x0): undefined reference to `vtable for __cxxabiv1::__si_class_type_info'
+matrix_mult.o:(.rodata._ZTV8map_only[_ZTV8map_only]+0x10): undefined reference to `__cxa_pure_virtual'
+matrix_mult.o:(.rodata._ZTV8map_only[_ZTV8map_only]+0x18): undefined reference to `__cxa_pure_virtual'
+matrix_mult.o:(.rodata._ZTV8map_only[_ZTV8map_only]+0x20): undefined reference to `__cxa_pure_virtual'
+matrix_mult.o:(.rodata._ZTV13app_impl_baseI8keyval_tLi0EE[_ZTV13app_impl_baseI8keyval_tLi0EE]+0x10): undefined reference to `__cxa_pure_virtual'
+matrix_mult.o:(.rodata._ZTV13app_impl_baseI8keyval_tLi0EE[_ZTV13app_impl_baseI8keyval_tLi0EE]+0x18): undefined reference to `__cxa_pure_virtual'
+matrix_mult.o:(.rodata._ZTV13app_impl_baseI8keyval_tLi0EE[_ZTV13app_impl_baseI8keyval_tLi0EE]+0x20): more undefined references to `__cxa_pure_virtual' follow
+matrix_mult.o:(.rodata._ZTI8map_only[_ZTI8map_only]+0x0): undefined reference to `vtable for __cxxabiv1::__si_class_type_info'
+matrix_mult.o:(.rodata._ZTI13app_impl_baseI8keyval_tLi0EE[_ZTI13app_impl_baseI8keyval_tLi0EE]+0x0): undefined reference to `vtable for __cxxabiv1::__si_class_type_info'
+matrix_mult.o:(.rodata._ZTI21reduce_bucket_managerI8keyval_tE[_ZTI21reduce_bucket_managerI8keyval_tE]+0x0): undefined reference to `vtable for __cxxabiv1::__si_class_type_info'
+matrix_mult.o:(.rodata._ZTI26reduce_bucket_manager_base[_ZTI26reduce_bucket_manager_base]+0x0): undefined reference to `vtable for __cxxabiv1::__class_type_info'
+matrix_mult.o:(.eh_frame+0x4f7): undefined reference to `__gxx_personality_v0'
+curl_mget.o: In function `write_data':
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:39: undefined reference to `std::string::append(char const*, unsigned long)'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:37: undefined reference to `operator new(unsigned long)'
+curl_mget.o: In function `_Alloc_hider':
+/usr/include/c++/4.7/bits/basic_string.h:272: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `std::basic_ios<char, std::char_traits<char> >::setstate(std::_Ios_Iostate)':
+/usr/include/c++/4.7/bits/basic_ios.h:150: undefined reference to `std::basic_ios<char, std::char_traits<char> >::clear(std::_Ios_Iostate)'
+curl_mget.o: In function `_Alloc_hider':
+/usr/include/c++/4.7/bits/basic_string.h:272: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `curl_mget::curl_mget(int const&, long const&, long const&, long const&, long const&)':
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:53: undefined reference to `operator new[](unsigned long)'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:56: undefined reference to `operator new[](unsigned long)'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:51: undefined reference to `std::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()'
+curl_mget.o: In function `curl_mget::~curl_mget()':
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:61: undefined reference to `operator delete[](void*)'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:237: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+/usr/include/c++/4.7/bits/basic_string.h:246: undefined reference to `std::string::_Rep::_M_destroy(std::allocator<char> const&)'
+curl_mget.o: In function `curl_mget::www_mget(std::vector<std::string, std::allocator<std::string> > const&, int const&, std::vector<std::list<char const*, std::allocator<char const*> >*, std::allocator<std::list<char const*, std::allocator<char const*> >*> > const*, std::string const&, short const&, std::vector<int, std::allocator<int> >&, std::vector<long, std::allocator<long> >&, std::vector<void*, std::allocator<void*> >*, std::vector<std::string, std::allocator<std::string> >*, std::string const&, std::string*, int const&, std::string const&)':
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:212: undefined reference to `operator new(unsigned long)'
+curl_mget.o: In function `_Alloc_hider':
+/usr/include/c++/4.7/bits/basic_string.h:272: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+/usr/include/c++/4.7/bits/basic_string.h:272: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+/usr/include/c++/4.7/bits/basic_string.h:272: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+/usr/include/c++/4.7/bits/basic_string.h:272: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `std::string::operator=(std::string const&)':
+/usr/include/c++/4.7/bits/basic_string.h:544: undefined reference to `std::string::assign(std::string const&)'
+/usr/include/c++/4.7/bits/basic_string.h:544: undefined reference to `std::string::assign(std::string const&)'
+/usr/include/c++/4.7/bits/basic_string.h:544: undefined reference to `std::string::assign(std::string const&)'
+/usr/include/c++/4.7/bits/basic_string.h:544: undefined reference to `std::string::assign(std::string const&)'
+curl_mget.o: In function `operator<< <std::char_traits<char> >':
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::cerr'
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long)'
+curl_mget.o: In function `curl_mget::www_mget(std::vector<std::string, std::allocator<std::string> > const&, int const&, std::vector<std::list<char const*, std::allocator<char const*> >*, std::allocator<std::list<char const*, std::allocator<char const*> >*> > const*, std::string const&, short const&, std::vector<int, std::allocator<int> >&, std::vector<long, std::allocator<long> >&, std::vector<void*, std::allocator<void*> >*, std::vector<std::string, std::allocator<std::string> >*, std::string const&, std::string*, int const&, std::string const&)':
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:244: undefined reference to `std::cerr'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:244: undefined reference to `std::ostream::operator<<(int)'
+curl_mget.o: In function `endl<char, std::char_traits<char> >':
+/usr/include/c++/4.7/ostream:563: undefined reference to `std::ostream::put(char)'
+curl_mget.o: In function `flush<char, std::char_traits<char> >':
+/usr/include/c++/4.7/ostream:585: undefined reference to `std::ostream::flush()'
+curl_mget.o: In function `std::ctype<char>::widen(char) const':
+/usr/include/c++/4.7/bits/locale_facets.h:871: undefined reference to `std::ctype<char>::_M_widen_init() const'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:237: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+/usr/include/c++/4.7/bits/basic_string.h:237: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+/usr/include/c++/4.7/bits/basic_string.h:237: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+/usr/include/c++/4.7/bits/basic_string.h:237: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `curl_mget::www_mget(std::vector<std::string, std::allocator<std::string> > const&, int const&, std::vector<std::list<char const*, std::allocator<char const*> >*, std::allocator<std::list<char const*, std::allocator<char const*> >*> > const*, std::string const&, short const&, std::vector<int, std::allocator<int> >&, std::vector<long, std::allocator<long> >&, std::vector<void*, std::allocator<void*> >*, std::vector<std::string, std::allocator<std::string> >*, std::string const&, std::string*, int const&, std::string const&)':
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:260: undefined reference to `operator delete(void*)'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:259: undefined reference to `operator delete(void*)'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:230: undefined reference to `operator new(unsigned long)'
+curl_mget.o: In function `std::vector<std::list<char const*, std::allocator<char const*> >*, std::allocator<std::list<char const*, std::allocator<char const*> >*> >::at(unsigned long) const':
+/usr/include/c++/4.7/bits/stl_vector.h:774: undefined reference to `std::__throw_out_of_range(char const*)'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:246: undefined reference to `std::string::_Rep::_M_destroy(std::allocator<char> const&)'
+/usr/include/c++/4.7/bits/basic_string.h:246: undefined reference to `std::string::_Rep::_M_destroy(std::allocator<char> const&)'
+/usr/include/c++/4.7/bits/basic_string.h:246: undefined reference to `std::string::_Rep::_M_destroy(std::allocator<char> const&)'
+/usr/include/c++/4.7/bits/basic_string.h:246: undefined reference to `std::string::_Rep::_M_destroy(std::allocator<char> const&)'
+curl_mget.o: In function `std::ostream::operator<<(std::ostream& (*)(std::ostream&))':
+/usr/include/c++/4.7/bits/basic_ios.h:51: undefined reference to `std::__throw_bad_cast()'
+curl_mget.o: In function `__gnu_cxx::new_allocator<std::string>::allocate(unsigned long, void const*)':
+/usr/include/c++/4.7/ext/new_allocator.h:94: undefined reference to `operator new(unsigned long)'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:237: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `__gnu_cxx::new_allocator<std::string>::deallocate(std::string*, unsigned long)':
+/usr/include/c++/4.7/ext/new_allocator.h:100: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `construct<std::basic_string<char>, const std::basic_string<char, std::char_traits<char>, std::allocator<char> >&>':
+/usr/include/c++/4.7/ext/new_allocator.h:110: undefined reference to `std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::string const&)'
+curl_mget.o: In function `curl_mget::www_simple(std::string const&, std::list<char const*, std::allocator<char const*> >*, int&, long&, std::string const&, std::string*, int const&, std::string const&, std::string const&, short const&)':
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:285: undefined reference to `operator new(unsigned long)'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:316: undefined reference to `operator delete[](void*)'
+curl_mget.o: In function `__gnu_cxx::new_allocator<std::list<char const*, std::allocator<char const*> >*>::deallocate(std::list<char const*, std::allocator<char const*> >**, unsigned long)':
+/usr/include/c++/4.7/ext/new_allocator.h:100: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `curl_mget::www_simple(std::string const&, std::list<char const*, std::allocator<char const*> >*, int&, long&, std::string const&, std::string*, int const&, std::string const&, std::string const&, short const&)':
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:318: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `__gnu_cxx::new_allocator<long>::deallocate(long*, unsigned long)':
+/usr/include/c++/4.7/ext/new_allocator.h:100: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `__gnu_cxx::new_allocator<int>::deallocate(int*, unsigned long)':
+/usr/include/c++/4.7/ext/new_allocator.h:100: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:237: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `__gnu_cxx::new_allocator<std::string>::deallocate(std::string*, unsigned long)':
+/usr/include/c++/4.7/ext/new_allocator.h:100: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `curl_mget::www_simple(std::string const&, std::list<char const*, std::allocator<char const*> >*, int&, long&, std::string const&, std::string*, int const&, std::string const&, std::string const&, short const&)':
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:294: undefined reference to `operator delete[](void*)'
+curl_mget.o: In function `__gnu_cxx::new_allocator<std::list<char const*, std::allocator<char const*> >*>::deallocate(std::list<char const*, std::allocator<char const*> >**, unsigned long)':
+/usr/include/c++/4.7/ext/new_allocator.h:100: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `curl_mget::www_simple(std::string const&, std::list<char const*, std::allocator<char const*> >*, int&, long&, std::string const&, std::string*, int const&, std::string const&, std::string const&, short const&)':
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:296: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `operator<< <char, std::char_traits<char>, std::allocator<char> >':
+/usr/include/c++/4.7/bits/basic_string.h:2755: undefined reference to `std::cerr'
+/usr/include/c++/4.7/bits/basic_string.h:2755: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long)'
+curl_mget.o: In function `endl<char, std::char_traits<char> >':
+/usr/include/c++/4.7/ostream:563: undefined reference to `std::ostream::put(char)'
+curl_mget.o: In function `flush<char, std::char_traits<char> >':
+/usr/include/c++/4.7/ostream:585: undefined reference to `std::ostream::flush()'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:237: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `__gnu_cxx::new_allocator<std::list<char const*, std::allocator<char const*> >*>::deallocate(std::list<char const*, std::allocator<char const*> >**, unsigned long)':
+/usr/include/c++/4.7/ext/new_allocator.h:100: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `curl_mget::www_simple(std::string const&, std::list<char const*, std::allocator<char const*> >*, int&, long&, std::string const&, std::string*, int const&, std::string const&, std::string const&, short const&)':
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:307: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `operator<< <char, std::char_traits<char>, std::allocator<char> >':
+/usr/include/c++/4.7/bits/basic_string.h:2755: undefined reference to `std::cerr'
+/usr/include/c++/4.7/bits/basic_string.h:2755: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long)'
+curl_mget.o: In function `endl<char, std::char_traits<char> >':
+/usr/include/c++/4.7/ostream:563: undefined reference to `std::ostream::put(char)'
+curl_mget.o: In function `flush<char, std::char_traits<char> >':
+/usr/include/c++/4.7/ostream:585: undefined reference to `std::ostream::flush()'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:237: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `curl_mget::www_simple(std::string const&, std::list<char const*, std::allocator<char const*> >*, int&, long&, std::string const&, std::string*, int const&, std::string const&, std::string const&, short const&)':
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:309: undefined reference to `operator delete(void*)'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:310: undefined reference to `operator delete[](void*)'
+curl_mget.o: In function `std::ctype<char>::widen(char) const':
+/usr/include/c++/4.7/bits/locale_facets.h:871: undefined reference to `std::ctype<char>::_M_widen_init() const'
+/usr/include/c++/4.7/bits/locale_facets.h:871: undefined reference to `std::ctype<char>::_M_widen_init() const'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:246: undefined reference to `std::string::_Rep::_M_destroy(std::allocator<char> const&)'
+/usr/include/c++/4.7/bits/basic_string.h:246: undefined reference to `std::string::_Rep::_M_destroy(std::allocator<char> const&)'
+curl_mget.o: In function `std::ostream::operator<<(std::ostream& (*)(std::ostream&))':
+/usr/include/c++/4.7/bits/basic_ios.h:51: undefined reference to `std::__throw_bad_cast()'
+curl_mget.o: In function `curl_mget::www_simple(std::string const&, std::list<char const*, std::allocator<char const*> >*, int&, long&, std::string const&, std::string*, int const&, std::string const&, std::string const&, short const&)':
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:311: undefined reference to `std::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()'
+curl_mget.o: In function `__gnu_cxx::new_allocator<long>::deallocate(long*, unsigned long)':
+/usr/include/c++/4.7/ext/new_allocator.h:100: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `__gnu_cxx::new_allocator<int>::deallocate(int*, unsigned long)':
+/usr/include/c++/4.7/ext/new_allocator.h:100: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:237: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `__gnu_cxx::new_allocator<std::string>::deallocate(std::string*, unsigned long)':
+/usr/include/c++/4.7/ext/new_allocator.h:100: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:246: undefined reference to `std::string::_Rep::_M_destroy(std::allocator<char> const&)'
+/usr/include/c++/4.7/bits/basic_string.h:246: undefined reference to `std::string::_Rep::_M_destroy(std::allocator<char> const&)'
+curl_mget.o: In function `__check_facet<std::ctype<char> >':
+/usr/include/c++/4.7/bits/basic_ios.h:51: undefined reference to `std::__throw_bad_cast()'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:246: undefined reference to `std::string::_Rep::_M_destroy(std::allocator<char> const&)'
+curl_mget.o: In function `basic_ios':
+/usr/include/c++/4.7/bits/basic_ios.h:454: undefined reference to `std::ios_base::ios_base()'
+curl_mget.o: In function `basic_istream':
+/usr/include/c++/4.7/istream:605: undefined reference to `VTT for std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >'
+/usr/include/c++/4.7/istream:605: undefined reference to `VTT for std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >'
+curl_mget.o: In function `basic_ios':
+/usr/include/c++/4.7/bits/basic_ios.h:454: undefined reference to `vtable for std::basic_ios<char, std::char_traits<char> >'
+curl_mget.o: In function `basic_istream':
+/usr/include/c++/4.7/istream:606: undefined reference to `std::basic_ios<char, std::char_traits<char> >::init(std::basic_streambuf<char, std::char_traits<char> >*)'
+curl_mget.o: In function `basic_ostream':
+/usr/include/c++/4.7/ostream:383: undefined reference to `VTT for std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >'
+/usr/include/c++/4.7/ostream:383: undefined reference to `VTT for std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >'
+/usr/include/c++/4.7/ostream:383: undefined reference to `std::basic_ios<char, std::char_traits<char> >::init(std::basic_streambuf<char, std::char_traits<char> >*)'
+curl_mget.o: In function `basic_iostream':
+/usr/include/c++/4.7/istream:825: undefined reference to `VTT for std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >'
+/usr/include/c++/4.7/istream:825: undefined reference to `VTT for std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >'
+curl_mget.o: In function `basic_stringstream':
+/usr/include/c++/4.7/sstream:519: undefined reference to `vtable for std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >'
+/usr/include/c++/4.7/sstream:519: undefined reference to `vtable for std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >'
+/usr/include/c++/4.7/sstream:519: undefined reference to `vtable for std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >'
+curl_mget.o: In function `basic_streambuf':
+/usr/include/c++/4.7/streambuf:463: undefined reference to `vtable for std::basic_streambuf<char, std::char_traits<char> >'
+/usr/include/c++/4.7/streambuf:463: undefined reference to `std::locale::locale()'
+curl_mget.o: In function `basic_stringbuf':
+/usr/include/c++/4.7/sstream:95: undefined reference to `vtable for std::basic_stringbuf<char, std::char_traits<char>, std::allocator<char> >'
+curl_mget.o: In function `_Alloc_hider':
+/usr/include/c++/4.7/bits/basic_string.h:272: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `basic_stringstream':
+/usr/include/c++/4.7/sstream:520: undefined reference to `std::basic_ios<char, std::char_traits<char> >::init(std::basic_streambuf<char, std::char_traits<char> >*)'
+curl_mget.o: In function `to_string<short int>':
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.h:33: undefined reference to `std::ostream::operator<<(short)'
+curl_mget.o: In function `_Alloc_hider':
+/usr/include/c++/4.7/bits/basic_string.h:272: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `std::string::operator=(std::string&&)':
+/usr/include/c++/4.7/bits/basic_string.h:580: undefined reference to `std::string::swap(std::string&)'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:237: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `~basic_stringstream':
+/usr/include/c++/4.7/sstream:546: undefined reference to `vtable for std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >'
+/usr/include/c++/4.7/sstream:546: undefined reference to `vtable for std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >'
+/usr/include/c++/4.7/sstream:546: undefined reference to `vtable for std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >'
+curl_mget.o: In function `~basic_stringbuf':
+/usr/include/c++/4.7/sstream:60: undefined reference to `vtable for std::basic_stringbuf<char, std::char_traits<char>, std::allocator<char> >'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:237: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `~basic_streambuf':
+/usr/include/c++/4.7/streambuf:195: undefined reference to `vtable for std::basic_streambuf<char, std::char_traits<char> >'
+/usr/include/c++/4.7/streambuf:195: undefined reference to `std::locale::~locale()'
+curl_mget.o: In function `~basic_ostream':
+/usr/include/c++/4.7/ostream:91: undefined reference to `VTT for std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >'
+curl_mget.o: In function `~basic_iostream':
+/usr/include/c++/4.7/istream:821: undefined reference to `VTT for std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >'
+curl_mget.o: In function `~basic_ostream':
+/usr/include/c++/4.7/ostream:91: undefined reference to `VTT for std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >'
+curl_mget.o: In function `~basic_istream':
+/usr/include/c++/4.7/istream:102: undefined reference to `VTT for std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >'
+curl_mget.o: In function `~basic_ios':
+/usr/include/c++/4.7/bits/basic_ios.h:274: undefined reference to `vtable for std::basic_ios<char, std::char_traits<char> >'
+/usr/include/c++/4.7/bits/basic_ios.h:274: undefined reference to `std::ios_base::~ios_base()'
+curl_mget.o: In function `operator+<char, std::char_traits<char>, std::allocator<char> >':
+/usr/include/c++/4.7/bits/basic_string.h:2402: undefined reference to `std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::string const&)'
+curl_mget.o: In function `std::string::append(char const*)':
+/usr/include/c++/4.7/bits/basic_string.h:1006: undefined reference to `std::string::append(char const*, unsigned long)'
+curl_mget.o: In function `operator+<char, std::char_traits<char>, std::allocator<char> >':
+/usr/include/c++/4.7/bits/basic_string.h:2446: undefined reference to `std::string::append(std::string const&)'
+curl_mget.o: In function `std::string::_M_data(char*)':
+/usr/include/c++/4.7/bits/basic_string.h:294: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:237: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+/usr/include/c++/4.7/bits/basic_string.h:237: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+/usr/include/c++/4.7/bits/basic_string.h:237: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `operator==<char, std::char_traits<char>, std::allocator<char> >':
+/usr/include/c++/4.7/bits/basic_string.h:2518: undefined reference to `std::string::compare(char const*) const'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:237: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `__gnu_cxx::new_allocator<char*>::deallocate(char**, unsigned long)':
+/usr/include/c++/4.7/ext/new_allocator.h:100: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `operator<< <std::char_traits<char> >':
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::cerr'
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long)'
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::cerr'
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long)'
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::cerr'
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long)'
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::cerr'
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long)'
+curl_mget.o: In function `endl<char, std::char_traits<char> >':
+/usr/include/c++/4.7/ostream:563: undefined reference to `std::cerr'
+curl_mget.o: In function `endl<char, std::char_traits<char> >':
+/usr/include/c++/4.7/bits/locale_facets.h:1078: undefined reference to `std::cerr'
+curl_mget.o: In function `endl<char, std::char_traits<char> >':
+/usr/include/c++/4.7/ostream:563: undefined reference to `std::cerr'
+/usr/include/c++/4.7/ostream:563: undefined reference to `std::ostream::put(char)'
+curl_mget.o: In function `flush<char, std::char_traits<char> >':
+/usr/include/c++/4.7/ostream:585: undefined reference to `std::ostream::flush()'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:237: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `pull_one_url(void*)':
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:152: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `operator==<char, std::char_traits<char>, std::allocator<char> >':
+/usr/include/c++/4.7/bits/basic_string.h:2518: undefined reference to `std::string::compare(char const*) const'
+curl_mget.o: In function `std::string::operator=(std::string&&)':
+/usr/include/c++/4.7/bits/basic_string.h:580: undefined reference to `std::string::swap(std::string&)'
+curl_mget.o: In function `std::string::insert(unsigned long, std::string const&, unsigned long, unsigned long)':
+/usr/include/c++/4.7/bits/basic_string.h:1256: undefined reference to `std::string::insert(unsigned long, char const*, unsigned long)'
+curl_mget.o: In function `std::ctype<char>::widen(char) const':
+/usr/include/c++/4.7/bits/locale_facets.h:871: undefined reference to `std::ctype<char>::_M_widen_init() const'
+curl_mget.o: In function `std::string::operator=(std::string const&)':
+/usr/include/c++/4.7/bits/basic_string.h:544: undefined reference to `std::string::assign(std::string const&)'
+curl_mget.o: In function `operator<< <std::char_traits<char> >':
+/usr/include/c++/4.7/ostream:531: undefined reference to `std::cerr'
+/usr/include/c++/4.7/ostream:531: undefined reference to `std::cerr'
+curl_mget.o: In function `std::basic_ios<char, std::char_traits<char> >::setstate(std::_Ios_Iostate)':
+/usr/include/c++/4.7/bits/basic_ios.h:150: undefined reference to `std::basic_ios<char, std::char_traits<char> >::clear(std::_Ios_Iostate)'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:246: undefined reference to `std::string::_Rep::_M_destroy(std::allocator<char> const&)'
+/usr/include/c++/4.7/bits/basic_string.h:246: undefined reference to `std::string::_Rep::_M_destroy(std::allocator<char> const&)'
+curl_mget.o: In function `std::ostream::operator<<(std::ostream& (*)(std::ostream&))':
+/usr/include/c++/4.7/bits/basic_ios.h:51: undefined reference to `std::__throw_bad_cast()'
+curl_mget.o: In function `to_string<short int>':
+/usr/include/c++/4.7/sstream:519: undefined reference to `std::basic_ios<char, std::char_traits<char> >::~basic_ios()'
+curl_mget.o: In function `~basic_istream':
+/usr/include/c++/4.7/istream:102: undefined reference to `VTT for std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >'
+curl_mget.o: In function `~basic_stringbuf':
+/usr/include/c++/4.7/sstream:60: undefined reference to `vtable for std::basic_stringbuf<char, std::char_traits<char>, std::allocator<char> >'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:237: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `~basic_streambuf':
+/usr/include/c++/4.7/streambuf:195: undefined reference to `vtable for std::basic_streambuf<char, std::char_traits<char> >'
+/usr/include/c++/4.7/streambuf:195: undefined reference to `std::locale::~locale()'
+curl_mget.o: In function `to_string<short int>':
+/usr/include/c++/4.7/sstream:519: undefined reference to `VTT for std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >'
+/usr/include/c++/4.7/sstream:519: undefined reference to `std::basic_iostream<char, std::char_traits<char> >::~basic_iostream()'
+curl_mget.o: In function `to_string<short int>':
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.h:34: undefined reference to `std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >::~basic_stringstream()'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:246: undefined reference to `std::string::_Rep::_M_destroy(std::allocator<char> const&)'
+curl_mget.o: In function `pull_one_url(void*)':
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:94: undefined reference to `std::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:94: undefined reference to `std::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:246: undefined reference to `std::string::_Rep::_M_destroy(std::allocator<char> const&)'
+/usr/include/c++/4.7/bits/basic_string.h:246: undefined reference to `std::string::_Rep::_M_destroy(std::allocator<char> const&)'
+curl_mget.o: In function `pull_one_url(void*)':
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:95: undefined reference to `std::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:167: undefined reference to `__cxa_begin_catch'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:172: undefined reference to `std::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:172: undefined reference to `operator delete(void*)'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:167: undefined reference to `__cxa_end_catch'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:157: undefined reference to `__cxa_begin_catch'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:160: undefined reference to `std::cerr'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:160: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*)'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:160: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*)'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:160: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*)'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:163: undefined reference to `std::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:163: undefined reference to `operator delete(void*)'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:157: undefined reference to `__cxa_end_catch'
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:157: undefined reference to `__cxa_end_catch'
+curl_mget.o: In function `__gnu_cxx::new_allocator<char*>::deallocate(char**, unsigned long)':
+/usr/include/c++/4.7/ext/new_allocator.h:100: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:246: undefined reference to `std::string::_Rep::_M_destroy(std::allocator<char> const&)'
+curl_mget.o: In function `to_string<short int>':
+/usr/include/c++/4.7/sstream:131: undefined reference to `std::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()'
+/usr/include/c++/4.7/sstream:135: undefined reference to `std::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:246: undefined reference to `std::string::_Rep::_M_destroy(std::allocator<char> const&)'
+curl_mget.o: In function `pull_one_url(void*)':
+/home/beniz/projects/xplr/dev/miw_steria/app/curl_mget.cc:134: undefined reference to `std::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:246: undefined reference to `std::string::_Rep::_M_destroy(std::allocator<char> const&)'
+curl_mget.o:(.gcc_except_table+0x150): undefined reference to `typeinfo for std::exception'
+curl_mget.o: In function `_Alloc_hider':
+/usr/include/c++/4.7/bits/basic_string.h:272: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `std::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(char const*, std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)':
+/usr/include/c++/4.7/bits/basic_string.tcc:702: undefined reference to `std::string::reserve(unsigned long)'
+/usr/include/c++/4.7/bits/basic_string.tcc:703: undefined reference to `std::string::append(char const*, unsigned long)'
+/usr/include/c++/4.7/bits/basic_string.tcc:704: undefined reference to `std::string::append(std::string const&)'
+/usr/include/c++/4.7/bits/basic_string.tcc:705: undefined reference to `std::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()'
+curl_mget.o: In function `__gnu_cxx::new_allocator<char*>::allocate(unsigned long, void const*)':
+/usr/include/c++/4.7/ext/new_allocator.h:94: undefined reference to `operator new(unsigned long)'
+curl_mget.o: In function `__gnu_cxx::new_allocator<char*>::deallocate(char**, unsigned long)':
+/usr/include/c++/4.7/ext/new_allocator.h:100: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `__gnu_cxx::new_allocator<int>::allocate(unsigned long, void const*)':
+/usr/include/c++/4.7/ext/new_allocator.h:94: undefined reference to `operator new(unsigned long)'
+curl_mget.o: In function `__gnu_cxx::new_allocator<int>::deallocate(int*, unsigned long)':
+/usr/include/c++/4.7/ext/new_allocator.h:100: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `__gnu_cxx::new_allocator<long>::allocate(unsigned long, void const*)':
+/usr/include/c++/4.7/ext/new_allocator.h:94: undefined reference to `operator new(unsigned long)'
+curl_mget.o: In function `__gnu_cxx::new_allocator<long>::deallocate(long*, unsigned long)':
+/usr/include/c++/4.7/ext/new_allocator.h:100: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `__gnu_cxx::new_allocator<std::_List_node<char const*> >::deallocate(std::_List_node<char const*>*, unsigned long)':
+/usr/include/c++/4.7/ext/new_allocator.h:100: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `__gnu_cxx::new_allocator<std::string>::allocate(unsigned long, void const*)':
+/usr/include/c++/4.7/ext/new_allocator.h:94: undefined reference to `operator new(unsigned long)'
+curl_mget.o: In function `construct<std::basic_string<char>, const std::basic_string<char, std::char_traits<char>, std::allocator<char> >&>':
+/usr/include/c++/4.7/ext/new_allocator.h:110: undefined reference to `std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::string const&)'
+curl_mget.o: In function `std::string::_M_data(char*)':
+/usr/include/c++/4.7/bits/basic_string.h:294: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:237: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `__gnu_cxx::new_allocator<std::string>::deallocate(std::string*, unsigned long)':
+/usr/include/c++/4.7/ext/new_allocator.h:100: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `std::string::_Rep::_M_dispose(std::allocator<char> const&)':
+/usr/include/c++/4.7/bits/basic_string.h:246: undefined reference to `std::string::_Rep::_M_destroy(std::allocator<char> const&)'
+curl_mget.o: In function `void std::vector<std::string, std::allocator<std::string> >::_M_emplace_back_aux<std::string const&>(std::string const&)':
+/usr/include/c++/4.7/bits/vector.tcc:420: undefined reference to `__cxa_begin_catch'
+curl_mget.o: In function `__gnu_cxx::new_allocator<std::string>::deallocate(std::string*, unsigned long)':
+/usr/include/c++/4.7/ext/new_allocator.h:100: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `void std::vector<std::string, std::allocator<std::string> >::_M_emplace_back_aux<std::string const&>(std::string const&)':
+/usr/include/c++/4.7/bits/vector.tcc:427: undefined reference to `__cxa_rethrow'
+/usr/include/c++/4.7/bits/vector.tcc:420: undefined reference to `__cxa_end_catch'
+curl_mget.o: In function `destroy<std::basic_string<char> >':
+/usr/include/c++/4.7/ext/new_allocator.h:114: undefined reference to `std::basic_string<char, std::char_traits<char>, std::allocator<char> >::~basic_string()'
+curl_mget.o: In function `__gnu_cxx::new_allocator<std::list<char const*, std::allocator<char const*> >*>::allocate(unsigned long, void const*)':
+/usr/include/c++/4.7/ext/new_allocator.h:94: undefined reference to `operator new(unsigned long)'
+curl_mget.o: In function `__gnu_cxx::new_allocator<std::list<char const*, std::allocator<char const*> >*>::deallocate(std::list<char const*, std::allocator<char const*> >**, unsigned long)':
+/usr/include/c++/4.7/ext/new_allocator.h:100: undefined reference to `operator delete(void*)'
+curl_mget.o: In function `char* std::string::_S_construct<char*>(char*, char*, std::allocator<char> const&, std::forward_iterator_tag)':
+/usr/include/c++/4.7/bits/basic_string.tcc:140: undefined reference to `std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&)'
+curl_mget.o: In function `std::string::_Rep::_M_set_length_and_sharable(unsigned long)':
+/usr/include/c++/4.7/bits/basic_string.h:207: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+curl_mget.o: In function `char* std::string::_S_construct<char*>(char*, char*, std::allocator<char> const&, std::forward_iterator_tag)':
+/usr/include/c++/4.7/bits/basic_string.tcc:131: undefined reference to `std::string::_Rep::_S_empty_rep_storage'
+/usr/include/c++/4.7/bits/basic_string.tcc:135: undefined reference to `std::__throw_logic_error(char const*)'
+/usr/include/c++/4.7/bits/basic_string.tcc:140: undefined reference to `std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&)'
+curl_mget.o: In function `__static_initialization_and_destruction_0':
+/usr/include/c++/4.7/iostream:75: undefined reference to `std::ios_base::Init::Init()'
+/usr/include/c++/4.7/iostream:75: undefined reference to `std::ios_base::Init::~Init()'
+curl_mget.o:(.eh_frame+0x93): undefined reference to `__gxx_personality_v0'
+../metis/libmetis.a(application.o): In function `std::basic_ios<char, std::char_traits<char> >::setstate(std::_Ios_Iostate)':
+/usr/include/c++/4.7/bits/basic_ios.h:150: undefined reference to `std::basic_ios<char, std::char_traits<char> >::clear(std::_Ios_Iostate)'
+../metis/libmetis.a(application.o): In function `operator<< <std::char_traits<char> >':
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::cout'
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long)'
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::cout'
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long)'
+../metis/libmetis.a(application.o): In function `std::ostream::operator<<(unsigned long)':
+/usr/include/c++/4.7/ostream:169: undefined reference to `std::cout'
+/usr/include/c++/4.7/ostream:169: undefined reference to `std::ostream& std::ostream::_M_insert<unsigned long>(unsigned long)'
+../metis/libmetis.a(application.o): In function `operator<< <std::char_traits<char> >':
+/usr/include/c++/4.7/ostream:531: undefined reference to `std::cout'
+/usr/include/c++/4.7/ostream:531: undefined reference to `std::cout'
+../metis/libmetis.a(application.o): In function `std::basic_ios<char, std::char_traits<char> >::setstate(std::_Ios_Iostate)':
+/usr/include/c++/4.7/bits/basic_ios.h:150: undefined reference to `std::basic_ios<char, std::char_traits<char> >::clear(std::_Ios_Iostate)'
+../metis/libmetis.a(application.o): In function `mapreduce_appbase::create_map_bucket_manager(int, int)':
+/home/beniz/projects/xplr/dev/miw_steria/metis/application.cc:80: undefined reference to `operator new(unsigned long)'
+/home/beniz/projects/xplr/dev/miw_steria/metis/application.cc:86: undefined reference to `operator new(unsigned long)'
+../metis/libmetis.a(application.o): In function `operator<< <std::char_traits<char> >':
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::cout'
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long)'
+../metis/libmetis.a(application.o): In function `mapreduce_appbase::print_stats()':
+/home/beniz/projects/xplr/dev/miw_steria/metis/application.cc:274: undefined reference to `std::cout'
+/home/beniz/projects/xplr/dev/miw_steria/metis/application.cc:274: undefined reference to `std::ostream::operator<<(int)'
+../metis/libmetis.a(application.o): In function `operator<< <std::char_traits<char> >':
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long)'
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::cout'
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long)'
+../metis/libmetis.a(application.o): In function `mapreduce_appbase::~mapreduce_appbase()':
+/home/beniz/projects/xplr/dev/miw_steria/metis/application.cc:61: undefined reference to `operator delete(void*)'
+../metis/libmetis.a(application.o): In function `operator<< <std::char_traits<char> >':
+/usr/include/c++/4.7/ostream:533: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long)'
+../metis/libmetis.a(application.o): In function `std::basic_ios<char, std::char_traits<char> >::setstate(std::_Ios_Iostate)':
+/usr/include/c++/4.7/bits/basic_ios.h:150: undefined reference to `std::basic_ios<char, std::char_traits<char> >::clear(std::_Ios_Iostate)'
+../metis/libmetis.a(application.o): In function `btnode_internal<btree_param<keyvals_t, static_appbase::key_comparator, static_appbase::key_copy_type, static_appbase::value_apply_type> >::~btnode_internal()':
+/home/beniz/projects/xplr/dev/miw_steria/metis/btree.hh:118: undefined reference to `operator delete(void*)'
+../metis/libmetis.a(application.o): In function `btnode_base<btree_param<keyvals_t, static_appbase::key_comparator, static_appbase::key_copy_type, static_appbase::value_apply_type> >::~btnode_base()':
+/home/beniz/projects/xplr/dev/miw_steria/metis/btree.hh:36: undefined reference to `operator delete(void*)'
+../metis/libmetis.a(application.o): In function `map_bucket_manager_base::~map_bucket_manager_base()':
+/home/beniz/projects/xplr/dev/miw_steria/metis/map_bucket_manager.hh:24: undefined reference to `operator delete(void*)'
+../metis/libmetis.a(application.o): In function `map_reduce::reduce_function(void*, void**, unsigned long)':
+/home/beniz/projects/xplr/dev/miw_steria/metis/application.hh:93: undefined reference to `std::cout'
+/home/beniz/projects/xplr/dev/miw_steria/metis/application.hh:93: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*)'
+../metis/libmetis.a(application.o): In function `CHECK_EQ<long unsigned int, long unsigned int>':
+/home/beniz/projects/xplr/dev/miw_steria/metis/test_util.hh:24: undefined reference to `std::cerr'
+/home/beniz/projects/xplr/dev/miw_steria/metis/test_util.hh:24: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*)'
+../metis/libmetis.a(application.o): In function `std::ostream::operator<<(unsigned long)':
+/usr/include/c++/4.7/ostream:169: undefined reference to `std::ostream& std::ostream::_M_insert<unsigned long>(unsigned long)'
+../metis/libmetis.a(application.o): In function `CHECK_EQ<long unsigned int, long unsigned int>':
+/home/beniz/projects/xplr/dev/miw_steria/metis/test_util.hh:24: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*)'
+../metis/libmetis.a(application.o): In function `std::ostream::operator<<(unsigned long)':
+/usr/include/c++/4.7/ostream:169: undefined reference to `std::ostream& std::ostream::_M_insert<unsigned long>(unsigned long)'
+../metis/libmetis.a(application.o): In function `std::ostream::operator<<(std::ostream& (*)(std::ostream&))':
+/usr/include/c++/4.7/ostream:111: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::endl<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&)'
+../metis/libmetis.a(application.o): In function `CHECK_EQ<long unsigned int, long unsigned int>':
+/home/beniz/projects/xplr/dev/miw_steria/metis/test_util.hh:24: undefined reference to `std::cerr'
+/home/beniz/projects/xplr/dev/miw_steria/metis/test_util.hh:24: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*)'
+../metis/libmetis.a(application.o): In function `std::ostream::operator<<(unsigned long)':
+/usr/include/c++/4.7/ostream:169: undefined reference to `std::ostream& std::ostream::_M_insert<unsigned long>(unsigned long)'
+../metis/libmetis.a(application.o): In function `CHECK_EQ<long unsigned int, long unsigned int>':
+/home/beniz/projects/xplr/dev/miw_steria/metis/test_util.hh:24: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*)'
+../metis/libmetis.a(application.o): In function `std::ostream::operator<<(unsigned long)':
+/usr/include/c++/4.7/ostream:169: undefined reference to `std::ostream& std::ostream::_M_insert<unsigned long>(unsigned long)'
+../metis/libmetis.a(application.o): In function `std::ostream::operator<<(std::ostream& (*)(std::ostream&))':
+/usr/include/c++/4.7/ostream:111: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::endl<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&)'
+../metis/libmetis.a(application.o): In function `btnode_leaf<btree_param<keyvals_t, static_appbase::key_comparator, static_appbase::key_copy_type, static_appbase::value_apply_type> >::~btnode_leaf()':
+/home/beniz/projects/xplr/dev/miw_steria/metis/btree.hh:57: undefined reference to `operator delete(void*)'
+../metis/libmetis.a(application.o): In function `map_bucket_manager<false, keyval_arr_t, keyval_t>::~map_bucket_manager()':
+/home/beniz/projects/xplr/dev/miw_steria/metis/map_bucket_manager.hh:110: undefined reference to `operator delete(void*)'
+../metis/libmetis.a(application.o): In function `map_bucket_manager<true, keyvals_arr_t, keyvals_t>::~map_bucket_manager()':
+/home/beniz/projects/xplr/dev/miw_steria/metis/map_bucket_manager.hh:110: undefined reference to `operator delete(void*)'
+../metis/libmetis.a(application.o): In function `group_unsorted<keyval_arr_t, void(keyvals_t&), int(const void*, const void*), void(void*)>':
+/home/beniz/projects/xplr/dev/miw_steria/metis/group.hh:55: undefined reference to `operator new(unsigned long)'
+/home/beniz/projects/xplr/dev/miw_steria/metis/group.hh:61: undefined reference to `operator delete(void*)'
+../metis/libmetis.a(application.o): In function `app_impl_base<keyval_t, 2>::~app_impl_base()':
+/home/beniz/projects/xplr/dev/miw_steria/metis/application.hh:37: undefined reference to `operator delete(void*)'
+../metis/libmetis.a(application.o): In function `map_reduce::~map_reduce()':
+/home/beniz/projects/xplr/dev/miw_steria/metis/application.hh:85: undefined reference to `operator delete(void*)'
+../metis/libmetis.a(application.o): In function `psrs<xarray<keyvals_t> >::copy_elem(xarray<xarray<keyvals_t> >&, int, int)':
+/home/beniz/projects/xplr/dev/miw_steria/metis/psrs.hh:152: undefined reference to `operator new(unsigned long)'
+../metis/libmetis.a(application.o): In function `map_bucket_manager<true, btree_type<btree_param<keyvals_t, static_appbase::key_comparator, static_appbase::key_copy_type, static_appbase::value_apply_type> >, keyvals_t>::~map_bucket_manager()':
+/home/beniz/projects/xplr/dev/miw_steria/metis/map_bucket_manager.hh:110: undefined reference to `operator delete(void*)'
+../metis/libmetis.a(application.o): In function `CHECK_EQ<long unsigned int, long unsigned int>':
+/home/beniz/projects/xplr/dev/miw_steria/metis/test_util.hh:24: undefined reference to `std::cerr'
+/home/beniz/projects/xplr/dev/miw_steria/metis/test_util.hh:24: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*)'
+../metis/libmetis.a(application.o): In function `std::ostream::operator<<(unsigned long)':
+/usr/include/c++/4.7/ostream:169: undefined reference to `std::ostream& std::ostream::_M_insert<unsigned long>(unsigned long)'
+../metis/libmetis.a(application.o): In function `CHECK_EQ<long unsigned int, long unsigned int>':
+/home/beniz/projects/xplr/dev/miw_steria/metis/test_util.hh:24: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*)'
+../metis/libmetis.a(application.o): In function `std::ostream::operator<<(unsigned long)':
+/usr/include/c++/4.7/ostream:169: undefined reference to `std::ostream& std::ostream::_M_insert<unsigned long>(unsigned long)'
+../metis/libmetis.a(application.o): In function `std::ostream::operator<<(std::ostream& (*)(std::ostream&))':
+/usr/include/c++/4.7/ostream:111: undefined reference to `std::basic_ostream<char, std::char_traits<char> >& std::endl<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&)'
+../metis/libmetis.a(application.o): In function `psrs<xarray<keyval_t> >::init(int, unsigned long)':
+/home/beniz/projects/xplr/dev/miw_steria/metis/psrs.hh:31: undefined reference to `operator new(unsigned long)'
+../metis/libmetis.a(application.o): In function `map_bucket_manager<false, keyval_arr_t, keyval_t>::psrs_output_and_reduce(unsigned long, unsigned long)':
+/home/beniz/projects/xplr/dev/miw_steria/metis/map_bucket_manager.hh:133: undefined reference to `operator delete(void*)'
+/home/beniz/projects/xplr/dev/miw_steria/metis/map_bucket_manager.hh:138: undefined reference to `operator delete(void*)'
+../metis/libmetis.a(application.o): In function `xarray<keyvals_t>* psrs<xarray<keyvals_t> >::do_psrs<int (void const*, void const*)>(xarray<xarray<keyvals_t> >&, int, int, int (&)(void const*, void const*))':
+/home/beniz/projects/xplr/dev/miw_steria/metis/psrs.hh:191: undefined reference to `operator new(unsigned long)'
+../metis/libmetis.a(application.o): In function `psrs<xarray<keyvals_t> >::init(int, unsigned long)':
+/home/beniz/projects/xplr/dev/miw_steria/metis/psrs.hh:31: undefined reference to `operator new(unsigned long)'
+../metis/libmetis.a(application.o): In function `map_bucket_manager<true, btree_type<btree_param<keyvals_t, static_appbase::key_comparator, static_appbase::key_copy_type, static_appbase::value_apply_type> >, keyvals_t>::psrs_output_and_reduce(unsigned long, unsigned long)':
+/home/beniz/projects/xplr/dev/miw_steria/metis/map_bucket_manager.hh:133: undefined reference to `operator delete(void*)'
+/home/beniz/projects/xplr/dev/miw_steria/metis/map_bucket_manager.hh:138: undefined reference to `operator delete(void*)'
+../metis/libmetis.a(application.o): In function `psrs<xarray<keyvals_t> >::init(int, unsigned long)':
+/home/beniz/projects/xplr/dev/miw_steria/metis/psrs.hh:31: undefined reference to `operator new(unsigned long)'
+../metis/libmetis.a(application.o): In function `map_bucket_manager<true, keyvals_arr_t, keyvals_t>::psrs_output_and_reduce(unsigned long, unsigned long)':
+/home/beniz/projects/xplr/dev/miw_steria/metis/map_bucket_manager.hh:133: undefined reference to `operator delete(void*)'
+/home/beniz/projects/xplr/dev/miw_steria/metis/map_bucket_manager.hh:138: undefined reference to `operator delete(void*)'
+../metis/libmetis.a(application.o): In function `btree_type<btree_param<keyvals_t, static_appbase::key_comparator, static_appbase::key_copy_type, static_appbase::value_apply_type> >::get_leaf(void* const&)':
+/home/beniz/projects/xplr/dev/miw_steria/metis/btree.hh:307: undefined reference to `operator new(unsigned long)'
+../metis/libmetis.a(application.o): In function `btnode_internal<btree_param<keyvals_t, static_appbase::key_comparator, static_appbase::key_copy_type, static_appbase::value_apply_type> >::split()':
+/home/beniz/projects/xplr/dev/miw_steria/metis/btree.hh:121: undefined reference to `operator new(unsigned long)'
+../metis/libmetis.a(application.o): In function `btree_type<btree_param<keyvals_t, static_appbase::key_comparator, static_appbase::key_copy_type, static_appbase::value_apply_type> >::insert_internal(void* const&, btnode_base<btree_param<keyvals_t, static_appbase::key_comparator, static_appbase::key_copy_type, static_appbase::value_apply_type> >*, btnode_base<btree_param<keyvals_t, static_appbase::key_comparator, static_appbase::key_copy_type, static_appbase::value_apply_type> >*)':
+/home/beniz/projects/xplr/dev/miw_steria/metis/btree.hh:275: undefined reference to `operator new(unsigned long)'
+../metis/libmetis.a(application.o): In function `btnode_leaf<btree_param<keyvals_t, static_appbase::key_comparator, static_appbase::key_copy_type, static_appbase::value_apply_type> >::split()':
+/home/beniz/projects/xplr/dev/miw_steria/metis/btree.hh:64: undefined reference to `operator new(unsigned long)'
+/home/beniz/projects/xplr/dev/miw_steria/metis/btree.hh:64: undefined reference to `operator new(unsigned long)'
+../metis/libmetis.a(application.o): In function `__static_initialization_and_destruction_0':
+/usr/include/c++/4.7/iostream:75: undefined reference to `std::ios_base::Init::Init()'
+/usr/include/c++/4.7/iostream:75: undefined reference to `std::ios_base::Init::~Init()'
+../metis/libmetis.a(application.o):(.rodata._ZTI17mapreduce_appbase[_ZTI17mapreduce_appbase]+0x0): undefined reference to `vtable for __cxxabiv1::__class_type_info'
+../metis/libmetis.a(application.o):(.rodata._ZTI10map_reduce[_ZTI10map_reduce]+0x0): undefined reference to `vtable for __cxxabiv1::__si_class_type_info'
+../metis/libmetis.a(application.o):(.rodata._ZTV17mapreduce_appbase[_ZTV17mapreduce_appbase]+0x10): undefined reference to `__cxa_pure_virtual'
+../metis/libmetis.a(application.o):(.rodata._ZTV17mapreduce_appbase[_ZTV17mapreduce_appbase]+0x18): undefined reference to `__cxa_pure_virtual'
+../metis/libmetis.a(application.o):(.rodata._ZTV17mapreduce_appbase[_ZTV17mapreduce_appbase]+0x20): undefined reference to `__cxa_pure_virtual'
+../metis/libmetis.a(application.o):(.rodata._ZTV17mapreduce_appbase[_ZTV17mapreduce_appbase]+0x50): undefined reference to `__cxa_pure_virtual'
+../metis/libmetis.a(application.o):(.rodata._ZTV17mapreduce_appbase[_ZTV17mapreduce_appbase]+0x68): undefined reference to `__cxa_pure_virtual'
+../metis/libmetis.a(application.o):(.rodata._ZTV17mapreduce_appbase[_ZTV17mapreduce_appbase]+0x70): more undefined references to `__cxa_pure_virtual' follow
+../metis/libmetis.a(application.o):(.rodata._ZTI13app_impl_baseI8keyval_tLi2EE[_ZTI13app_impl_baseI8keyval_tLi2EE]+0x0): undefined reference to `vtable for __cxxabiv1::__si_class_type_info'
+../metis/libmetis.a(application.o):(.rodata._ZTI23map_bucket_manager_base[_ZTI23map_bucket_manager_base]+0x0): undefined reference to `vtable for __cxxabiv1::__class_type_info'
+../metis/libmetis.a(application.o):(.rodata._ZTI18map_bucket_managerILb0E12keyval_arr_t8keyval_tE[_ZTI18map_bucket_managerILb0E12keyval_arr_t8keyval_tE]+0x0): undefined reference to `vtable for __cxxabiv1::__si_class_type_info'
+../metis/libmetis.a(application.o):(.rodata._ZTI18map_bucket_managerILb1E10btree_typeI11btree_paramI9keyvals_tN14static_appbase14key_comparatorENS3_13key_copy_typeENS3_16value_apply_typeEEES2_E[_ZTI18map_bucket_managerILb1E10btree_typeI11btree_paramI9keyvals_tN14static_appbase14key_comparatorENS3_13key_copy_typeENS3_16value_apply_typeEEES2_E]+0x0): undefined reference to `vtable for __cxxabiv1::__si_class_type_info'
+../metis/libmetis.a(application.o):(.rodata._ZTI18map_bucket_managerILb1E13keyvals_arr_t9keyvals_tE[_ZTI18map_bucket_managerILb1E13keyvals_arr_t9keyvals_tE]+0x0): undefined reference to `vtable for __cxxabiv1::__si_class_type_info'
+../metis/libmetis.a(application.o):(.rodata._ZTI11btnode_baseI11btree_paramI9keyvals_tN14static_appbase14key_comparatorENS2_13key_copy_typeENS2_16value_apply_typeEEE[_ZTI11btnode_baseI11btree_paramI9keyvals_tN14static_appbase14key_comparatorENS2_13key_copy_typeENS2_16value_apply_typeEEE]+0x0): undefined reference to `vtable for __cxxabiv1::__class_type_info'
+../metis/libmetis.a(application.o):(.rodata._ZTI11btnode_leafI11btree_paramI9keyvals_tN14static_appbase14key_comparatorENS2_13key_copy_typeENS2_16value_apply_typeEEE[_ZTI11btnode_leafI11btree_paramI9keyvals_tN14static_appbase14key_comparatorENS2_13key_copy_typeENS2_16value_apply_typeEEE]+0x0): undefined reference to `vtable for __cxxabiv1::__si_class_type_info'
+../metis/libmetis.a(application.o):(.rodata._ZTI15btnode_internalI11btree_paramI9keyvals_tN14static_appbase14key_comparatorENS2_13key_copy_typeENS2_16value_apply_typeEEE[_ZTI15btnode_internalI11btree_paramI9keyvals_tN14static_appbase14key_comparatorENS2_13key_copy_typeENS2_16value_apply_typeEEE]+0x0): undefined reference to `vtable for __cxxabiv1::__si_class_type_info'
+../metis/libmetis.a(application.o):(.eh_frame+0x803): undefined reference to `__gxx_personality_v0'
+../metis/libmetis.a(mr-types.o): In function `__static_initialization_and_destruction_0':
+/usr/include/c++/4.7/iostream:75: undefined reference to `std::ios_base::Init::Init()'
+/usr/include/c++/4.7/iostream:75: undefined reference to `std::ios_base::Init::~Init()'
+../metis/libmetis.a(mr-types.o):(.eh_frame+0x107): undefined reference to `__gxx_personality_v0'
+../metis/libmetis.a(pthreadpool.o): In function `__static_initialization_and_destruction_0':
+/usr/include/c++/4.7/iostream:75: undefined reference to `std::ios_base::Init::Init()'
+/usr/include/c++/4.7/iostream:75: undefined reference to `std::ios_base::Init::~Init()'
+collect2: error: ld returned 1 exit status
+make: *** [matrix_mult] Error 1

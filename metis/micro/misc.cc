@@ -12,15 +12,14 @@
  * summary of the Metis LICENSE file; the license in that file is legally
  * binding.
  */
-#include "lib/cpumap.hh"
+#include "bench.hh"
+#include "test_util.hh"
+#include <iostream>
 
-static int logical_to_physical_[JOS_NCPU];
-
-void cpumap_init() {
-    for (int i = 0; i < JOS_NCPU; ++i)
-	logical_to_physical_[i] = i;
-}
-
-int cpumap_physical_cpuid(int i) {
-    return logical_to_physical_[i];
+int main(int argc, char *argv[]) {
+    uint64_t f = get_cpu_freq();
+    std::cout << f << std::endl;
+    CHECK_GT(f, uint64_t(0));
+    std::cout << "PASS" << std::endl;
+    return 0;
 }

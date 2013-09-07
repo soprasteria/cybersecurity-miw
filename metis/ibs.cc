@@ -18,8 +18,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/mman.h>
-#include "lib/cpumap.hh"
-#include "lib/ibs.hh"
+#include "cpumap.hh"
+#include "ibs.hh"
 
 enum { ibs_enabled = 0 };
 

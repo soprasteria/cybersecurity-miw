@@ -7,7 +7,7 @@ AC_SUBST(ac_configure_args)
 AM_INIT_AUTOMAKE
 
 AC_PROG_CXX
-AC_PROG_CC
+#AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
@@ -120,6 +120,6 @@ fi
 
 AC_SUBST([OPT_LEVEL])
 
-AC_CONFIG_FILES(GNUmakefile Makefile miw/Makefile miw/formats/Makefile)
+AC_CONFIG_FILES(Makefile miw/Makefile miw/formats/Makefile metis/Makefile app/Makefile)
 
 AC_OUTPUT

@@ -1,7 +1,0 @@
-- code cleanup
-- in map for ordering results, limit size of the map to ndisp elements (to not blow the memory out!)
-- option for the granularity (day or hours)
-- option for printing out top records (as building the map may take long)
-
-- JSON structure for posting to solr cloud
-- solr cloud POST calls in map ? (with modifers) ?
