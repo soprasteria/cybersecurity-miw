@@ -123,9 +123,11 @@ namespace miw
 
   void log_record::merge(log_record *lr)
   {
-    if (lr)
+    //std::cerr << "[Debug]: merging log records\n";
+    
+    if (!lr)
       return;
-
+    
     // look for key fields for each record.
     // iterate remaining fields:
     // if 'aggregated', aggregate (e.g. sum, mean, union, ...)
@@ -153,6 +155,7 @@ namespace miw
 	      }
 	  }
       }
+    _sum += lr->_sum;
   }
 
   Json::Value log_record::to_json() const
