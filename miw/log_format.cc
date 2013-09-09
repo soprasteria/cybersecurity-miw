@@ -126,6 +126,13 @@ namespace miw
     for (int i=0;i<_ldef.fields_size();i++)
       {
 	field f = _ldef.fields(i);
+
+	if (f.pos() >= tokens.size())
+	  {
+	    std::cerr << "[Error]: token position " << f.pos() << " is beyond the number of log fields. Skipping. Check your format file\n";
+	    continue;
+	  }
+	
 	std::string token = tokens.at(f.pos());
 	
 	// apply preprocessing (or not) to field according to type.
