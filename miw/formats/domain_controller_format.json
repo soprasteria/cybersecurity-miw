@@ -29,7 +29,9 @@
 		{
 			"name":"SourceAddress",
 			"pos":5,
-			"type":"string"
+			"type":"string",
+			"aggregated":true,
+			"aggregation":"union"
 		},
 		{
 			"name":"Domain",
@@ -80,7 +82,9 @@
 		{
 			"name":"DeviceAddress",
 			"pos":15,
-			"type":"string"
+			"type":"string",
+			"aggregated":true,
+			"aggregation":"union"
 		},
 		{
 			"name":"ResultCode",
@@ -90,7 +94,9 @@
 		{
 			"name":"EventCategoryName",
 			"pos":17,
-			"type":"string"
+			"type":"string",
+			"aggregated":true,
+			"aggregation":"union"
 		},
 		{
 			"name":"MessageID",

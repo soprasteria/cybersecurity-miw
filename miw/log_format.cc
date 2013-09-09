@@ -123,54 +123,65 @@ namespace miw
       }
 
     // parse fields according to format.
-    for (int i=0;i<_ldef.fields_size();i++)
+    logdef ldef = _ldef;
+    for (int i=0;i<ldef.fields_size();i++)
       {
-	field f = _ldef.fields(i);
+	field *f = ldef.mutable_fields(i);
 
-	if (f.pos() >= tokens.size())
+	if (f->pos() >= tokens.size())
 	  {
-	    std::cerr << "[Error]: token position " << f.pos() << " is beyond the number of log fields. Skipping. Check your format file\n";
+	    std::cerr << "[Error]: token position " << f->pos() << " is beyond the number of log fields. Skipping. Check your format file\n";
 	    continue;
 	  }
 	
-	std::string token = tokens.at(f.pos());
+	std::string token = tokens.at(f->pos());
 	
 	// apply preprocessing (or not) to field according to type.
-	std::string ftype = f.type();
+	std::string ftype = f->type();
 	if (ftype == "int")
 	  {
-	    int_field ifi = f.int_fi();
-	    ifi.add_int_reap(atoi(token.c_str()));
+	    int_field *ifi = f->mutable_int_fi();
+	    ifi->add_int_reap(atoi(token.c_str()));
 	  }
 	else if (ftype == "string")
 	  {
-	    string_field ifs = f.str_fi();
-	    ifs.add_str_reap(token);
+	    string_field *ifs = f->mutable_str_fi();
+	    ifs->add_str_reap(token);
+	    //std::cerr << "string field size: " << f->str_fi().str_reap_size() << std::endl;
 	  }
 	else if (ftype == "bool")
 	  {
-	    bool_field ifb = f.bool_fi();
-	    ifb.add_bool_reap(static_cast<bool>(atoi(token.c_str())));
+	    bool_field *ifb = f->mutable_bool_fi();
+	    ifb->add_bool_reap(static_cast<bool>(atoi(token.c_str())));
 	  }
 	else if (ftype == "float")
 	  {
-	    float_field iff = f.real_fi();
-	    iff.add_float_reap(atof(token.c_str()));
+	    float_field *iff = f->mutable_real_fi();
+	    iff->add_float_reap(atof(token.c_str()));
 	  }
 
 	//TODO: pre-processing of field based on (yet to define) configuration field.
 	
 	//TODO: process fields that are part of the key.
-	if (f.key())
+	if (f->key())
 	  {
 	    if (!key.empty())
 	      key += "_";
 	    key += token;
 	  }
-	
+	//std::cerr << "string field size2: " << f->str_fi().str_reap_size() << std::endl;
       }
 
-    log_record *lr = new log_record(key,this->_ldef);
+    //debug
+    //std::cerr << "ldef first field string size: " << ldef.fields(0).str_fi().str_reap_size() << std::endl;
+    //debug
+
+    log_record *lr = new log_record(key,ldef);
+    
+    //debug
+    //std::cerr << "created log record: " << lr->to_json() << std::endl;
+    //debug
+
     return lr;
   }
   

@@ -27,6 +27,7 @@
  */
 
 #include "log_record.h"
+#include <unordered_set>
 #include <iostream>
 
 namespace miw
@@ -53,27 +54,37 @@ namespace miw
     std::string ftype = f.type();
     if (ftype == "int")
       {
-	int_field ifi = _ld.fields(i).int_fi();
+	int_field *ifi = _ld.fields(i).mutable_int_fi();
 	for (int j=0;j<f.int_fi().int_reap_size();j++)
-	  ifi.add_int_reap(f.int_fi().int_reap(j));
+	  ifi->add_int_reap(f.int_fi().int_reap(j));
       }
     else if (ftype == "string")
       {
-	string_field ifs = _ld.fields(i).str_fi();
+	string_field *ifs = _ld.fields(i).mutable_str_fi();
+	
+	std::unordered_set<std::string> uno;
+	for (int i=0;i<ifs->str_reap_size();i++)
+	  uno.insert(ifs->str_reap(i));
+	std::unordered_set<std::string>::const_iterator sit;
+	
 	for (int j=0;j<f.str_fi().str_reap_size();j++)
-	  ifs.add_str_reap(f.str_fi().str_reap(j));
+	  {
+	    std::string str = f.str_fi().str_reap(j);
+	    if ((sit=uno.find(str))==uno.end())
+	      ifs->add_str_reap(str);
+	  }
       }
     else if (ftype == "bool")
       {
-	bool_field ifb = _ld.fields(i).bool_fi();
+	bool_field *ifb = _ld.fields(i).mutable_bool_fi();
 	for (int j=0;j<f.bool_fi().bool_reap_size();j++)
-	  ifb.add_bool_reap(f.bool_fi().bool_reap(j));
+	  ifb->add_bool_reap(f.bool_fi().bool_reap(j));
       }
     else if (ftype == "float")
       {
-	float_field iff = _ld.fields(i).real_fi();
+	float_field *iff = _ld.fields(i).mutable_real_fi();
 	for (int j=0;j<f.real_fi().float_reap_size();j++)
-	  iff.add_float_reap(f.real_fi().float_reap(j));
+	  iff->add_float_reap(f.real_fi().float_reap(j));
       }
   }
 
@@ -132,7 +143,7 @@ namespace miw
     // iterate remaining fields:
     // if 'aggregated', aggregate (e.g. sum, mean, union, ...)
     // else if not stored, skip (remove ?) field
-    for (size_t i=0;i<lr->_ld.fields_size();i++)
+    for (int i=0;i<lr->_ld.fields_size();i++)
       {
 	if (!lr->_ld.fields(i).key())
 	  {
@@ -158,9 +169,77 @@ namespace miw
     _sum += lr->_sum;
   }
 
+  void log_record::to_json(const field &f, Json::Value &jrec)
+  {
+    //TODO: add 'add' prior to arrays and aggregated values ?
+    std::string ftype = f.type();
+    if (ftype == "int")
+      {
+	int_field *ifi = f.mutable_int_fi();
+	if (ifi->int_reap_size() > 1)
+	  {
+	    for (int i=0;i<ifi->int_reap_size();i++)
+	      jrec[f.name()].append(ifi->int_reap(i));
+	  }
+	else if (ifi->int_reap_size() == 1)
+	  jrec[f.name()] = ifi->int_reap(0);
+      }
+    else if (ftype == "string")
+      {
+	string_field *ifs = f.mutable_str_fi();
+	if (ifs->str_reap_size() > 1)
+	  {
+	    for (int i=0;i<ifs->str_reap_size();i++)
+	      jrec[f.name()].append(ifs->str_reap(i));
+	  }
+	else if (ifs->str_reap_size() == 1)
+	  jrec[f.name()] = ifs->str_reap(0);
+      }
+    else if (ftype == "bool")
+      {
+	bool_field *ifb = f.mutable_bool_fi();
+	if (ifb->bool_reap_size() > 1)
+	  {
+	    for (int i=0;i<ifb->bool_reap_size();i++)
+	      jrec[f.name()].append(ifb->bool_reap(i));
+	  }
+	else if (ifb->bool_reap_size() == 1)
+	  jrec[f.name()] = ifb->bool_reap(0);
+      }
+    else if (ftype == "float")
+      {
+	float_field *iff = f.mutable_real_fi();
+	if (iff->float_reap_size() > 1)
+	  {
+	    for (int i=0;i<iff->float_reap_size();i++)
+	      jrec[f.name()].append(iff->float_reap(0));
+	  }
+	else if (iff->float_reap_size() == 1)
+	  jrec[f.name()] = iff->float_reap(0);
+      }
+  }
+
   Json::Value log_record::to_json() const
   {
+    Json::Value jlrec;
+    
+    //debug
+    //std::cerr << "number of fields: " << _ld.fields_size() << std::endl;
+    //debug
+    
+    for  (int i=0;i<_ld.fields_size();i++)
+      {
+	field f = _ld.fields(i);
+	log_record::to_json(f,jlrec);
+      }
+    jlrec["logs"] = (int)_sum;
 
+    //debug
+    /*Json::FastWriter writer;
+      std::cout << "JSON: " << writer.write(jlrec) << std::endl;*/
+    //debug
+    
+    return jlrec;
   }
   
 }

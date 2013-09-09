@@ -596,6 +596,7 @@ static void print_top(xarray<keyval_t> *wc_vals, int ndisp) {
 	      break;
 	  }
       }
+    std::cout << std::endl;
 }
 
 static void output_all(xarray<keyval_t> *wc_vals, FILE *fout) 
@@ -617,7 +618,9 @@ static void output_json(xarray<keyval_t> *wc_vals, FILE *fout)
       log_record *lr = (log_record*)wc_vals->at(i)->val;
       //std::string key = (const char*)wc_vals->at(i)->key_;
       Json::Value jrec = lr->to_json();
-      fprintf(fout,"%s",writer.write(jrec).c_str());
+      if (fout)
+	fprintf(fout,"%s",writer.write(jrec).c_str());
+      else std::cout << writer.write(jrec) << std::endl;
     }
 }
 
@@ -726,6 +729,12 @@ int main(int argc, char *argv[])
     for (size_t j=0;j<files.size();j++)
       {
 	std::cerr << "\nProcessing file: " << files.at(j) << std::endl;
+	struct stat st;
+	if (stat(files.at(j).c_str(),&st)!=0)
+	  {
+	    std::cerr << "[Error] file not found: " << files.at(j) << std::endl;
+	    continue;
+	  }
 	mapreduce_appbase::initialize();
 	const char *fn = files.at(j).c_str();
 	bl app(fn, map_tasks);
@@ -742,6 +751,8 @@ int main(int argc, char *argv[])
 	      output_json(&app.results_,fout);
 	    else output_all(&app.results_,fout);
 	  }
+	else if (json_output)
+	  output_json(&app.results_,NULL);
 	if (!count_users)
 	  free_records(&app.results_);
 	app.free_results();

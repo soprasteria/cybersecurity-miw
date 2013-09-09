@@ -50,6 +50,7 @@ namespace miw
     void merge(log_record *lr); //TODO: need log format to check on aggregated fields etc ?
     
     //TODO: to json.
+    static void to_json(const field &f, Json::Value &jrec);
     Json::Value to_json() const;
 
     //TODO: compression for storage in solr ?
