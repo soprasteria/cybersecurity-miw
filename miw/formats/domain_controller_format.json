@@ -3,103 +3,103 @@
 	"delims":",",
 	"fields":[
 		{	"name":"date",
-			"pos":1,
+			"pos":0,
 			"type":"string"
 		},
 		{
 			"name":"time",
-			"pos":2,
+			"pos":1,
 			"type":"string"
 		},
 		{
 			"name":"Date/Time",
-			"pos":3,
+			"pos":2,
 			"type":"string"
 		},
 		{
 			"name":"Workstation",
-			"pos":4,
+			"pos":3,
 			"type":"string"
 		},
 		{
 			"name":"Hostname",
-			"pos":5,
+			"pos":4,
 			"type":"string"
 		},
 		{
 			"name":"SourceAddress",
-			"pos":6,
+			"pos":5,
 			"type":"string"
 		},
 		{
 			"name":"Domain",
-			"pos":7,
+			"pos":6,
 			"type":"string"
 		},
 		{
 			"name":"DeviceHostName",
-			"pos":8,
+			"pos":7,
 			"type":"string"
 		},
 		{
 			"name":"EventDescription",
-			"pos":9,
+			"pos":8,
 			"type":"string"
 		},
 		{
 			"name":"EventType",
-			"pos":10,
+			"pos":9,
 			"type":"string"
 		},
 		{
 			"name":"UserName",
-			"pos":11,
+			"pos":10,
 			"type":"string",
 			"key":true
 		},
 		{
 			"name":"EventUser",
-			"pos":12,
+			"pos":11,
 			"type":"string"
 		},
 		{
 			"name":"ReferenceID",
-			"pos":13,
+			"pos":12,
 			"type":"string"
 		},
 		{
 			"name":"LogonType",
-			"pos":14,
+			"pos":13,
 			"type":"string"
 		},
 		{
 			"name":"EventLog",
-			"pos":15,
+			"pos":14,
 			"type":"string"
 		},
 		{
 			"name":"DeviceAddress",
-			"pos":16,
+			"pos":15,
 			"type":"string"
 		},
 		{
 			"name":"ResultCode",
-			"pos":17,
+			"pos":16,
 			"type":"string"
 		},
 		{
 			"name":"EventCategoryName",
-			"pos":18,
+			"pos":17,
 			"type":"string"
 		},
 		{
 			"name":"MessageID",
-			"pos":19,
+			"pos":18,
 			"type":"string"
 		},
 		{
 			"name":"Message",
-			"pos":20,
+			"pos":19,
 			"type":"string"
 		}
 	]
