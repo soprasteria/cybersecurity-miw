@@ -749,6 +749,6 @@ int main(int argc, char *argv[])
       }
     if (fout)
       fclose(fout);
-    std::cout << "skipped logs: " << skipped_logs << std::endl;
+    std::cout << "[Info]: skipped logs: " << skipped_logs << std::endl;
     return 0;
 }
