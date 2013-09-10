@@ -77,6 +77,7 @@ static bool airbus = false;
 static unsigned int seed = 4294967291UL; // prime.
 static long skipped_logs = 0;
 static log_format lf;
+static std::string app_name;
 
 /*template <class T>
 static std::string to_string (const T& t)
@@ -179,102 +180,6 @@ void parse_url_host_and_path(const std::string &url,
     }
 }
 
-/*class log_record
-{
-public:
-  log_record(const std::string &username,
-	     const std::vector<std::string> &ip_addresses,
-	     const std::string &url_host,
-	     const std::string &day,
-	     const std::string &hour,
-	     const uint64_t &bytes,
-	     const std::vector<std::string> &categories=std::vector<std::string>())
-	     :_username(username),_ip_addresses(ip_addresses),_url_host(url_host),_day(day),
-	     _hour(hour),_bytes(bytes),_categories(categories),_sum(0)
-  {
-  };
-  
-  ~log_record() {};
-
-  std::string key() const
-  {
-    std::string s = _username + "_" + _url_host + "_" + _day;
-    if (time_merge == 1)
-      s += "_" + _hour;
-    return s;
-  }
-
-  std::string hkey() const
-  {
-    std::string s = key();
-    uint32_t hash[4];
-    MurmurHash3_x64_128(s.c_str(),strlen(s.c_str()),seed,hash);
-    std::string h = Bin128ToDec(hash);
-    return h;
-  }
-
-  void merge(log_record *lr)
-  {
-    if (!lr)
-      return;
-    
-    _bytes += lr->_bytes;
-    _sum += lr->_sum;
-    std::vector<std::string> tmp;
-    std::sort(_categories.begin(),_categories.end());
-    std::sort(lr->_categories.begin(),lr->_categories.end());
-    std::set_union(lr->_categories.begin(),lr->_categories.end(),
-		   _categories.begin(),_categories.end(),
-		   std::inserter(tmp,tmp.begin()));
-    _categories = tmp;
-    tmp.clear();
-    std::sort(_ip_addresses.begin(),_ip_addresses.end());
-    std::sort(lr->_ip_addresses.begin(),lr->_ip_addresses.end());
-    std::set_union(lr->_ip_addresses.begin(),lr->_ip_addresses.end(),
-		   _ip_addresses.begin(),_ip_addresses.end(),
-		   std::inserter(tmp,tmp.begin()));
-		   _ip_addresses = tmp;
-  };
-
-  Json::Value to_json(const std::string &key) const
-	     {
-    Json::Value jlrec;
-    jlrec["id"] = key;
-    jlrec["username"] = _username;
-    jlrec["url_host"] = _url_host;
-    Json::Value jadr;
-    for (size_t i=0;i<_ip_addresses.size();i++)
-      jadr.append(_ip_addresses.at(i));
-      jlrec["ip_addresses"]["add"] = jadr;
-    std::string date_str = _day + "T";
-    if (time_merge)
-      date_str += _hour;
-    else date_str += "00";
-    date_str += ":00:00Z";
-    jlrec["logstamp"] = date_str;
-    Json::Value jhits;
-    jhits["inc"] = Json::Value::UInt64(_sum);
-    jlrec["hits"] = jhits;
-    Json::Value jbytes;
-    jbytes["inc"] = Json::Value::UInt64(_bytes);
-    jlrec["bytes"] = jbytes;
-    Json::Value jcats;
-    for (size_t i=0;i<_categories.size();i++)
-      jcats.append(_categories.at(i));
-    jlrec["categories"]["add"] = jcats;
-    return jlrec;
-  };
-  
-  std::string _username;
-  std::vector<std::string> _ip_addresses;
-  std::string _url_host;
-  std::string _day;
-  std::string _hour;
-  uint64_t _bytes;
-  std::vector<std::string> _categories;
-  long _sum;
-  }; */
-
 void free_records(xarray<keyval_t> *wc_vals)
 {
   for (uint32_t i=0;i<wc_vals->size();i++)
@@ -283,108 +188,6 @@ void free_records(xarray<keyval_t> *wc_vals)
       delete lr;
     }
 }
-
-/*class log_parser
-{
-public:
-  static int _pos;
-
-  static void tokenize(const std::string &str,
-		       const int &length,
-		       std::vector<std::string> &tokens,
-		       const std::string &delim)
-  {
-    
-    // Skip delimiters at beginning.
-    std::string::size_type lastPos = str.find_first_not_of(delim, 0);
-    // Find first "non-delimiter".
-    std::string::size_type pos = str.find_first_of(delim, lastPos);
-    
-    while (std::string::npos != pos || std::string::npos != lastPos)
-      {
-        // Found a token, add it to the vector.
-	std::string token = str.substr(lastPos, pos - lastPos);
-	tokens.push_back(token);
-	if (length != -1 
-	    && (int)pos >= length)
-	  break;
-	
-        // Skip delimiters.  Note the "not_of"
-        lastPos = str.find_first_not_of(delim, pos);
-        // Find next "non-delimiter"
-        pos = str.find_first_of(delim, lastPos);
-      }
-  };
-
-  static void parse(split_t *ma,
-		   std::vector<log_record*> &log_records)
-  {
-    static std::string delim1 = "\n";
-    static std::string delim2 = " ";
-    static std::string delim3 = ";";
-    static std::string delim4 = ":";
-    static std::string delim5 = "\t";
-    std::string dat = (char*)ma->data;
-    std::string ldat = dat;//dat.substr(_pos,_pos+ma->length);
-    std::vector<std::string> lines;
-
-    log_parser::tokenize(ldat,ma->length,lines,delim1);
-#ifdef DEBUG    
-    std::cout << "number of lines in map: " << lines.size() << std::endl;
-#endif
-    for (size_t i=0;i<lines.size();i++)
-      {
-	std::vector<std::string> tokens;
-	if (!sg)
-	  log_parser::tokenize(lines.at(i),-1,tokens,delim2);
-	else log_parser::tokenize(lines.at(i),-1,tokens,delim5);
-	if (tokens.size() < 27) // 28 seems to be the most common logs, sometimes 27.
-	  {
-	    if (!airbus)
-	      std::cerr << "[Error]: wrong tokenized size " << tokens.size() << " for log: " << lines.at(i) << std::endl;
-	    skipped_logs++;
-	    continue;
-	  }
-	std::string username = airbus ? tokens.at(12) : (sg ? tokens.at(6) : tokens.at(9));
-	if (username == "-")
-	  username = "NOONE";
-	//std::cout << "username: *" << username << "* on line " << i << std::endl;
-	std::string ip_address = airbus ? tokens.at(7) : (sg ? tokens.at(5) : tokens.at(4));
-	std::vector<std::string> ip_addresses;
-	ip_addresses.push_back(ip_address);
-	std::string url = airbus ? tokens.at(14) : (sg ? "http://" + tokens.at(17) + tokens.at(19) : tokens.at(11));
-	if (url == "-") // unspecified
-	  {
-	    skipped_logs++;
-	    continue;
-	  }
-	std::string url_host,url_path;
-	parse_url_host_and_path(url,url_host,url_path);
-	std::string day = airbus ? tokens.at(4) : (sg ? tokens.at(2) : tokens.at(1));
-	std::string time_str = airbus ? tokens.at(5) : (sg ? tokens.at(3) : tokens.at(2));
-	std::vector<std::string> tt;
-	log_parser::tokenize(time_str,-1,tt,delim4);
-	if (tt.empty())
-	  {
-	    std::cerr << "[Error]: empty time string tokens: " << time_str << std::endl;
-	    continue;
-	  }
-	std::string hour = tt.at(0);
-	char *endptr;
-	uint64_t bytes = airbus ? strtol(tokens.at(17).c_str(),&endptr,0) : (sg ? strtol(tokens.at(24).c_str(),&endptr,0) : strtol(tokens.at(7).c_str(),&endptr,0));
-	if (*endptr)
-	  bytes = 0; // an error occured.
-	std::string cat_str = airbus ? tokens.at(25) : (sg ? tokens.at(10) : tokens.at(22));
-	std::vector<std::string> categories;
-	log_parser::tokenize(cat_str,-1,categories,delim3);
-	log_record *lr = new log_record(username,ip_addresses,url_host,day,hour,bytes,categories);
-	log_records.push_back(lr);
-      }
-  };
-
-  }; */
-
- //int log_parser::_pos = 0;
 
 class bl : public map_reduce {
 public:
@@ -457,29 +260,18 @@ private:
 void bl::map_function(split_t *ma)
 {
   std::vector<log_record*> log_records;
-  //log_parser::parse(ma,log_records);
   std::string dat = (char*)ma->data;
-  /*std::vector<std::string> lines;
-    log_format::tokenize(dat,ma->length,lines,lf._ldef.delims());*/
-  lf.parse_data(dat,ma->length,log_records);
+  lf.parse_data(dat,ma->length,app_name,log_records);
   
 #ifdef DEBUG
   std::cout << "number of mapped records: " << log_records.size() << std::endl;
 #endif
   for (size_t i=0;i<log_records.size();i++)
     {
-      /*if (count_users) // only count records per user.
-	{
-	  const char *u = log_records.at(i)->_username.c_str();
-	  map_emit((void*)u,(void*)1,strlen(u));
-	}
-	else */
-      //{
       log_records.at(i)->_sum = 1;
       std::string key = /*hashed_keys ? log_records.at(i)->hkey() : */log_records.at(i)->key();
       const char *key_str = key.c_str();
       map_emit((void*)key_str,(void*)log_records.at(i),strlen(key_str));
-      //}
     }
 }
 
@@ -638,8 +430,9 @@ static void usage(char *prog) {
     printf("  -t opt : 0 merge by day, 1 merge by hour\n");
     printf("  -j : output format is JSON (for solr indexing)\n");
     printf("  -f : select log format\n");
-    printf("  -b : Airbus logs\n");
+    //printf("  -b : Airbus logs\n");
     printf("  -u : use hashed keys\n");
+    printf("  -n #appname : application name for tagging records\n");
     exit(EXIT_FAILURE);
 }
 
@@ -658,10 +451,9 @@ int main(int argc, char *argv[])
       files.push_back(argv[i]);
     std::cout << "Processing " << files.size() << " file(s)\n";
     
-    //char *fn = argv[1];
     FILE *fout = NULL;
 
-    while ((c = getopt(argc - 1, argv + 1, "p:l:m:r:f:qacjsubo:t:")) != -1) 
+    while ((c = getopt(argc - 1, argv + 1, "p:l:m:r:f:n:qacjsubo:t:")) != -1) 
       {
       switch (c) {
 	case 'p':
@@ -710,6 +502,9 @@ int main(int argc, char *argv[])
 	break;
       case 'f':
 	lformat_name = optarg;
+	break;
+      case 'n':
+	app_name = optarg;
 	break;
       default:
 	    usage(argv[0]);

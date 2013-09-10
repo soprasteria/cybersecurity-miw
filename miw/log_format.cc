@@ -91,6 +91,7 @@ namespace miw
   
   int log_format::parse_data(const std::string &data,
 			     const int &length,
+			     const std::string &appname,
 			     std::vector<log_record*> &lrecords) const
   {
     std::vector<std::string> lines;
@@ -102,13 +103,14 @@ namespace miw
     int skipped_logs = 0;
     for (size_t i=0;i<lines.size();i++)
       {
-	log_record *lr = parse_line(lines.at(i),skipped_logs);
+	log_record *lr = parse_line(lines.at(i),appname,skipped_logs);
 	if (lr)
 	  lrecords.push_back(lr);
       }
   }
 
   log_record* log_format::parse_line(const std::string &line,
+				     const std::string &appname,
 				     int &skipped_logs) const
   {
     std::string key;
@@ -124,6 +126,7 @@ namespace miw
 
     // parse fields according to format.
     logdef ldef = _ldef;
+    ldef.set_appname(appname);
     for (int i=0;i<ldef.fields_size();i++)
       {
 	field *f = ldef.mutable_fields(i);

@@ -41,4 +41,5 @@ message logdef
 	required string format_name = 1;  /* log format name */
 	required string delims = 2; /* field delimiters */
 	repeated field fields = 3;  /* definition of log fields */
+	optional string appname = 4; /* application name for the log set. */
 }
