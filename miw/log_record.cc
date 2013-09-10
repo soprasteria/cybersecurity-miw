@@ -135,7 +135,7 @@ namespace miw
   void log_record::aggregation_count(const int &i,
 				     const field &f)
   {
-    _ld.fields(i).set_count(_ld.fields(i).count() + 1);
+    _ld.fields(i).set_count(f.count() + 1);
   }
   
   void log_record::merge(log_record *lr)
@@ -181,18 +181,19 @@ namespace miw
 
   void log_record::to_json(const field &f, Json::Value &jrec)
   {
-    //TODO: add 'add' prior to arrays and aggregated values ?
     std::string ftype = f.type();
+    Json::Value jsf;
     if (ftype == "int")
       {
 	int_field *ifi = f.mutable_int_fi();
 	if (ifi->int_reap_size() > 1)
 	  {
 	    for (int i=0;i<ifi->int_reap_size();i++)
-	      jrec[f.name()].append(ifi->int_reap(i));
+	      jsf.append(ifi->int_reap(i));
 	  }
 	else if (ifi->int_reap_size() == 1)
-	  jrec[f.name()] = ifi->int_reap(0);
+	  jsf = ifi->int_reap(0);
+	
       }
     else if (ftype == "string")
       {
@@ -200,10 +201,10 @@ namespace miw
 	if (ifs->str_reap_size() > 1)
 	  {
 	    for (int i=0;i<ifs->str_reap_size();i++)
-	      jrec[f.name()].append(ifs->str_reap(i));
+	      jsf.append(ifs->str_reap(i));
 	  }
 	else if (ifs->str_reap_size() == 1)
-	  jrec[f.name()] = ifs->str_reap(0);
+	  jsf = ifs->str_reap(0);
       }
     else if (ftype == "bool")
       {
@@ -211,10 +212,10 @@ namespace miw
 	if (ifb->bool_reap_size() > 1)
 	  {
 	    for (int i=0;i<ifb->bool_reap_size();i++)
-	      jrec[f.name()].append(ifb->bool_reap(i));
+	      jsf.append(ifb->bool_reap(i));
 	  }
 	else if (ifb->bool_reap_size() == 1)
-	  jrec[f.name()] = ifb->bool_reap(0);
+	  jsf = ifb->bool_reap(0);
       }
     else if (ftype == "float")
       {
@@ -222,11 +223,20 @@ namespace miw
 	if (iff->float_reap_size() > 1)
 	  {
 	    for (int i=0;i<iff->float_reap_size();i++)
-	      jrec[f.name()].append(iff->float_reap(0));
+	      jsf.append(iff->float_reap(0));
 	  }
 	else if (iff->float_reap_size() == 1)
-	  jrec[f.name()] = iff->float_reap(0);
+	  jsf = iff->float_reap(0);
       }
+    if (f.aggregated())
+      {
+	if (f.aggregation() == "union")
+	  jrec[f.name()]["add"] = jsf;
+	else if (f.aggregation() == "sum"
+		 || f.aggregation() == "count")
+	  jrec[f.name()]["inc"] = jsf;
+      }
+    else jrec[f.name()] = jsf;
     if (f.count() > 0)
       jrec["count"] = f.count();
   }
