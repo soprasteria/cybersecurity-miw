@@ -57,9 +57,11 @@ namespace miw
     
     int parse_data(const std::string &data,
 		   const int &length,
+		   const std::string &appname,
 		   std::vector<log_record*> &lrecords) const;
 
     log_record* parse_line(const std::string &line,
+			   const std::string &appname,
 			   int &skipped_logs) const;
     
     logdef _ldef;  // protocol buffer object.
