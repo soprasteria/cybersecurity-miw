@@ -49,7 +49,6 @@ namespace miw
 
     void merge(log_record *lr); //TODO: need log format to check on aggregated fields etc ?
     
-    //TODO: to json.
     static void to_json(const field &f, Json::Value &jrec);
     Json::Value to_json() const;
 
@@ -64,6 +63,9 @@ namespace miw
 
     void aggregation_max(const int &i,
 			 const field &f);
+
+    void aggregation_count(const int &i,
+			   const field &f);
 
     std::string _key;
     long int _sum;

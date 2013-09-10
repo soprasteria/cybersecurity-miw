@@ -132,6 +132,12 @@ namespace miw
       }
   }
 
+  void log_record::aggregation_count(const int &i,
+				     const field &f)
+  {
+    _ld.fields(i).set_count(_ld.fields(i).count() + 1);
+  }
+  
   void log_record::merge(log_record *lr)
   {
     //std::cerr << "[Debug]: merging log records\n";
@@ -151,6 +157,10 @@ namespace miw
 	      {
 		// aggregate into hosting record (this).
 		std::string aggregation = lr->_ld.fields(i).aggregation();
+		if (aggregation == "count")
+		  {
+		    aggregation_count(i,lr->_ld.fields(i));
+		  }
 		if (aggregation =="union")
 		  {
 		    aggregation_union(i,lr->_ld.fields(i));
@@ -217,6 +227,8 @@ namespace miw
 	else if (iff->float_reap_size() == 1)
 	  jrec[f.name()] = iff->float_reap(0);
       }
+    if (f.count() > 0)
+      jrec["count"] = f.count();
   }
 
   Json::Value log_record::to_json() const
