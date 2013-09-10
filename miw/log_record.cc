@@ -244,6 +244,8 @@ namespace miw
 	field f = _ld.fields(i);
 	log_record::to_json(f,jlrec);
       }
+    if (!_ld.appname().empty())
+      jlrec["appname"] = _ld.appname();
     jlrec["logs"] = (int)_sum;
 
     //debug
