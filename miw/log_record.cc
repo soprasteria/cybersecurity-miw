@@ -28,6 +28,8 @@
 
 #include "log_record.h"
 #include <unordered_set>
+#include <algorithm>
+#include <sstream>
 #include <iostream>
 
 namespace miw
@@ -177,6 +179,16 @@ namespace miw
 	  }
       }
     _sum += lr->_sum;
+
+    // merge original content.
+    if (!_lines.empty() || !lr->_lines.empty())
+      {
+	std::vector<std::string> nlines;
+	std::sort(_lines.begin(),_lines.end());
+	std::sort(lr->_lines.begin(),lr->_lines.end());
+	std::set_union(_lines.begin(),_lines.end(),lr->_lines.begin(),lr->_lines.end(),nlines.begin());
+	_lines = nlines;
+      }
   }
 
   void log_record::to_json(const field &f, Json::Value &jrec)
@@ -254,9 +266,18 @@ namespace miw
 	field f = _ld.fields(i);
 	log_record::to_json(f,jlrec);
       }
+
+    // concatenate original log lines if any.
+    if (!_lines.empty())
+      {
+	std::stringstream sst;
+	std::for_each(_lines.begin(),_lines.end(),[&sst](const std::string &s){ sst << s << std::endl; });
+	jlrec["content"]["add"] = sst.str();
+      }
+    
     if (!_ld.appname().empty())
       jlrec["appname"] = _ld.appname();
-    jlrec["logs"] = (int)_sum;
+    jlrec["logs"]["inc"] = (int)_sum;
 
     //debug
     /*Json::FastWriter writer;
