@@ -27,6 +27,7 @@
  */
 
 #include "log_format.h"
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 
@@ -138,6 +139,11 @@ namespace miw
 	  }
 	
 	std::string token = tokens.at(f->pos());
+
+	// processing of token
+	std::string ntoken;
+	std::remove_copy(token.begin(),token.end(),std::back_inserter(ntoken),'"');
+	token = ntoken;
 	
 	// apply preprocessing (or not) to field according to type.
 	std::string ftype = f->type();
@@ -165,20 +171,21 @@ namespace miw
 
 	//TODO: pre-processing of field based on (yet to define) configuration field.
 	
-	//TODO: process fields that are part of the key.
+	// process fields that are part of the key.
 	if (f->key())
 	  {
 	    if (!key.empty())
 	      key += "_";
 	    key += token;
 	  }
-	//std::cerr << "string field size2: " << f->str_fi().str_reap_size() << std::endl;
       }
 
     //debug
     //std::cerr << "ldef first field string size: " << ldef.fields(0).str_fi().str_reap_size() << std::endl;
     //debug
 
+    if (!appname.empty())
+      key += "_" + appname;
     log_record *lr = new log_record(key,ldef);
     
     //debug
