@@ -133,7 +133,7 @@ namespace miw
 	std::cerr << "[Error]: trying max operator on non numerical field\n";
       }
   }
-
+  
   void log_record::aggregation_count(const int &i,
 				     const field &f)
   {
@@ -260,7 +260,8 @@ namespace miw
     //debug
     //std::cerr << "number of fields: " << _ld.fields_size() << std::endl;
     //debug
-    
+
+    jlrec["id"] = _key;
     for  (int i=0;i<_ld.fields_size();i++)
       {
 	field f = _ld.fields(i);
