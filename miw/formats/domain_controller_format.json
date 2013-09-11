@@ -4,12 +4,16 @@
 	"fields":[
 		{	"name":"date",
 			"pos":0,
-			"type":"string"
+			"type":"date",
+			"key":"true",
+			"processing":"day"
 		},
 		{
 			"name":"time",
 			"pos":1,
-			"type":"string"
+		        "type":"string",
+		        "key": true,
+		        "processing":"hour"
 		},
 		{
 			"name":"Date/Time",

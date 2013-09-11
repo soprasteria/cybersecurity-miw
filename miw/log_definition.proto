@@ -28,12 +28,13 @@ message field
 	optional bool key = 4 [default = false]; /* whether this field is use as key or part of the key */
 	optional bool aggregated = 5; /* whether to aggregate values of this field. Obviously stored. */
 	optional string aggregation = 6; /* type of aggregation (e.g. sum, union, ...) */
+	optional string processing = 7; /* field post-processing filter (e.g. day, ...) */
 	
-	optional int_field int_fi = 7;
-	optional string_field str_fi = 8;
-	optional bool_field bool_fi = 9;
-	optional float_field real_fi = 10;
-	optional uint32 count = 11; /* aggregation counter. */
+	optional int_field int_fi = 8;
+	optional string_field str_fi = 9;
+	optional bool_field bool_fi = 10;
+	optional float_field real_fi = 11;
+	optional uint32 count = 12; /* aggregation counter. */
 }
 
 message logdef

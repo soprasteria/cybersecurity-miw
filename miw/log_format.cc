@@ -139,14 +139,42 @@ namespace miw
 	  }
 	
 	std::string token = tokens.at(f->pos());
+	std::string ftype = f->type();
 
 	// processing of token
 	std::string ntoken;
 	std::remove_copy(token.begin(),token.end(),std::back_inserter(ntoken),'"');
 	token = ntoken;
+	if (f->processing() == "day" || f->processing() == "month")
+	  {
+	    std::vector<std::string> elts;
+	    log_format::tokenize(token,-1,elts,"-"); // XXX: very basic tokenization of dates of the form 2012-12-10.
+	    if (elts.size() == 3)
+	      {
+		if (f->processing() == "day")
+		  token = elts.at(2);
+		else if (f->processing() == "month")
+		  token = elts.at(1);
+	      }
+	    else std::cerr << "[Warning]: unrecognized date format " << token << std::endl;
+	  }
+	else if (f->processing() == "hour" || f->processing() == "minute" || f->processing() == "second")
+	  {
+	    std::vector <std::string> elts;
+	    log_format::tokenize(token,-1,elts,":"); // XXX: very basic tokenization of time fields of the form 14:39:02.
+	    if (elts.size() == 3)
+	      {
+		if (f->processing() == "hour")
+		  token = elts.at(0);
+		else if (f->processing() == "minute")
+		  token = elts.at(1);
+		else if (f->processing() == "second")
+		  token = elts.at(2);
+	      }
+	    else std::cerr << "[Warning]: unrecognized time format " << token << std::endl;
+	  }
 	
 	// apply preprocessing (or not) to field according to type.
-	std::string ftype = f->type();
 	if (ftype == "int")
 	  {
 	    int_field *ifi = f->mutable_int_fi();
