@@ -476,6 +476,9 @@ int main(int argc, char *argv[])
       case 'n':
 	app_name = optarg;
 	break;
+      case 'd':
+	store_content = true;
+	break;
       default:
 	    usage(argv[0]);
 	    exit(EXIT_FAILURE);
