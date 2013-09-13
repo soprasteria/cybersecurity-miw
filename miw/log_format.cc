@@ -93,6 +93,7 @@ namespace miw
   int log_format::parse_data(const std::string &data,
 			     const int &length,
 			     const std::string &appname,
+			     const bool &store_content,
 			     std::vector<log_record*> &lrecords) const
   {
     std::vector<std::string> lines;
@@ -104,7 +105,7 @@ namespace miw
     int skipped_logs = 0;
     for (size_t i=0;i<lines.size();i++)
       {
-	log_record *lr = parse_line(lines.at(i),appname,skipped_logs);
+	log_record *lr = parse_line(lines.at(i),appname,store_content,skipped_logs);
 	if (lr)
 	  lrecords.push_back(lr);
       }
@@ -112,6 +113,7 @@ namespace miw
 
   log_record* log_format::parse_line(const std::string &line,
 				     const std::string &appname,
+				     const bool &store_content,
 				     int &skipped_logs) const
   {
     std::string key;
@@ -215,6 +217,9 @@ namespace miw
     if (!appname.empty())
       key += "_" + appname;
     log_record *lr = new log_record(key,ldef);
+
+    if (store_content)
+      lr->_lines.push_back(line);
     
     //debug
     //std::cerr << "created log record: " << lr->to_json() << std::endl;

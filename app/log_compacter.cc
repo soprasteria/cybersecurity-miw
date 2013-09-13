@@ -78,6 +78,7 @@ static unsigned int seed = 4294967291UL; // prime.
 static long skipped_logs = 0;
 static log_format lf;
 static std::string app_name;
+static bool store_content = false; // whether to store full content into index.
 
 /*template <class T>
 static std::string to_string (const T& t)
@@ -261,7 +262,7 @@ void bl::map_function(split_t *ma)
 {
   std::vector<log_record*> log_records;
   std::string dat = (char*)ma->data;
-  lf.parse_data(dat,ma->length,app_name,log_records);
+  lf.parse_data(dat,ma->length,app_name,store_content,log_records);
   
 #ifdef DEBUG
   std::cout << "number of mapped records: " << log_records.size() << std::endl;
@@ -430,6 +431,7 @@ static void usage(char *prog) {
     printf("  -t opt : 0 merge by day, 1 merge by hour\n");
     printf("  -j : output format is JSON (for solr indexing)\n");
     printf("  -f : select log format\n");
+    printf("  -d : include original content in JSON for storage in index\n");
     //printf("  -b : Airbus logs\n");
     printf("  -u : use hashed keys\n");
     printf("  -n #appname : application name for tagging records\n");
@@ -453,7 +455,7 @@ int main(int argc, char *argv[])
     
     FILE *fout = NULL;
 
-    while ((c = getopt(argc - 1, argv + 1, "p:l:m:r:f:n:qacjsubo:t:")) != -1) 
+    while ((c = getopt(argc - 1, argv + 1, "p:l:m:r:f:n:qdacjsubo:t:")) != -1) 
       {
       switch (c) {
 	case 'p':
@@ -505,6 +507,9 @@ int main(int argc, char *argv[])
 	break;
       case 'n':
 	app_name = optarg;
+	break;
+      case 'd':
+	store_content = true;
 	break;
       default:
 	    usage(argv[0]);

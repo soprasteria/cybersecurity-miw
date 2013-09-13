@@ -186,7 +186,8 @@ namespace miw
 	std::vector<std::string> nlines;
 	std::sort(_lines.begin(),_lines.end());
 	std::sort(lr->_lines.begin(),lr->_lines.end());
-	std::set_union(_lines.begin(),_lines.end(),lr->_lines.begin(),lr->_lines.end(),nlines.begin());
+	std::set_union(_lines.begin(),_lines.end(),lr->_lines.begin(),lr->_lines.end(),
+		       std::inserter(nlines,nlines.begin()));
 	_lines = nlines;
       }
   }
