@@ -69,11 +69,9 @@ using namespace miw;
 enum { with_value_modifier = 0 };
 
 static int alphanumeric;
-static bool count_users = false;
 static int time_merge = 0; // 0: merge by day, 1: merge by hour.
 static bool sg = false; // temporary option to use external logs for testing purposes.
 static bool hashed_keys = false;
-static bool airbus = false;
 static unsigned int seed = 4294967291UL; // prime.
 static long skipped_logs = 0;
 static log_format lf;
@@ -208,23 +206,14 @@ public:
   int combine_function(void *key_in, void **vals_in, size_t vals_len);
   
   void *modify_function(void *oldv, void *newv) {
-    if (count_users)
-      {
-	uint64_t v = (uint64_t) oldv;
-        uint64_t nv = (uint64_t) newv;
-        return (void *) (v + nv);
-      }
-    else
-      {
-	log_record *lr1 = (log_record*) oldv;
-	log_record *lr2 = (log_record*) newv;
-	//lr1->_sum += lr2->_sum;
-	lr1->merge(lr2);
-	delete lr2;
-	return (void*)lr1;
-      }
+    log_record *lr1 = (log_record*) oldv;
+    log_record *lr2 = (log_record*) newv;
+    //lr1->_sum += lr2->_sum;
+    lr1->merge(lr2);
+    delete lr2;
+    return (void*)lr1;
   }
-  
+    
   void *key_copy(void *src, size_t s) {
     char *key = strdup((char*)src);
       return key;
@@ -270,76 +259,32 @@ void bl::map_function(split_t *ma)
   for (size_t i=0;i<log_records.size();i++)
     {
       log_records.at(i)->_sum = 1;
-      std::string key = /*hashed_keys ? log_records.at(i)->hkey() : */log_records.at(i)->key();
+      std::string key = log_records.at(i)->key();
       const char *key_str = key.c_str();
       map_emit((void*)key_str,(void*)log_records.at(i),strlen(key_str));
     }
 }
 
-/*  void bl::map_function(split_t *ma)
-  {
-  std::vector<log_record*> log_records;
-  log_parser::parse(ma,log_records);
-#ifdef DEBUG
-  std::cout << "number of mapped records: " << log_records.size() << std::endl;
-#endif
-  for (size_t i=0;i<log_records.size();i++)
-    {
-      if (count_users) // only count records per user.
-	{
-	  const char *u = log_records.at(i)->_username.c_str();
-	  map_emit((void*)u,(void*)1,strlen(u));
-	}
-      else 
-	{
-	  log_records.at(i)->_sum = 1;
-	  std::string key = hashed_keys ? log_records.at(i)->hkey() : log_records.at(i)->key();
-	  const char *key_str = key.c_str();
-	  map_emit((void*)key_str,(void*)log_records.at(i),strlen(key_str));
-	}
-    }
-    }*/
-
 int bl::combine_function(void *key_in, void **vals_in, size_t vals_len)
 {
-  if (!count_users)
+  log_record **lrecords = (log_record**)vals_in;
+  for (uint32_t i=1;i<vals_len;i++)
     {
-      log_record **lrecords = (log_record**)vals_in;
-      for (uint32_t i=1;i<vals_len;i++)
-	{
-	  lrecords[0]->merge(lrecords[i]);
-	  delete lrecords[i];
-	}
-    }
-  else
-    {
-      long *vals = (long *) vals_in;
-      for (uint32_t i = 1; i < vals_len; i++)
-	vals[0] += vals[i];
+      lrecords[0]->merge(lrecords[i]);
+      delete lrecords[i];
     }
   return 1;
 }
 
 void bl::reduce_function(void *key_in, void **vals_in, size_t vals_len)
 {
-  if (count_users)
+  log_record **lrecords = (log_record**)vals_in;
+  for (uint32_t i=1;i<vals_len;i++)
     {
-      long *vals = (long*) vals_in;
-      long sum = 0;
-      for (uint32_t i=0;i<vals_len;i++)
-	sum += vals[i];
-      reduce_emit(key_in,(void*)sum);
+      lrecords[0]->merge(lrecords[i]);
+      delete lrecords[i];
     }
-  else
-    {
-      log_record **lrecords = (log_record**)vals_in;
-      for (uint32_t i=1;i<vals_len;i++)
-	{
-	  lrecords[0]->merge(lrecords[i]);
-	  delete lrecords[i];
-	}
-      reduce_emit(key_in,(void*)lrecords[0]);
-    }
+  reduce_emit(key_in,(void*)lrecords[0]);
 }
 
 static void print_top(xarray<keyval_t> *wc_vals, int ndisp) {
@@ -348,19 +293,14 @@ static void print_top(xarray<keyval_t> *wc_vals, int ndisp) {
     std::multimap<long,std::string,std::greater<long> >::iterator mit;
     for (uint32_t i = 0; i < wc_vals->size(); i++)
       {
-	if (count_users)
-	  occurs += size_t(wc_vals->at(i)->val);
-	else
+	log_record *lr = (log_record*)wc_vals->at(i)->val;
+	occurs += lr->_sum;
+	ordered_records.insert(std::pair<long,std::string>(lr->_sum,lr->key()));
+	if ((int)ordered_records.size() > ndisp)
 	  {
-	    log_record *lr = (log_record*)wc_vals->at(i)->val;
-	    occurs += lr->_sum;
-	    ordered_records.insert(std::pair<long,std::string>(lr->_sum,lr->key()));
-	    if ((int)ordered_records.size() > ndisp)
-	      {
-		mit = ordered_records.end();
-		mit--;
-		ordered_records.erase(mit);
-	      }
+	    mit = ordered_records.end();
+	    mit--;
+	    ordered_records.erase(mit);
 	  }
       }
     printf("\nlogs preprocessing: results (TOP %d from %zu keys, %zd logs):\n",
@@ -370,24 +310,14 @@ static void print_top(xarray<keyval_t> *wc_vals, int ndisp) {
 #else
     ndisp = std::min(ndisp, (int)wc_vals->size());
 #endif
-    if (count_users)
+    int c = 0;
+    mit = ordered_records.begin();
+    while(mit!=ordered_records.end())
       {
-	for (int i = 0; i < ndisp; i++) {
-	  keyval_t *w = wc_vals->at(i);
-	  printf("%15s - %d\n", (char *)w->key_, ptr2int<unsigned>(w->val));
-	}
-      }
-    else
-      {
-	int c = 0;
-	mit = ordered_records.begin();
-	while(mit!=ordered_records.end())
-	  {
-	    printf("%45s - %ld\n",(*mit).second.c_str(),(*mit).first);
-	    ++mit;
-	    if (c++ == ndisp)
-	      break;
-	  }
+	printf("%45s - %ld\n",(*mit).second.c_str(),(*mit).first);
+	++mit;
+	if (c++ == ndisp)
+	  break;
       }
     std::cout << std::endl;
 }
@@ -397,9 +327,7 @@ static void output_all(xarray<keyval_t> *wc_vals, FILE *fout)
   for (uint32_t i = 0; i < wc_vals->size(); i++) 
     {
       keyval_t *w = wc_vals->at(i);
-      if (count_users)
-	fprintf(fout, "%18s - %d\n", (char *)w->key_,ptr2int<unsigned>(w->val));
-      else fprintf(fout, "%45s - %ld\n", (char*)w->key_,static_cast<log_record*>(w->val)->_sum);
+      fprintf(fout, "%45s - %ld\n", (char*)w->key_,static_cast<log_record*>(w->val)->_sum);
     }
 }
 
@@ -409,7 +337,6 @@ static void output_json(xarray<keyval_t> *wc_vals, FILE *fout)
   for (uint32_t i = 0; i < wc_vals->size(); i++) 
     {
       log_record *lr = (log_record*)wc_vals->at(i)->val;
-      //std::string key = (const char*)wc_vals->at(i)->key_;
       Json::Value jrec = lr->to_json();
       if (fout)
 	fprintf(fout,"%s",writer.write(jrec).c_str());
@@ -432,7 +359,6 @@ static void usage(char *prog) {
     printf("  -j : output format is JSON (for solr indexing)\n");
     printf("  -f : select log format\n");
     printf("  -d : include original content in JSON for storage in index\n");
-    //printf("  -b : Airbus logs\n");
     printf("  -u : use hashed keys\n");
     printf("  -n #appname : application name for tagging records\n");
     exit(EXIT_FAILURE);
@@ -487,9 +413,6 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	    }
 	    break;
-      case 'c':
-	count_users = true;
-	break;
       case 't':
 	time_merge = atoi(optarg);
 	break;
@@ -498,9 +421,6 @@ int main(int argc, char *argv[])
 	break;
       case 'u':
 	hashed_keys = true;
-	break;
-      case 'b':
-	airbus = true;
 	break;
       case 'f':
 	lformat_name = optarg;
@@ -553,8 +473,7 @@ int main(int argc, char *argv[])
 	  }
 	else if (json_output)
 	  output_json(&app.results_,NULL);
-	if (!count_users)
-	  free_records(&app.results_);
+	free_records(&app.results_);
 	app.free_results();
 	mapreduce_appbase::deinitialize();
       }
