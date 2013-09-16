@@ -62,6 +62,27 @@ namespace miw
       }
     return 0;
   }
+
+  std::string log_format::chomp_cpp(const std::string &s)
+  {
+    std::string sc = s;
+    size_t p = 0;
+
+    // strip leading whitespace.                                                                                                           
+    while(p < sc.length() && isspace(sc[p]))
+      p++;
+    sc.erase(0,p);
+    if (sc.empty())
+      return sc;
+
+    // strip trailing whitespace.                                                                                                          
+    p = sc.length()-1;
+    while(p > 0 && isspace(sc[p]))
+      p--;
+    sc.erase(p+1,sc.length()-p+1);
+
+    return sc;
+  }
   
   void log_format::tokenize(const std::string &str,
 			    const int &length,
@@ -185,7 +206,9 @@ namespace miw
 	else if (ftype == "string")
 	  {
 	    string_field *ifs = f->mutable_str_fi();
-	    ifs->add_str_reap(token);
+	    token = chomp_cpp(token);
+	    if (!token.empty())
+	      ifs->add_str_reap(token);
 	    //std::cerr << "string field size: " << f->str_fi().str_reap_size() << std::endl;
 	  }
 	else if (ftype == "bool")

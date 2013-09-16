@@ -50,6 +50,8 @@ namespace miw
     
     bool check() const;
 
+    static std::string chomp_cpp(const std::string &s);
+
     static void tokenize(const std::string &str,
 			 const int &length,
 			 std::vector<std::string> &tokens,
