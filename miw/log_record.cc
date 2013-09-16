@@ -196,23 +196,27 @@ namespace miw
   {
     std::string ftype = f.type();
     Json::Value jsf;
+    std::string json_fname = f.name();
     if (ftype == "int")
       {
+	json_fname += "_i";
 	int_field *ifi = f.mutable_int_fi();
 	if (ifi->int_reap_size() > 1)
 	  {
+	    json_fname += "s";
 	    for (int i=0;i<ifi->int_reap_size();i++)
 	      jsf.append(ifi->int_reap(i));
 	  }
 	else if (ifi->int_reap_size() == 1)
 	  jsf = ifi->int_reap(0);
-	
       }
     else if (ftype == "string")
       {
+	json_fname += "_s";
 	string_field *ifs = f.mutable_str_fi();
 	if (ifs->str_reap_size() > 1)
 	  {
+	    json_fname += "s";
 	    for (int i=0;i<ifs->str_reap_size();i++)
 	      jsf.append(ifs->str_reap(i));
 	  }
@@ -221,9 +225,11 @@ namespace miw
       }
     else if (ftype == "bool")
       {
+	json_fname += "_b";
 	bool_field *ifb = f.mutable_bool_fi();
 	if (ifb->bool_reap_size() > 1)
 	  {
+	    json_fname += "s";
 	    for (int i=0;i<ifb->bool_reap_size();i++)
 	      jsf.append(ifb->bool_reap(i));
 	  }
@@ -232,9 +238,11 @@ namespace miw
       }
     else if (ftype == "float")
       {
+	json_fname += "_f";
 	float_field *iff = f.mutable_real_fi();
 	if (iff->float_reap_size() > 1)
 	  {
+	    json_fname += "_fs";
 	    for (int i=0;i<iff->float_reap_size();i++)
 	      jsf.append(iff->float_reap(0));
 	  }
@@ -246,12 +254,12 @@ namespace miw
 	if (f.aggregated())
 	  {
 	    if (f.aggregation() == "union")
-	      jrec[f.name()]["add"] = jsf;
+	      jrec[json_fname]["add"] = jsf;
 	    else if (f.aggregation() == "sum"
 		     || f.aggregation() == "count")
-	      jrec[f.name()]["inc"] = jsf;
+	      jrec[json_fname]["inc"] = jsf;
 	  }
-	else jrec[f.name()] = jsf;
+	else jrec[json_fname] = jsf;
       }
     if (f.count() > 0)
       jrec["count"] = f.count();
