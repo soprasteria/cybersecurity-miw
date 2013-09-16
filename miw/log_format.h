@@ -55,7 +55,8 @@ namespace miw
     static void tokenize(const std::string &str,
 			 const int &length,
 			 std::vector<std::string> &tokens,
-			 const std::string &delim);
+			 const std::string &delim,
+			 const std::string &quotechar);
     
     int parse_data(const std::string &data,
 		   const int &length,

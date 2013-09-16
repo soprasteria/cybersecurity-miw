@@ -87,25 +87,40 @@ namespace miw
   void log_format::tokenize(const std::string &str,
 			    const int &length,
 			    std::vector<std::string> &tokens,
-			    const std::string &delim)
+			    const std::string &delim,
+			    const std::string &quotechar)
   {
     
     // Skip delimiters at beginning.
     std::string::size_type lastPos = str.find_first_not_of(delim, 0);
+    std::string::size_type pos = 0;
+    if (str[0] == quotechar[0])
+      {
+	// find closing quotechar.
+	pos = str.find_first_of(quotechar,lastPos);
+      }
     // Find first "non-delimiter".
-    std::string::size_type pos = str.find_first_of(delim, lastPos);
+    else pos = str.find_first_of(delim, lastPos);
     
     while (std::string::npos != pos || std::string::npos != lastPos)
       {
-        // Found a token, add it to the vector.
-	std::string token = str.substr(lastPos, pos - lastPos);
+	std::string token;
+	// check for quotechar delimited token.
+	if (str[lastPos] == quotechar[0])
+	  {
+	    // find closing quotechar.
+	    pos = str.find_first_of(quotechar, lastPos+1)-1;
+	    token = str.substr(lastPos+1,pos-lastPos);
+	    pos += 2;
+	  }
+        else token = str.substr(lastPos, pos - lastPos);
 	tokens.push_back(token);
 	if (length != -1 
 	    && (int)pos >= length)
 	  break;
 	
         // Skip delimiters.  Note the "not_of"
-        lastPos = str.find_first_not_of(delim, pos);
+	lastPos = str.find_first_not_of(delim, pos);
         // Find next "non-delimiter"
         pos = str.find_first_of(delim, lastPos);
       }
@@ -118,7 +133,7 @@ namespace miw
 			     std::vector<log_record*> &lrecords) const
   {
     std::vector<std::string> lines;
-    log_format::tokenize(data,length,lines,"\n");
+    log_format::tokenize(data,length,lines,"\n","");
 #ifdef DEBUG    
     std::cout << "number of lines in map: " << lines.size() << std::endl;
 #endif
@@ -130,6 +145,7 @@ namespace miw
 	if (lr)
 	  lrecords.push_back(lr);
       }
+    return 1;
   }
 
   log_record* log_format::parse_line(const std::string &line,
@@ -139,7 +155,7 @@ namespace miw
   {
     std::string key;
     std::vector<std::string> tokens;
-    log_format::tokenize(line,-1,tokens,_ldef.delims());
+    log_format::tokenize(line,-1,tokens,_ldef.delims(),_ldef.quotechar());
     if ((int)tokens.size() > _ldef.fields_size())
       {
 	std::cerr << "[Error]: wrong number of tokens detected, " << tokens.size()
@@ -171,7 +187,7 @@ namespace miw
 	if (f->processing() == "day" || f->processing() == "month")
 	  {
 	    std::vector<std::string> elts;
-	    log_format::tokenize(token,-1,elts,"-"); // XXX: very basic tokenization of dates of the form 2012-12-10.
+	    log_format::tokenize(token,-1,elts,"-",""); // XXX: very basic tokenization of dates of the form 2012-12-10.
 	    if (elts.size() == 3)
 	      {
 		if (f->processing() == "day")
@@ -184,7 +200,7 @@ namespace miw
 	else if (f->processing() == "hour" || f->processing() == "minute" || f->processing() == "second")
 	  {
 	    std::vector <std::string> elts;
-	    log_format::tokenize(token,-1,elts,":"); // XXX: very basic tokenization of time fields of the form 14:39:02.
+	    log_format::tokenize(token,-1,elts,":",""); // XXX: very basic tokenization of time fields of the form 14:39:02.
 	    if (elts.size() == 3)
 	      {
 		if (f->processing() == "hour")
