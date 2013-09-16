@@ -4,7 +4,7 @@
 	"fields":[
 		{	"name":"date",
 			"pos":0,
-			"type":"date",
+			"type":"string",
 			"key":"true",
 			"processing":"day"
 		},
