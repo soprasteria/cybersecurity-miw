@@ -241,15 +241,18 @@ namespace miw
 	else if (iff->float_reap_size() == 1)
 	  jsf = iff->float_reap(0);
       }
-    if (f.aggregated())
+    if (!jsf.isNull())
       {
-	if (f.aggregation() == "union")
-	  jrec[f.name()]["add"] = jsf;
-	else if (f.aggregation() == "sum"
-		 || f.aggregation() == "count")
-	  jrec[f.name()]["inc"] = jsf;
+	if (f.aggregated())
+	  {
+	    if (f.aggregation() == "union")
+	      jrec[f.name()]["add"] = jsf;
+	    else if (f.aggregation() == "sum"
+		     || f.aggregation() == "count")
+	      jrec[f.name()]["inc"] = jsf;
+	  }
+	else jrec[f.name()] = jsf;
       }
-    else jrec[f.name()] = jsf;
     if (f.count() > 0)
       jrec["count"] = f.count();
   }
