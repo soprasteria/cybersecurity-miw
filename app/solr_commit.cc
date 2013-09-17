@@ -26,8 +26,8 @@
 
 /**
  * Pre-processed BlueCoat log indexing with Solr.
- * Copyright (c) 2012, SEEKS SAS
- * Author: Emmanuel Benazera <emmanuel.benazera@seeks.pro>
+ * Copyright (c) 2012-2013, SEEKS SAS / XPLR Software Inc.
+ * Author: Emmanuel Benazera <emmanuel.benazera@xplr.com>
  */
 
 #include <stdio.h>
@@ -235,7 +235,7 @@ static void print_top(xarray<keyval_t> *wc_vals, int ndisp) {
       {
 	occurs += size_t(wc_vals->at(i)->val);
       }
-    printf("\nwordcount: results (TOP %d from %zu keys, %zd logs):\n",
+    printf("\nsolr_commit: results (TOP %d from %zu keys, %zd logs):\n",
            ndisp, wc_vals->size(), occurs);
 #ifdef HADOOP
     ndisp = wc_vals->size();
