@@ -94,7 +94,7 @@ namespace miw
     // Skip delimiters at beginning.
     std::string::size_type lastPos = str.find_first_not_of(delim, 0);
     std::string::size_type pos = 0;
-    if (str[0] == quotechar[0])
+    if (!quotechar.empty() && str[0] == quotechar[0])
       {
 	// find closing quotechar.
 	pos = str.find_first_of(quotechar,lastPos);
@@ -106,7 +106,7 @@ namespace miw
       {
 	std::string token;
 	// check for quotechar delimited token.
-	if (str[lastPos] == quotechar[0])
+	if (!quotechar.empty() && str[lastPos] == quotechar[0])
 	  {
 	    // find closing quotechar.
 	    pos = str.find_first_of(quotechar, lastPos+1)-1;
