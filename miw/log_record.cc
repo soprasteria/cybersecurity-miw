@@ -341,7 +341,8 @@ namespace miw
     if (!_ld.appname().empty())
       jlrec["appname"] = _ld.appname();
     jlrec["logs"]["inc"] = (int)_sum;
-
+    jlrec["format_name"] = _ld.format_name();
+    
     //debug
     /*Json::FastWriter writer;
       std::cout << "JSON: " << writer.write(jlrec) << std::endl;*/
