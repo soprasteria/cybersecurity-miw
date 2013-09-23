@@ -114,15 +114,23 @@ namespace miw
 	    pos += 2;
 	  }
         else token = str.substr(lastPos, pos - lastPos);
+	/*std::cerr << "pos: " << pos << " -- lastPos: " << lastPos << std::endl;
+	  std::cerr << "token: " << token << std::endl;*/
 	tokens.push_back(token);
 	if (length != -1 
 	    && (int)pos >= length)
 	  break;
 	
         // Skip delimiters.  Note the "not_of"
-	lastPos = str.find_first_not_of(delim, pos);
-        // Find next "non-delimiter"
+	//lastPos = str.find_first_not_of(delim, pos);
+	lastPos = std::min(pos + 1,str.length());
+	// Find next "non-delimiter"
         pos = str.find_first_of(delim, lastPos);
+	
+	/*std::cerr << "pos end: " << pos << " -- lastPos end: " << lastPos << std::endl;
+	  std::cerr << "str length: " << str.length() << std::endl;*/
+	if (pos >= str.length() || lastPos >= str.length())
+	  break;
       }
   }
   
@@ -165,12 +173,21 @@ namespace miw
       }
 
     // parse fields according to format.
+    int pos = -1;
     logdef ldef = _ldef;
     ldef.set_appname(appname);
+    /*std::cerr << "fields size: " << ldef.fields_size() << std::endl;
+      std::cerr << "tokens size: " << tokens.size() << std::endl;*/
     for (int i=0;i<ldef.fields_size();i++)
       {
 	field *f = ldef.mutable_fields(i);
-
+	if (f->pos() == -1)
+	  {
+	    // auto increment wrt previous marked pos log.
+	    f->set_pos(++pos);
+	  }
+	else pos = f->pos();
+	
 	if (f->pos() >= tokens.size())
 	  {
 	    std::cerr << "[Error]: token position " << f->pos() << " is beyond the number of log fields. Skipping. Check your format file\n";

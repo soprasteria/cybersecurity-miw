@@ -23,7 +23,7 @@ message float_field
 message field
 {
 	required string name = 1;
-	required uint32 pos = 2; /* field position, allows to skip fields */
+	optional sint32 pos = 2 [default = -1]; /* field position, allows to skip fields */
 	required string type = 3; /* field type: double, float, string, ... */
 	optional bool key = 4 [default = false]; /* whether this field is use as key or part of the key */
 	optional bool aggregated = 5; /* whether to aggregate values of this field. Obviously stored. */
