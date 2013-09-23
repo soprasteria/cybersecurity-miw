@@ -118,6 +118,26 @@ if test "$ac_cv_cxx_constexpr" = yes; then
     AC_DEFINE([HAVE_CXX_CONSTEXPR], [1], [Define if the C++ compiler understands constexpr.])
 fi
 
+dnl protobuf
+PKG_CHECK_MODULES([protobuf],[protobuf >= 2.2],protobuf=true,protobuf=false)
+if test $protobuf = true ; then
+  AC_DEFINE(PROTOBUF,1,"Protocol buffers available")
+fi
+AM_CONDITIONAL(HAVE_PROTOBUF,test x$protobuf = xtrue)
+if test $protobuf = false ; then
+   AC_MSG_ERROR([Protocol buffers are required])
+fi
+
+dnl jsoncpp
+PKG_CHECK_MODULES([jsoncpp],[jsoncpp],jsoncpp=true,jsoncpp=false)
+if test $jsoncpp = true ; then
+  AC_DEFINE(JSONCPP,1,"Protocol buffers available")
+fi
+AM_CONDITIONAL(HAVE_JSONCPP,test x$jsoncpp = xtrue)
+if test $jsoncpp = false ; then
+   AC_MSG_ERROR([JSON cpp (http://jsoncpp.sourceforge.net/) lib is required])
+fi
+
 AC_SUBST([OPT_LEVEL])
 
 AC_CONFIG_FILES(Makefile miw/Makefile miw/formats/Makefile metis/Makefile app/Makefile)
