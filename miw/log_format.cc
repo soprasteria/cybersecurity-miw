@@ -150,6 +150,8 @@ namespace miw
     int skipped_logs = 0;
     for (size_t i=0;i<lines.size();i++)
       {
+	if (lines.at(i).substr(0,1) == _ldef.commentchar())  // skip comments
+	  continue;
 	log_record *lr = parse_line(lines.at(i),appname,store_content,skipped_logs);
 	if (lr)
 	  lrecords.push_back(lr);

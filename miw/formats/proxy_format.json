@@ -1,7 +1,8 @@
 {
 	"format_name":"proxy",
 	"delims":" ",
-	"quotechar":"\"",
+        "quotechar":"\"",
+        "commentchar":"#",
 	"fields":[
 		{
 			"name":"date",

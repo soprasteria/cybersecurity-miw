@@ -43,4 +43,5 @@ message logdef
 	repeated field fields = 3;  /* definition of log fields */
 	optional string appname = 4; /* application name for the log set. */
 	optional string quotechar = 5;
+	optional string commentchar = 6;
 }
