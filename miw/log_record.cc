@@ -154,6 +154,38 @@ namespace miw
 	std::cerr << "[Error]: trying max operator on non numerical field\n";
       }
   }
+
+  void log_record::aggregation_mean(const int &i,
+				    const field &f)
+  {
+    std::string ftype = f.type();
+    if (ftype == "int")
+      {
+	int_field *ifi = _ld.fields(i).mutable_int_fi();
+	if (ifi->int_reap_size() == 1)
+	  ifi->add_int_reap(1); // to store the counter.
+	for (int j=0;j<f.int_fi().int_reap_size();j++)
+	  {
+	    ifi->set_int_reap(0,ifi->int_reap(0) + f.int_fi().int_reap(j));
+	    ifi->set_int_reap(1,ifi->int_reap(1) + 1); // we use the second array index for storing the number of entry.
+	  }
+      }
+    else if (ftype == "float")
+      {
+	float_field *iff = _ld.fields(i).mutable_real_fi();
+	if (iff->float_reap_size() == 1)
+	  iff->add_float_reap(1); // to store the counter.
+	for (int j=0;j<f.real_fi().float_reap_size();j++)
+	  {
+	    iff->set_float_reap(0,iff->float_reap(0) + f.real_fi().float_reap(j));
+	    iff->set_float_reap(1,iff->float_reap(1) + 1);
+	  }
+      }
+    else
+      {
+	std::cerr << "[Error]: trying mean operator on non numerical field\n";
+      }
+  }
   
   void log_record::aggregation_count(const int &i,
 				     const field &f)
@@ -195,6 +227,10 @@ namespace miw
 		else if (aggregation == "max")
 		  {
 		    aggregation_max(i,lr->_ld.fields(i));
+		  }
+		else if (aggregation == "mean")
+		  {
+		    aggregation_mean(i,lr->_ld.fields(i));
 		  }
 	      }
 	  }
@@ -291,7 +327,8 @@ namespace miw
 		jrec[json_fnamec]["add"] = jsfc;
 	      }
 	    else if (f.aggregation() == "sum"
-		     || f.aggregation() == "count")
+		     || f.aggregation() == "count"
+		     || f.aggregation() == "mean")
 	      jrec[json_fname]["inc"] = jsf;
 	  }
 	else jrec[json_fname] = jsf;

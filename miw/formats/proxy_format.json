@@ -40,12 +40,16 @@
 		{
 			"name":"sc-bytes",
 			"pos":6,
-			"type":"int"
+		        "type":"int",
+		        "aggregated":true,
+		        "aggregation":"mean"
 		},
 		{
 			"name":"cs-bytes",
 			"pos":7,
-			"type":"int"
+		    "type":"int",
+		    "aggregated":true,
+		    "aggregation":"mean"
 		},
 		{
 			"name":"cs-method",

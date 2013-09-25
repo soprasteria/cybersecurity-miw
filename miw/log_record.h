@@ -65,6 +65,9 @@ namespace miw
     void aggregation_max(const int &i,
 			 const field &f);
 
+    void aggregation_mean(const int &i,
+			  const field &f);
+    
     void aggregation_count(const int &i,
 			   const field &f);
 
