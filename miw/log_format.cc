@@ -122,14 +122,15 @@ namespace miw
 	  break;
 	
         // Skip delimiters.  Note the "not_of"
-	//lastPos = str.find_first_not_of(delim, pos);
-	lastPos = std::min(pos + 1,str.length());
+	if (quotechar.empty())
+	  lastPos = str.find_first_not_of(delim, pos);
+	else lastPos = std::min(pos + 1,str.length());
 	// Find next "non-delimiter"
         pos = str.find_first_of(delim, lastPos);
 	
 	/*std::cerr << "pos end: " << pos << " -- lastPos end: " << lastPos << std::endl;
 	  std::cerr << "str length: " << str.length() << std::endl;*/
-	if (pos >= str.length() || lastPos >= str.length())
+	if (!quotechar.empty() && (pos >= str.length() || lastPos >= str.length()))
 	  break;
       }
   }
