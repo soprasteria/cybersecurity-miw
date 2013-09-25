@@ -56,7 +56,8 @@ namespace miw
 
     // field aggregation functions.
     void aggregation_union(const int &i,
-			   const field &f);
+			   const field &f,
+			   const bool &count);
     
     void aggregation_sum(const int &i,
 			 const field &f);

@@ -1,12 +1,12 @@
 message int_field
 {
 	repeated int32 int_reap = 1;
-	optional int32 ext_val = 2; /* storage of sum, mean, ... */
 }
 
 message string_field
 {
 	repeated string str_reap = 1;
+	repeated int32 str_count = 2; /* for union with counters. */
 }
 
 message bool_field
@@ -17,7 +17,6 @@ message bool_field
 message float_field
 {
 	repeated float float_reap = 1;
-	optional float ext_val = 2; /* storage of sum, mean, ... */
 }
 
 message field

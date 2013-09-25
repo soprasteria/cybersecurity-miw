@@ -27,10 +27,11 @@
  */
 
 #include "log_record.h"
-#include <unordered_set>
+#include <unordered_map>
 #include <algorithm>
 #include <sstream>
 #include <iostream>
+#include <assert.h>
 
 namespace miw
 {
@@ -51,7 +52,8 @@ namespace miw
   }
 
   void log_record::aggregation_union(const int &i,
-				     const field &f)
+				     const field &f,
+				     const bool &count)
   {
     std::string ftype = f.type();
     if (ftype == "int")
@@ -64,17 +66,36 @@ namespace miw
       {
 	string_field *ifs = _ld.fields(i).mutable_str_fi();
 	
-	std::unordered_set<std::string> uno;
+	std::unordered_map<std::string,int> uno;
 	for (int i=0;i<ifs->str_reap_size();i++)
-	  uno.insert(ifs->str_reap(i));
-	std::unordered_set<std::string>::const_iterator sit;
+	  uno.insert(std::pair<std::string,int>(ifs->str_reap(i),i));
+	std::unordered_map<std::string,int>::const_iterator sit;
 	
 	for (int j=0;j<f.str_fi().str_reap_size();j++)
 	  {
 	    std::string str = f.str_fi().str_reap(j);
+	    int counter = 1;
+	    if (count && f.str_fi().str_count_size() > 0)
+	      counter = f.str_fi().str_count(j);
 	    if ((sit=uno.find(str))==uno.end())
-	      ifs->add_str_reap(str);
+	      {
+		ifs->add_str_reap(str);
+		if (count)
+		  ifs->add_str_count(counter);
+	      }
+	    else if (count)
+	      {
+		int pos = (*sit).second;
+		int cval = ifs->str_count_size() > 0 ? ifs->str_count(pos) : 0;
+		if (ifs->str_count_size() > 0) // XXX: beware.
+		  ifs->set_str_count(pos,cval + counter);
+		else ifs->add_str_count(cval + counter);
+	      }
 	  }
+	//debug
+	/*if (count)
+	  assert(ifs->str_count_size() == ifs->str_reap_size());*/
+	//debug
       }
     else if (ftype == "bool")
       {
@@ -163,9 +184,9 @@ namespace miw
 		  {
 		    aggregation_count(i,lr->_ld.fields(i));
 		  }
-		if (aggregation =="union")
+		if (aggregation =="union" || aggregation == "union_count")
 		  {
-		    aggregation_union(i,lr->_ld.fields(i));
+		    aggregation_union(i,lr->_ld.fields(i),(aggregation == "union_count" ? true : false));
 		  }
 		else if (aggregation == "sum")
 		  {
@@ -195,8 +216,8 @@ namespace miw
   void log_record::to_json(const field &f, Json::Value &jrec)
   {
     std::string ftype = f.type();
-    Json::Value jsf;
-    std::string json_fname = f.name();
+    Json::Value jsf,jsfc;
+    std::string json_fname = f.name(), json_fnamec = f.name() + "_count_i";
     if (ftype == "int")
       {
 	json_fname += "_i";
@@ -217,11 +238,20 @@ namespace miw
 	if (ifs->str_reap_size() > 1)
 	  {
 	    json_fname += "s";
+	    json_fnamec += "s";
 	    for (int i=0;i<ifs->str_reap_size();i++)
-	      jsf.append(ifs->str_reap(i));
+	      {
+		jsf.append(ifs->str_reap(i));
+		if (ifs->str_count_size() > 0)
+		  jsfc.append(ifs->str_count(i));
+	      }
 	  }
 	else if (ifs->str_reap_size() == 1)
-	  jsf = ifs->str_reap(0);
+	  {
+	    jsf = ifs->str_reap(0);
+	    if (ifs->str_count_size() > 0)
+	      jsfc.append(ifs->str_count(0));
+	  }
       }
     else if (ftype == "bool")
       {
@@ -255,6 +285,11 @@ namespace miw
 	  {
 	    if (f.aggregation() == "union")
 	      jrec[json_fname]["add"] = jsf;
+	    else if (f.aggregation() == "union_count")
+	      {
+		jrec[json_fname]["add"] = jsf;
+		jrec[json_fnamec]["add"] = jsfc;
+	      }
 	    else if (f.aggregation() == "sum"
 		     || f.aggregation() == "count")
 	      jrec[json_fname]["inc"] = jsf;

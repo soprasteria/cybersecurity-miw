@@ -35,7 +35,7 @@
 			"pos":5,
 			"type":"string",
 			"aggregated":true,
-			"aggregation":"union"
+			"aggregation":"union_count"
 		},
 		{
 			"name":"Domain",
@@ -89,7 +89,7 @@
 			"pos":15,
 			"type":"string",
 			"aggregated":true,
-			"aggregation":"union"
+			"aggregation":"union_count"
 		},
 		{
 			"name":"ResultCode",

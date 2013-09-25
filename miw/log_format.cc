@@ -241,7 +241,11 @@ namespace miw
 	    string_field *ifs = f->mutable_str_fi();
 	    token = chomp_cpp(token);
 	    if (!token.empty())
-	      ifs->add_str_reap(token);
+	      {
+		ifs->add_str_reap(token);
+		if (f->aggregated() && f->aggregation() == "union_count")
+		  ifs->add_str_count(1);
+	      }
 	    //std::cerr << "string field size: " << f->str_fi().str_reap_size() << std::endl;
 	  }
 	else if (ftype == "bool")
