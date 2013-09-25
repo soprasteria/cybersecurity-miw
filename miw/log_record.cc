@@ -162,24 +162,14 @@ namespace miw
     if (ftype == "int")
       {
 	int_field *ifi = _ld.fields(i).mutable_int_fi();
-	if (ifi->int_reap_size() == 1)
-	  ifi->add_int_reap(1); // to store the counter.
-	for (int j=0;j<f.int_fi().int_reap_size();j++)
-	  {
-	    ifi->set_int_reap(0,ifi->int_reap(0) + f.int_fi().int_reap(j));
-	    ifi->set_int_reap(1,ifi->int_reap(1) + 1); // we use the second array index for storing the number of entry.
-	  }
+	ifi->set_int_reap(0,ifi->int_reap(0) + f.int_fi().int_reap(0));
+	ifi->set_int_reap(1,ifi->int_reap(1) + f.int_fi().int_reap(1)); // we use the second array index for storing the number of entry.
       }
     else if (ftype == "float")
       {
 	float_field *iff = _ld.fields(i).mutable_real_fi();
-	if (iff->float_reap_size() == 1)
-	  iff->add_float_reap(1); // to store the counter.
-	for (int j=0;j<f.real_fi().float_reap_size();j++)
-	  {
-	    iff->set_float_reap(0,iff->float_reap(0) + f.real_fi().float_reap(j));
-	    iff->set_float_reap(1,iff->float_reap(1) + 1);
-	  }
+	iff->set_float_reap(0,iff->float_reap(0) + f.real_fi().float_reap(0));
+	iff->set_float_reap(1,iff->float_reap(1) + f.real_fi().float_reap(1));
       }
     else
       {
@@ -256,64 +246,36 @@ namespace miw
     std::string json_fname = f.name(), json_fnamec = f.name() + "_count_i";
     if (ftype == "int")
       {
-	json_fname += "_i";
+	json_fname += "_is";
 	int_field *ifi = f.mutable_int_fi();
-	if (ifi->int_reap_size() > 1)
-	  {
-	    json_fname += "s";
-	    for (int i=0;i<ifi->int_reap_size();i++)
-	      jsf.append(ifi->int_reap(i));
-	  }
-	else if (ifi->int_reap_size() == 1)
-	  jsf = ifi->int_reap(0);
+	for (int i=0;i<ifi->int_reap_size();i++)
+	  jsf.append(ifi->int_reap(i));
       }
     else if (ftype == "string")
       {
-	json_fname += "_s";
+	json_fname += "_ss";
 	string_field *ifs = f.mutable_str_fi();
-	if (ifs->str_reap_size() > 1)
+	json_fnamec += "s";
+	for (int i=0;i<ifs->str_reap_size();i++)
 	  {
-	    json_fname += "s";
-	    json_fnamec += "s";
-	    for (int i=0;i<ifs->str_reap_size();i++)
-	      {
-		jsf.append(ifs->str_reap(i));
-		if (ifs->str_count_size() > 0)
-		  jsfc.append(ifs->str_count(i));
-	      }
-	  }
-	else if (ifs->str_reap_size() == 1)
-	  {
-	    jsf = ifs->str_reap(0);
+	    jsf.append(ifs->str_reap(i));
 	    if (ifs->str_count_size() > 0)
-	      jsfc.append(ifs->str_count(0));
+	      jsfc.append(ifs->str_count(i));
 	  }
       }
     else if (ftype == "bool")
       {
-	json_fname += "_b";
+	json_fname += "_bs";
 	bool_field *ifb = f.mutable_bool_fi();
-	if (ifb->bool_reap_size() > 1)
-	  {
-	    json_fname += "s";
-	    for (int i=0;i<ifb->bool_reap_size();i++)
-	      jsf.append(ifb->bool_reap(i));
-	  }
-	else if (ifb->bool_reap_size() == 1)
-	  jsf = ifb->bool_reap(0);
+	for (int i=0;i<ifb->bool_reap_size();i++)
+	  jsf.append(ifb->bool_reap(i));
       }
     else if (ftype == "float")
       {
-	json_fname += "_f";
+	json_fname += "_fs";
 	float_field *iff = f.mutable_real_fi();
-	if (iff->float_reap_size() > 1)
-	  {
-	    json_fname += "_fs";
-	    for (int i=0;i<iff->float_reap_size();i++)
-	      jsf.append(iff->float_reap(0));
-	  }
-	else if (iff->float_reap_size() == 1)
-	  jsf = iff->float_reap(0);
+	for (int i=0;i<iff->float_reap_size();i++)
+	  jsf.append(iff->float_reap(0));
       }
     if (!jsf.isNull())
       {
