@@ -53,8 +53,10 @@ namespace miw
     void to_json(Json::Value &jlrec,
 		 Json::Value &jlcont) const;
 
-    //TODO: compression for storage in solr ?
-
+    // compression for storage.
+    static std::string compress_log_lines(const std::string &line);
+    static std::string uncompress_log_lines(const std::string &cline);
+    
     // field aggregation functions.
     void aggregation_union(const int &i,
 			   const field &f,

@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <sstream>
 #include <iostream>
+#include <snappy.h>
 #include <assert.h>
 
 namespace miw
@@ -230,12 +231,8 @@ namespace miw
     // merge original content.
     if (!_lines.empty() || !lr->_lines.empty())
       {
-	std::vector<std::string> nlines;
-	std::sort(_lines.begin(),_lines.end());
-	std::sort(lr->_lines.begin(),lr->_lines.end());
-	std::set_union(_lines.begin(),_lines.end(),lr->_lines.begin(),lr->_lines.end(),
-		       std::inserter(nlines,nlines.begin()));
-	_lines = nlines;
+	_lines.reserve(_lines.size() + lr->_lines.size());
+	std::copy(lr->_lines.begin(),lr->_lines.end(),std::back_inserter(_lines));
       }
   }
 
@@ -372,7 +369,7 @@ namespace miw
       {
 	std::stringstream sst;
 	std::for_each(_lines.begin(),_lines.end(),[&sst](const std::string &s){ sst << s << std::endl; });
-	jlcont["content"]["add"] = sst.str();
+	jlcont["content"]["add"] = log_record::compress_log_lines(sst.str());
 	jlcont["id"] = jlrec["id"].asString() + "_content";
       }
     
@@ -380,6 +377,20 @@ namespace miw
     /*Json::FastWriter writer;
       std::cout << "JSON: " << writer.write(jlrec) << std::endl;*/
     //debug
+  }
+
+  std::string log_record::compress_log_lines(const std::string &line)
+  {
+    std::string output;
+    snappy::Compress(line.data(),line.size(),&output);
+    return output;
+  }
+
+  std::string log_record::uncompress_log_lines(const std::string &cline)
+  {
+    std::string output;
+    snappy::Uncompress(cline.data(),cline.size(),&output);
+    return output;
   }
   
 }
