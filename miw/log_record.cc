@@ -351,8 +351,6 @@ namespace miw
 
   Json::Value log_record::to_json() const
   {
-    Json::Value jlrec;
-    
     //debug
     //std::cerr << "number of fields: " << _ld.fields_size() << std::endl;
     //debug
@@ -363,26 +361,25 @@ namespace miw
 	field f = _ld.fields(i);
 	log_record::to_json(f,jlrec);
       }
-
-    // concatenate original log lines if any.
-    if (!_lines.empty())
-      {
-	std::stringstream sst;
-	std::for_each(_lines.begin(),_lines.end(),[&sst](const std::string &s){ sst << s << std::endl; });
-	jlrec["content"]["add"] = sst.str();
-      }
     
     if (!_ld.appname().empty())
       jlrec["appname"] = _ld.appname();
     jlrec["logs"]["inc"] = (int)_sum;
     jlrec["format_name"] = _ld.format_name();
     
+    // concatenate original log lines if any, stored in a special record.
+    if (!_lines.empty())
+      {
+	std::stringstream sst;
+	std::for_each(_lines.begin(),_lines.end(),[&sst](const std::string &s){ sst << s << std::endl; });
+	jlcont["content"]["add"] = sst.str();
+	jlcont["id"] = jlrec["id"].asString() + "_content";
+      }
+    
     //debug
     /*Json::FastWriter writer;
       std::cout << "JSON: " << writer.write(jlrec) << std::endl;*/
     //debug
-    
-    return jlrec;
   }
   
 }
