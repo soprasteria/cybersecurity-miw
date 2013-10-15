@@ -48,10 +48,11 @@ namespace miw
     std::string key() const;
 
     void merge(log_record *lr); //TODO: need log format to check on aggregated fields etc ?
+
+    void compress_lines();
     
     static void to_json(const field &f, Json::Value &jrec);
-    void to_json(Json::Value &jlrec,
-		 Json::Value &jlcont) const;
+    void to_json(Json::Value &jlrec) const;
 
     // compression for storage.
     static std::string compress_log_lines(const std::string &line);
@@ -78,6 +79,9 @@ namespace miw
     long int _sum;
     logdef _ld;
     std::vector<std::string> _lines; // original log lines from which the compacted record was created.
+    std::string _compressed_lines;
+    int _compressed_size;
+    int _original_size;
   };
   
 }

@@ -34,12 +34,25 @@
 #include <snappy.h>
 #include <assert.h>
 
+size_t replace_in_string(std::string &str, const std::string &pattern,
+			 const std::string &repl)
+{
+  size_t p = 0;
+  while ((p = str.find(pattern,p)) != std::string::npos)
+    {
+      str.replace(p,pattern.size(),repl);
+      p += repl.size(); // in case we're replacing with a string that contains the pattern itself.
+    }
+  return p;
+}
+
+
 namespace miw
 {
 
   log_record::log_record(const std::string &key,
 			 const logdef &ld)
-    :_key(key),_sum(1),_ld(ld)
+    :_key(key),_sum(1),_ld(ld),_compressed_size(0),_original_size(0)
   {
   }
 
@@ -236,6 +249,20 @@ namespace miw
       }
   }
 
+  void log_record::compress_lines()
+  {
+    if (!_lines.empty())
+      {
+	std::stringstream sst;
+	std::for_each(_lines.begin(),_lines.end(),[&sst](const std::string &s){ sst << s << std::endl; });
+	std::string content_str = sst.str();
+	_compressed_lines = log_record::compress_log_lines(content_str);
+	replace_in_string(_compressed_lines,"\"","/\"");
+	_compressed_size = _compressed_lines.length();
+	_original_size = content_str.length();
+      }
+  }
+
   void log_record::to_json(const field &f, Json::Value &jrec)
   {
     std::string ftype = f.type();
@@ -364,18 +391,9 @@ namespace miw
     jlrec["logs"]["inc"] = (int)_sum;
     jlrec["format_name"] = _ld.format_name();
     
-    // concatenate original log lines if any, stored in a special record.
-    if (!_lines.empty())
-      {
-	std::stringstream sst;
-	std::for_each(_lines.begin(),_lines.end(),[&sst](const std::string &s){ sst << s << std::endl; });
-	jlcont["content"]["add"] = log_record::compress_log_lines(sst.str());
-	jlcont["id"] = jlrec["id"].asString() + "_content";
-      }
-    
     //debug
-    /*Json::FastWriter writer;
-      std::cout << "JSON: " << writer.write(jlrec) << std::endl;*/
+    //Json::FastWriter writer;
+    //std::cout << "JSON: " << writer.write(jlrec) << std::endl;
     //debug
   }
 

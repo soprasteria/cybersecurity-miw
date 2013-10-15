@@ -107,7 +107,7 @@
    -->
         
    <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false" />
-   <field name="content" type="string" indexed="false" stored="true" />
+   <field name="content" type="string" indexed="false" stored="true" multiValued="true" />
    <field name="logs" type="int" indexed="false" stored="true" />
    <field name="appname" type="string" indexed="true" stored="false" />
    <field name="log_type" type="string" indexed="true" stored="false" />
