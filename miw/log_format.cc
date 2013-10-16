@@ -239,7 +239,7 @@ namespace miw
 	    int_field *ifi = f->mutable_int_fi();
 	    ifi->add_int_reap(atoi(token.c_str()));
 	    if (f->aggregated() && f->aggregation() == "mean")
-	      ifi->add_int_reap(1);
+	      ifi->set_holder(1);
 	  }
 	else if (ftype == "string")
 	  {
@@ -263,7 +263,7 @@ namespace miw
 	    float_field *iff = f->mutable_real_fi();
 	    iff->add_float_reap(atof(token.c_str()));
 	    if (f->aggregated() && f->aggregation() == "mean")
-	      iff->add_float_reap(1);
+	      iff->set_holder(1.f);
 	  }
 
 	//TODO: pre-processing of field based on (yet to define) configuration field.

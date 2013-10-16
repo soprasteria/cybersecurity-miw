@@ -177,13 +177,15 @@ namespace miw
       {
 	int_field *ifi = _ld.fields(i).mutable_int_fi();
 	ifi->set_int_reap(0,ifi->int_reap(0) + f.int_fi().int_reap(0));
-	ifi->set_int_reap(1,ifi->int_reap(1) + f.int_fi().int_reap(1)); // we use the second array index for storing the number of entry.
+	//ifi->set_int_reap(1,ifi->int_reap(1) + f.int_fi().int_reap(1)); // we use the second array index for storing the number of entry.
+	ifi->set_holder(ifi->holder() + f.int_fi().holder());
       }
     else if (ftype == "float")
       {
 	float_field *iff = _ld.fields(i).mutable_real_fi();
 	iff->set_float_reap(0,iff->float_reap(0) + f.real_fi().float_reap(0));
-	iff->set_float_reap(1,iff->float_reap(1) + f.real_fi().float_reap(1));
+	//iff->set_float_reap(1,iff->float_reap(1) + f.real_fi().float_reap(1));
+	iff->set_holder(iff->holder() + f.real_fi().holder());
       }
     else
       {
@@ -257,7 +259,7 @@ namespace miw
 	std::for_each(_lines.begin(),_lines.end(),[&sst](const std::string &s){ sst << s << std::endl; });
 	std::string content_str = sst.str();
 	_compressed_lines = log_record::compress_log_lines(content_str);
-	replace_in_string(_compressed_lines,"\"","/\"");
+	replace_in_string(_compressed_lines,"\"","\\\"");
 	_compressed_size = _compressed_lines.length();
 	_original_size = content_str.length();
       }
@@ -266,14 +268,16 @@ namespace miw
   void log_record::to_json(const field &f, Json::Value &jrec)
   {
     std::string ftype = f.type();
-    Json::Value jsf,jsfc;
-    std::string json_fname = f.name(), json_fnamec = f.name() + "_count_i";
+    Json::Value jsf,jsfc,jsfh;
+    std::string json_fname = f.name(), json_fnamec = f.name() + "_count_i", json_fnameh = f.name() + "_hold_f";
     if (ftype == "int")
       {
 	json_fname += "_is";
 	int_field *ifi = f.mutable_int_fi();
 	for (int i=0;i<ifi->int_reap_size();i++)
 	  jsf.append(ifi->int_reap(i));
+	if (ifi->holder() != 0)
+	  jsfh["inc"] = ifi->holder();
       }
     else if (ftype == "string")
       {
@@ -300,6 +304,8 @@ namespace miw
 	float_field *iff = f.mutable_real_fi();
 	for (int i=0;i<iff->float_reap_size();i++)
 	  jsf.append(iff->float_reap(0));
+	if (iff->holder() != 0)
+	  jsfh["inc"] = iff->holder();
       }
     if (!jsf.isNull())
       {
@@ -315,7 +321,11 @@ namespace miw
 	    else if (f.aggregation() == "sum"
 		     || f.aggregation() == "count"
 		     || f.aggregation() == "mean")
-	      jrec[json_fname]["inc"] = jsf;
+	      {
+		jrec[json_fname]["inc"] = jsf;
+		if (!jsfh.isNull())
+		  jrec[json_fnameh] = jsfh;
+	      }
 	  }
 	else jrec[json_fname] = jsf;
       }
