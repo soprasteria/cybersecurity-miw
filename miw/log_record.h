@@ -79,6 +79,7 @@ namespace miw
     long int _sum;
     logdef _ld;
     std::vector<std::string> _lines; // original log lines from which the compacted record was created.
+    std::string _uncompressed_lines;
     std::string _compressed_lines;
     int _compressed_size;
     int _original_size;

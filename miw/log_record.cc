@@ -257,11 +257,13 @@ namespace miw
       {
 	std::stringstream sst;
 	std::for_each(_lines.begin(),_lines.end(),[&sst](const std::string &s){ sst << s << std::endl; });
-	std::string content_str = sst.str();
-	_compressed_lines = log_record::compress_log_lines(content_str);
+	_uncompressed_lines = sst.str();
+	// XXX: compression leads to awful bugs to re-read compressed files with C++ and Solr through encoded JSON.
+	// instead we are relying on Solr's internal compression of string fields.
+	/*_compressed_lines = log_record::compress_log_lines(content_str);
 	replace_in_string(_compressed_lines,"\"","\\\"");
-	_compressed_size = _compressed_lines.length();
-	_original_size = content_str.length();
+	_compressed_size = _compressed_lines.length();*/
+	_original_size = _uncompressed_lines.length();
       }
   }
 
