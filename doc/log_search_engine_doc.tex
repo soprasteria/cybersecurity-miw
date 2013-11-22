@@ -2,7 +2,6 @@
 \usepackage{jair, theapa, rawfonts}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[francais]{babel}
 \usepackage{url}
 \usepackage{graphicx}
 
@@ -107,7 +106,16 @@ Use
 \end{verbatim}
 to get the full list of options.
 
-\subsubsection{Tips \& Performances}
+\subsection{Log collapsing while preserving original logs}
+This is for collapsing logs while preserving the original data and linking them for later access from the search engine
+\begin{verbatim}
+./apps/log_compacter /home/steria/logs/* -b -o logs_out.json -j \                                                                                            
+  -f format/yourformat -n yourapp -d
+\end{verbatim}
+
+The resulting file is now larger than the original. When indexed (see sections below), this data is then automatically compressed, and can be retrieved without loss.
+
+\subsection{Tips \& Performances for collapsing}
 This MR job runs in memory. The required memory by each MR job is directly proportional to the size of the log file it processes. For this reason it is recommended to test the log collapsing program on files of different sizes, then split the largest log files accordingly.
 
 A convenient way to split file is to use the split program on Unix systems:
