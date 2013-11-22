@@ -272,10 +272,18 @@ namespace miw
     std::string json_fname = f.name(), json_fnamec = f.name() + "_count_i", json_fnameh = f.name() + "_hold_f";
     if (ftype == "int")
       {
-	json_fname += "_is";
 	int_field *ifi = f.mutable_int_fi();
-	for (int i=0;i<ifi->int_reap_size();i++)
-	  jsf.append(ifi->int_reap(i));
+	if (ifi->int_reap_size() > 1)
+	  {
+	    json_fname += "_is";
+	    for (int i=0;i<ifi->int_reap_size();i++)
+	      jsf.append(ifi->int_reap(i));
+	  }
+	else
+	  {
+	    json_fname += "_i";
+	    jsf["inc"] = ifi->int_reap(0);
+	  }
 	if (ifi->holder() != 0)
 	  jsfh["inc"] = ifi->holder();
       }
@@ -300,10 +308,18 @@ namespace miw
       }
     else if (ftype == "float")
       {
-	json_fname += "_fs";
 	float_field *iff = f.mutable_real_fi();
-	for (int i=0;i<iff->float_reap_size();i++)
-	  jsf.append(iff->float_reap(0));
+	if (iff->float_reap_size() > 1)
+	  {
+	    json_fname += "_fs";
+	    for (int i=0;i<iff->float_reap_size();i++)
+	      jsf.append(iff->float_reap(i));
+	  }
+	else
+	  {
+	    json_fname += "_f";
+	    jsf["inc"] = iff->float_reap(0);
+	  }
 	if (iff->holder() != 0)
 	  jsfh["inc"] = iff->holder();
       }
@@ -322,7 +338,7 @@ namespace miw
 		     || f.aggregation() == "count"
 		     || f.aggregation() == "mean")
 	      {
-		jrec[json_fname]["inc"] = jsf;
+		jrec[json_fname] = jsf;
 		if (!jsfh.isNull())
 		  jrec[json_fnameh] = jsfh;
 	      }
