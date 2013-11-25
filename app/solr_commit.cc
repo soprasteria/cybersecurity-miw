@@ -256,29 +256,33 @@ static void output_all(xarray<keyval_t> *wc_vals, FILE *fout)
 static void usage(char *prog) {
     printf("usage: %s <filename> [options]\n", prog);
     printf("options:\n");
-    printf("  -p #procs : # of processors to use\n");
+    printf("  -t #procs : # of processors to use\n");
     printf("  -m #map tasks : # of map tasks (pre-split input before MR)\n");
     printf("  -r #reduce tasks : # of reduce tasks\n");
     printf("  -l ntops : # of top val. pairs to display\n");
     printf("  -q : quiet output (for batch test)\n");
     printf("  -o filename : save output to a file\n");
+    printf("  -h specify solr host (e.g. localhost is default)\n");
+    printf("  -p specifiy solr port\n");
     exit(EXIT_FAILURE);
 }
 
 int main(int argc, char *argv[]) 
 {    
     int nprocs = 0, map_tasks = 0, ndisp = 5, reduce_tasks = 0;
-    int quiet = 0;
+    int quiet = 0;    
     int c;
+    std::string solr_host = "localhost";
+    int solr_port = 8984;
     if (argc < 2)
       usage(argv[0]);
     char *fn = argv[1];
     FILE *fout = NULL;
 
-    while ((c = getopt(argc - 1, argv + 1, "p:s:l:m:r:qo:")) != -1) 
+    while ((c = getopt(argc - 1, argv + 1, "t:s:l:m:r:p:h:qo:")) != -1) 
       {
       switch (c) {
-	case 'p':
+	case 't':
 	    nprocs = atoi(optarg);
 	    break;
 	case 'l':
@@ -291,8 +295,14 @@ int main(int argc, char *argv[])
 	    reduce_tasks = atoi(optarg);
 	    break;
       	case 'q':
-	    quiet = 1;
-	    break;
+	  quiet = 1;
+	  break;
+        case 'p':
+	  solr_port = atoi(optarg);
+	  break;
+        case 'h':
+	  solr_host = optarg;
+	  break;
       case 'o':
 	    fout = fopen(optarg, "w+");
 	    if (!fout) {
@@ -306,7 +316,10 @@ int main(int argc, char *argv[])
 	    exit(EXIT_FAILURE);
 	    break;
 	}
-    }
+      }
+
+    solr_url = "http://" + solr_host + ":" + to_string(solr_port) + "/solr/update/json?commit=true";
+    
     mapreduce_appbase::initialize();
     /* get input file */
     sc app(fn, map_tasks);
