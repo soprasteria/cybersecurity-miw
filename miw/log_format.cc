@@ -241,7 +241,7 @@ namespace miw
 	    if (f->aggregated() && f->aggregation() == "mean")
 	      ifi->set_holder(1);
 	  }
-	else if (ftype == "string")
+	else if (ftype == "string" || ftype == "date")
 	  {
 	    string_field *ifs = f->mutable_str_fi();
 	    token = chomp_cpp(token);

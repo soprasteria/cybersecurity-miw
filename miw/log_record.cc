@@ -76,7 +76,7 @@ namespace miw
 	for (int j=0;j<f.int_fi().int_reap_size();j++)
 	  ifi->add_int_reap(f.int_fi().int_reap(j));
       }
-    else if (ftype == "string")
+    else if (ftype == "string" || ftype == "date")
       {
 	string_field *ifs = _ld.fields(i).mutable_str_fi();
 	
@@ -281,7 +281,7 @@ namespace miw
 	    for (int i=0;i<ifi->int_reap_size();i++)
 	      jsf.append(ifi->int_reap(i));
 	  }
-	else
+	else if (ifi->int_reap_size() == 1)
 	  {
 	    json_fname += "_i";
 	    jsf["inc"] = ifi->int_reap(0);
@@ -291,14 +291,42 @@ namespace miw
       }
     else if (ftype == "string")
       {
-	json_fname += "_ss";
 	string_field *ifs = f.mutable_str_fi();
-	json_fnamec += "s";
-	for (int i=0;i<ifs->str_reap_size();i++)
+	if (ifs->str_reap_size() > 1)
 	  {
-	    jsf.append(ifs->str_reap(i));
-	    if (ifs->str_count_size() > 0)
-	      jsfc.append(ifs->str_count(i));
+	    json_fname += "_ss";
+	    json_fnamec += "s";
+	    for (int i=0;i<ifs->str_reap_size();i++)
+	      {
+		jsf.append(ifs->str_reap(i));
+		if (ifs->str_count_size() > 0)
+		  jsfc.append(ifs->str_count(i));
+	      }
+	  }
+	else if (ifs->str_reap_size() == 1)
+	  {
+	    json_fname += "_s";
+	    jsf = ifs->str_reap(0);
+	  }
+      }
+    else if (ftype == "date")
+      {
+	string_field *ifs = f.mutable_str_fi();
+	if (ifs->str_reap_size() > 1)
+	  {
+	    json_fname += "_dts";
+	    json_fnamec += "s";
+	    for (int i=0;i<ifs->str_reap_size();i++)
+	      {
+		jsf.append(ifs->str_reap(i));
+		if (ifs->str_count_size() > 0)
+		  jsfc.append(ifs->str_count(i));
+	      }
+	  }
+	else if (ifs->str_reap_size() == 1)
+	  {
+	    json_fname += "_dt";
+	    jsf = ifs->str_reap(0);
 	  }
       }
     else if (ftype == "bool")
@@ -317,7 +345,7 @@ namespace miw
 	    for (int i=0;i<iff->float_reap_size();i++)
 	      jsf.append(iff->float_reap(i));
 	  }
-	else
+	else if (iff->float_reap_size() == 1)
 	  {
 	    json_fname += "_f";
 	    jsf["inc"] = iff->float_reap(0);
