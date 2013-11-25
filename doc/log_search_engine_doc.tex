@@ -211,6 +211,15 @@ curl "http://localhost:8984/solr/select?q=appname:yourapp&wt=json&rows=0"
 \end{verbatim}
 reports the number of records for logs in application 'yourapp'.
 
+It is possible to delete the content of the app 'yourapp' from the index, as follows:
+
+\begin{verbatim}
+curl "http://localhost:8984/solr/update?commit=true" \
+--data '<delete><query>appname:yourapp</query></delete>' \
+-H 'Content-type:text/xml; charset=utf-8'
+\end{verbatim}
+The other applications in the index remain unchanged.
+
 Note that Solr supports the service of queries while indexing. Therefore in production, new logs can be indexed without disrupting service.
 
 \subsection{Access to original data, from search results}
