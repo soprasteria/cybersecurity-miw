@@ -106,7 +106,7 @@ Use
 \end{verbatim}
 to get the full list of options.
 
-\subsection{Log collapsing while preserving original logs}
+\subsection{Log collapsing while preserving original logs}\label{subsec:original}
 This is for collapsing logs while preserving the original data and linking them for later access from the search engine
 \begin{verbatim}
 ./apps/log_compacter /home/steria/logs/* -b -o logs_out.json -j \                                                                                            
@@ -212,5 +212,27 @@ curl "http://localhost:8984/solr/select?q=appname:yourapp&wt=json&rows=0"
 reports the number of records for logs in application 'yourapp'.
 
 Note that Solr supports the service of queries while indexing. Therefore in production, new logs can be indexed without disrupting service.
+
+\subsection{Access to original data, from search results}
+When collapsing logs while preserving the original data (see section \ref{subsec:original}), and indexing them, it is possible to retrieve these data from the results to a search query. The steps are as follows:
+
+\begin{itemize}
+\item Issue a search query;
+\item From results, look up the \emph{id} field of the records of interest;
+\item To get all content related to the id value, search for the string id value + \emph{\_content}:
+
+\begin{verbatim}
+curl "http://localhost:8984/solr/select?q=id:stringid_content&wt=json"
+\end{verbatim}
+\end{itemize}
+
+This returns a result with field \emph{content} in the form of an array that contains all original data from which the collapsed log was produced. These data are only stored and not indexed.\\
+
+{\bf Important Notes}:
+\begin{itemize}
+\item the size of the content field data can range from mega to giga bytes;
+\item the size of the content field data can exceed the default output buffer of Solr's Web server;
+\item the size of the content field can exceed the system's in-memory capacity.
+\end{itemize}
 
 \end{document}
