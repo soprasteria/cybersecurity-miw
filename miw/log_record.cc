@@ -31,7 +31,7 @@
 #include <algorithm>
 #include <sstream>
 #include <iostream>
-#include <snappy.h>
+//#include <snappy.h>
 #include <assert.h>
 
 size_t replace_in_string(std::string &str, const std::string &pattern,
@@ -455,7 +455,7 @@ namespace miw
     //debug
   }
 
-  std::string log_record::compress_log_lines(const std::string &line)
+  /*std::string log_record::compress_log_lines(const std::string &line)
   {
     std::string output;
     snappy::Compress(line.data(),line.size(),&output);
@@ -467,6 +467,6 @@ namespace miw
     std::string output;
     snappy::Uncompress(cline.data(),cline.size(),&output);
     return output;
-  }
+    }*/
   
 }
