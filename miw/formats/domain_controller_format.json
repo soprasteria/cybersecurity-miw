@@ -5,7 +5,7 @@
 		{	"name":"date",
 			"pos":0,
 			"type":"string",
-			"key":"true",
+			"key":true,
 			"processing":"day"
 		},
 		{
