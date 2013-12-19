@@ -36,6 +36,8 @@ message field
 	optional bool_field bool_fi = 10;
 	optional float_field real_fi = 11;
 	optional uint32 count = 12; /* aggregation counter. */
+
+	optional string preprocessing = 13; /* special pre-processing for generating more fields out of a single one */
 }
 
 message logdef

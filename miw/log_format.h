@@ -52,6 +52,10 @@ namespace miw
 
     static std::string chomp_cpp(const std::string &s);
 
+    static void tokenize_simple(const std::string &str,
+				std::vector<std::string> &tokens,
+				const std::string &delim);
+    
     static void tokenize(const std::string &str,
 			 const int &length,
 			 std::vector<std::string> &tokens,
@@ -68,6 +72,11 @@ namespace miw
 			   const std::string &appname,
 			   const bool &store_content,
 			   int &skipped_logs) const;
+
+    // custom pre-processing.
+    int pre_process_evtxcsv(field *f,
+			    const std::string &token,
+			    std::vector<field*> &nfields);
     
     logdef _ldef;  // protocol buffer object.
   };

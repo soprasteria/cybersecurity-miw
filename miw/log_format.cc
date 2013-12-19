@@ -83,6 +83,27 @@ namespace miw
 
     return sc;
   }
+
+  void log_format::tokenize_simple(const std::string &str,
+				   std::vector<std::string> &tokens,
+				   const std::string &delim)
+  {
+
+    // Skip delimiters at beginning.
+    std::string::size_type lastPos = str.find_first_not_of(delim, 0);
+    // Find first "non-delimiter".
+    std::string::size_type pos = str.find_first_of(delim, lastPos);
+
+    while (std::string::npos != pos || std::string::npos != lastPos)
+      {
+	// Found a token, add it to the vector.
+	tokens.push_back(str.substr(lastPos, pos - lastPos));
+	// Skip delimiters.  Note the "not_of"
+	lastPos = str.find_first_not_of(delim, pos);
+	// Find next "non-delimiter"
+	pos = str.find_first_of(delim, lastPos);
+      }
+  }
   
   void log_format::tokenize(const std::string &str,
 			    const int &length,
@@ -90,7 +111,6 @@ namespace miw
 			    const std::string &delim,
 			    const std::string &quotechar)
   {
-    
     // Skip delimiters at beginning.
     std::string::size_type lastPos = str.find_first_not_of(delim, 0);
     std::string::size_type pos = 0;
@@ -124,7 +144,10 @@ namespace miw
         // Skip delimiters.  Note the "not_of"
 	if (quotechar.empty())
 	  lastPos = str.find_first_not_of(delim, pos);
-	else lastPos = std::min(pos + 1,str.length());
+	if (lastPos != std::string::npos && lastPos - pos > 1) // avoid skipping empty ',,' fields.
+	  lastPos = pos + 1;
+	
+	//else lastPos = std::min(pos+1,str.length());
 	// Find next "non-delimiter"
         pos = str.find_first_of(delim, lastPos);
 	
@@ -167,6 +190,11 @@ namespace miw
     std::string key;
     std::vector<std::string> tokens;
     log_format::tokenize(line,-1,tokens,_ldef.delims(),_ldef.quotechar());
+
+    /*std::cerr << "tokens size: " << tokens.size() << std::endl;
+    for (size_t i=0;i<tokens.size();i++)
+    std::cerr << "tok: " << tokens.at(i) << std::endl;*/
+
     if ((int)tokens.size() > _ldef.fields_size())
       {
 	std::cerr << "[Error]: wrong number of tokens detected, " << tokens.size()
@@ -174,11 +202,12 @@ namespace miw
 	++skipped_logs;
 	return NULL;
       }
-
+    
     // parse fields according to format.
     int pos = -1;
     logdef ldef = _ldef;
     ldef.set_appname(appname);
+    std::vector<field*> nfields;
     /*std::cerr << "fields size: " << ldef.fields_size() << std::endl;
       std::cerr << "tokens size: " << tokens.size() << std::endl;*/
     for (int i=0;i<ldef.fields_size();i++)
@@ -191,15 +220,15 @@ namespace miw
 	  }
 	else pos = f->pos();
 	
-	if (f->pos() >= tokens.size())
+	if (f->pos() >= (int)tokens.size())
 	  {
 	    std::cerr << "[Error]: token position " << f->pos() << " is beyond the number of log fields. Skipping. Check your format file\n";
 	    continue;
 	  }
-	
+
 	std::string token = tokens.at(f->pos());
 	std::string ftype = f->type();
-
+	
 	// processing of token
 	std::string ntoken;
 	std::remove_copy(token.begin(),token.end(),std::back_inserter(ntoken),'"');
@@ -266,8 +295,12 @@ namespace miw
 	      iff->set_holder(1.f);
 	  }
 
-	//TODO: pre-processing of field based on (yet to define) configuration field.
-	
+	// pre-processing of field based on (yet to define) configuration field.
+	if (f->preprocessing() == "evtxcsv")
+	  {
+	    pre_process_evtxcsv(f,token,nfields);
+	  }
+
 	// process fields that are part of the key.
 	if (f->key())
 	  {
@@ -277,6 +310,14 @@ namespace miw
 	  }
       }
 
+    // add new fields to ldef if any found in pre-processing step.
+    for (size_t i=0;i<nfields.size();i++)
+      {
+	field *f = ldef.add_fields();
+	*f = *nfields.at(i);
+	delete nfields.at(i);
+      }
+    
     //debug
     //std::cerr << "ldef first field string size: " << ldef.fields(0).str_fi().str_reap_size() << std::endl;
     //debug
@@ -293,6 +334,46 @@ namespace miw
     //debug
 
     return lr;
+  }
+
+  int log_format::pre_process_evtxcsv(field *f,
+				      const std::string &token,
+				      std::vector<field*> &nfields)
+  {
+    static std::string arrow_start = "->";
+    
+    std::string ftype = f->type();
+    //std::cerr << "token: " << token << std::endl;
+
+    // lookup for '->'
+    std::string::size_type pos = token.find(arrow_start,0);
+    std::string remain = token.substr(pos+2);
+    
+    // split on '=' and assemble the new fields.
+    std::vector<std::string> results;
+    log_format::tokenize_simple(remain,results,"=");
+    if (results.empty())
+      return 1;
+    std::string head = results.at(0);
+    for (size_t i=1;i<results.size();i++)
+      {
+	std::string r = results.at(i),nhead;
+	if (i < results.size()-1)
+	  {
+	    r = r.substr(0,r.size()-1); // remove last char.
+	    std::string::size_type head_pos = r.find_last_of(' ');
+	    nhead = r.substr(head_pos);
+	    r = r.substr(0,head_pos);
+	  }
+	field *nf = new field();
+	nf->set_name(chomp_cpp(head));
+	nf->set_type("string");
+	string_field *ifs = nf->mutable_str_fi();
+	ifs->add_str_reap(chomp_cpp(r));
+	nfields.push_back(nf);
+	head = nhead;
+      }
+    return 0;
   }
   
 }

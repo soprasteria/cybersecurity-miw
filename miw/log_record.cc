@@ -269,6 +269,8 @@ namespace miw
 
   void log_record::to_json(const field &f, Json::Value &jrec)
   {
+    if (!f.preprocessing().empty())
+      return;
     std::string ftype = f.type();
     Json::Value jsf,jsfc,jsfh;
     std::string json_fname = f.name(), json_fnamec = f.name() + "_count_i", json_fnameh = f.name() + "_hold_f";

@@ -1,0 +1,19 @@
+
+evtx,
+datestring :day
+timestring :hour
+unknown3string
+unknown4string
+unknown5string
+Channelstring
+unknown7string
+unknown8string
+Computerstring 
+Event_IDstring
+	EventDatastringjevtxcsv
+	unknown12int
+	unknown13string
+	unknown14int
+descriptionstring
+	unknown16string
+	unknown17string
