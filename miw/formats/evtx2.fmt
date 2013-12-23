@@ -1,0 +1,20 @@
+
+evtx,
+datestring :day
+timestring :hour
+timezonestring
+MACBstring
+sourcestring
+
+sourcetypestring
+typestring
+userstring
+hoststring 
+shortstring
+descstringjevtxcsv2
+versionint
+filenamestring
+inodeint
+notesstring
+formatstring
+extrastring

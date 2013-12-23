@@ -300,6 +300,10 @@ namespace miw
 	  {
 	    pre_process_evtxcsv(f,token,nfields);
 	  }
+	else if (f->preprocessing() == "evtxcsv2")
+	  {
+	    pre_process_evtxcsv2(f,token,nfields);
+	  }
 
 	// process fields that are part of the key.
 	if (f->key())
@@ -372,6 +376,29 @@ namespace miw
 	ifs->add_str_reap(chomp_cpp(r));
 	nfields.push_back(nf);
 	head = nhead;
+      }
+    return 0;
+  }
+
+  int log_format::pre_process_evtxcsv2(field *f,
+				       const std::string &token,
+				       std::vector<field*> &nfields)
+  {
+    std::vector<std::string> pairs;
+    log_format::tokenize_simple(token,pairs," ");
+    for (size_t i=0;i<pairs.size();i++)
+      {
+	std::vector<std::string> elts;
+	log_format::tokenize_simple(pairs.at(i),elts,":");
+	if (elts.size() == 2)
+	  {
+	    field *nf = new field();
+	    nf->set_name(elts.at(0));
+	    nf->set_type("string");
+	    string_field *ifs = nf->mutable_str_fi();
+	    ifs->add_str_reap(elts.at(1));
+	    nfields.push_back(nf);
+	  }
       }
     return 0;
   }

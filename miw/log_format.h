@@ -77,6 +77,10 @@ namespace miw
     int pre_process_evtxcsv(field *f,
 			    const std::string &token,
 			    std::vector<field*> &nfields);
+
+    int pre_process_evtxcsv2(field *f,
+			     const std::string &token,
+			     std::vector<field*> &nfields);
     
     logdef _ldef;  // protocol buffer object.
   };
