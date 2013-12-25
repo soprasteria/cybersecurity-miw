@@ -237,6 +237,8 @@ namespace miw
 	  {
 	    std::vector<std::string> elts;
 	    log_format::tokenize(token,-1,elts,"-",""); // XXX: very basic tokenization of dates of the form 2012-12-10.
+	    if (elts.size() == 0)
+	      log_format::tokenize(token,-1,elts,"/",""); // XXX: very basic tokenization of dates of the form 2012/12/10.
 	    if (elts.size() == 3)
 	      {
 		if (f->processing() == "day")
