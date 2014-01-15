@@ -15,6 +15,9 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
+/* Define to 1 if you have the <snappy.h> header file. */
+#undef HAVE_SNAPPY_H
+
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
 
@@ -35,6 +38,9 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* "Protocol buffers available" */
+#undef JSONCPP
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
@@ -67,6 +73,9 @@
 /* Define if you want metis to print out profiling results from performance
    counters */
 #undef PROFILE_ENABLED
+
+/* "Protocol buffers available" */
+#undef PROTOBUF
 
 /* Define to (Append-map -> Group) -> (psrs-merge, and-reduce) */
 #undef SINGLE_APPEND_GROUP_FIRST

@@ -162,6 +162,7 @@ namespace miw
 			     const int &length,
 			     const std::string &appname,
 			     const bool &store_content,
+			     const bool &compressed,
 			     std::vector<log_record*> &lrecords) const
   {
     std::vector<std::string> lines;
@@ -175,7 +176,7 @@ namespace miw
       {
 	if (lines.at(i).substr(0,1) == _ldef.commentchar())  // skip comments
 	  continue;
-	log_record *lr = parse_line(lines.at(i),appname,store_content,skipped_logs);
+	log_record *lr = parse_line(lines.at(i),appname,store_content,compressed,skipped_logs);
 	if (lr)
 	  lrecords.push_back(lr);
       }
@@ -185,6 +186,7 @@ namespace miw
   log_record* log_format::parse_line(const std::string &line,
 				     const std::string &appname,
 				     const bool &store_content,
+				     const bool &compressed,
 				     int &skipped_logs) const
   {
     std::string key;
@@ -331,7 +333,8 @@ namespace miw
     if (!appname.empty())
       key += "_" + appname;
     log_record *lr = new log_record(key,ldef);
-
+    lr->_compressed = compressed;
+    
     if (store_content)
       lr->_lines.push_back(line);
     

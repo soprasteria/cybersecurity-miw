@@ -31,7 +31,7 @@
 #include <algorithm>
 #include <sstream>
 #include <iostream>
-//#include <snappy.h>
+#include <snappy.h>
 #include <assert.h>
 
 size_t replace_in_string(std::string &str, const std::string &pattern,
@@ -52,7 +52,7 @@ namespace miw
 
   log_record::log_record(const std::string &key,
 			 const logdef &ld)
-    :_key(key),_sum(1),_ld(ld),_compressed_size(0),_original_size(0)
+    :_key(key),_sum(1),_ld(ld),_compressed_size(0),_original_size(0),_compressed(false)
   {
   }
 
@@ -249,22 +249,59 @@ namespace miw
 	_lines.reserve(_lines.size() + lr->_lines.size());
 	std::copy(lr->_lines.begin(),lr->_lines.end(),std::back_inserter(_lines));
       }
+    if (_compressed)
+      {
+	// uncompress compressed lines.
+	std::string n_uncompressed_lines;
+	if (!_compressed_lines.empty())
+	  n_uncompressed_lines = log_record::uncompress_log_lines(_compressed_lines);
+	// flatten new lines.
+	flatten_lines();
+	// add them up to existing lines.
+	_uncompressed_lines = n_uncompressed_lines + _uncompressed_lines;
+	// compress them together.
+	_compressed_lines = log_record::compress_log_lines(_uncompressed_lines);
+	_uncompressed_lines.clear();
+      }
   }
 
-  void log_record::compress_lines()
+  void log_record::flatten_lines()
   {
     if (!_lines.empty())
       {
 	std::stringstream sst;
 	std::for_each(_lines.begin(),_lines.end(),[&sst](const std::string &s){ sst << s << std::endl; });
 	_uncompressed_lines = sst.str();
-	// XXX: compression leads to awful bugs to re-read compressed files with C++ and Solr through encoded JSON.
-	// instead we are relying on Solr's internal compression of string fields.
-	/*_compressed_lines = log_record::compress_log_lines(content_str);
-	replace_in_string(_compressed_lines,"\"","\\\"");
-	_compressed_size = _compressed_lines.length();*/
 	_original_size = _uncompressed_lines.length();
       }
+  }
+  
+  /*void log_record::compress_lines()
+  {
+    if (!_lines.empty())
+      {
+	std::stringstream sst;
+	std::for_each(_lines.begin(),_lines.end(),[&sst](const std::string &s){ sst << s << std::endl; });
+	_uncompressed_lines = sst.str();
+	_compressed_lines = log_record::compress_log_lines(_uncompressed_lines);
+	_compressed_size = _compressed_lines.length();
+	_original_size = _uncompressed_lines.length();
+	_uncompressed_lines.clear();
+      }
+      }*/
+  
+  std::string log_record::compress_log_lines(const std::string &line)
+  {
+    std::string output;
+    snappy::Compress(line.data(),line.size(),&output);
+    return output;
+  }
+  
+  std::string log_record::uncompress_log_lines(const std::string &cline)
+  {
+    std::string output;
+    snappy::Uncompress(cline.data(),cline.size(),&output);
+    return output;
   }
 
   void log_record::to_json(const field &f, Json::Value &jrec)
