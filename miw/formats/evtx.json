@@ -5,7 +5,7 @@
 	{
 	    "name":"date",
 	    "type":"date",
-	    "date_format":"%d/%m/%Y",
+	    "date_format":"%m/%d/%Y",
 	    "key":true,
 	    "processing":"day"
 	},

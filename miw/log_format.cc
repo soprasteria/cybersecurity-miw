@@ -242,11 +242,11 @@ namespace miw
 	    if (strptime(token.c_str(),f->date_format().c_str(),&tm))
 	      {
 		if (f->processing() == "day")
-		  token = to_string(tm.tm_year) + "-" + to_string(tm.tm_mon) + "-" + to_string(tm.tm_mday);
+		  token = to_string(tm.tm_year+1900) + "-" + to_string(tm.tm_mon+1) + "-" + to_string(tm.tm_mday);
 		else if (f->processing() == "month")
-		  token = to_string(tm.tm_year) + "-" + to_string(tm.tm_mon);
+		  token = to_string(tm.tm_year+1900) + "-" + to_string(tm.tm_mon+1);
 		else if (f->processing() == "year")
-		  token = to_string(tm.tm_year);
+		  token = to_string(tm.tm_year+1900);
 	      }
 	    else std::cerr << "[Warning]: unrecognized date format " << token << std::endl;
 	  }
