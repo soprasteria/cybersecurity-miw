@@ -259,9 +259,9 @@ namespace miw
 		if (f->processing() == "hour")
 		  token = elts.at(0);
 		else if (f->processing() == "minute")
-		  token = elts.at(0) + "-" + elts.at(1);
+		  token = elts.at(0) + ":" + elts.at(1);
 		else if (f->processing() == "second")
-		  token = elts.at(0) + "-" + elts.at(1) + "-" + elts.at(2);
+		  token = elts.at(0) + ":" + elts.at(1) + ":" + elts.at(2);
 	      }
 	    else std::cerr << "[Warning]: unrecognized time format " << token << std::endl;
 	  }
@@ -274,7 +274,7 @@ namespace miw
 	    if (f->aggregated() && f->aggregation() == "mean")
 	      ifi->set_holder(1);
 	  }
-	else if (ftype == "string" || ftype == "date")
+	else if (ftype == "string" || ftype == "date" || ftype == "time")
 	  {
 	    string_field *ifs = f->mutable_str_fi();
 	    token = chomp_cpp(token);

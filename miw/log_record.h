@@ -50,9 +50,9 @@ namespace miw
     void merge(log_record *lr); //TODO: need log format to check on aggregated fields etc ?
 
     void flatten_lines();
-    //void compress_lines();
     
-    static void to_json(const field &f, Json::Value &jrec);
+    static void to_json(const field &f, Json::Value &jrec,
+			std::string &date, std::string &time);
     void to_json(Json::Value &jlrec) const;
 
     // compression for storage.

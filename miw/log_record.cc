@@ -304,7 +304,8 @@ namespace miw
     return output;
   }
 
-  void log_record::to_json(const field &f, Json::Value &jrec)
+  void log_record::to_json(const field &f, Json::Value &jrec,
+			   std::string &date, std::string &time)
   {
     if (!f.preprocessing().empty())
       return;
@@ -328,7 +329,7 @@ namespace miw
 	if (ifi->holder() != 0)
 	  jsfh["inc"] = ifi->holder();
       }
-    else if (ftype == "string")
+    else if (ftype == "string" || ftype == "time")
       {
 	string_field *ifs = f.mutable_str_fi();
 	if (ifs->str_reap_size() > 1)
@@ -346,6 +347,14 @@ namespace miw
 	  {
 	    json_fname += "_s";
 	    jsf = ifs->str_reap(0);
+	    if (ftype == "time")
+	      {
+		time = ifs->str_reap(0);
+		if (f.processing() == "hour")
+		  time += ":00:00";
+		else if (f.processing() == "minute")
+		  time += ":00";
+	      }
 	  }
       }
     else if (ftype == "date")
@@ -366,6 +375,7 @@ namespace miw
 	  {
 	    json_fname += "_dt";
 	    jsf = ifs->str_reap(0);
+	    date = ifs->str_reap(0);
 	  }
       }
     else if (ftype == "bool")
@@ -474,17 +484,24 @@ namespace miw
     //std::cerr << "number of fields: " << _ld.fields_size() << std::endl;
     //debug
 
+    std::string date = "0000-00-00", time = "00:00:00";
     jlrec["id"] = _key;
     for  (int i=0;i<_ld.fields_size();i++)
       {
 	field f = _ld.fields(i);
-	log_record::to_json(f,jlrec);
+	std::string ldate,ltime;
+	log_record::to_json(f,jlrec,ldate,ltime);
+	if (!ldate.empty())
+	  date = ldate;
+	else if (!ltime.empty())
+	  time = ltime;
       }
     
     if (!_ld.appname().empty())
       jlrec["appname"] = _ld.appname();
     jlrec["logs"]["inc"] = (int)_sum;
     jlrec["format_name"] = _ld.format_name();
+    jlrec["std_date"] = date + "T" + time + "Z"; 
     
     //debug
     //Json::FastWriter writer;

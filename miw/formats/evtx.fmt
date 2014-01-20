@@ -1,7 +1,7 @@
 
 evtx,
-datedate :dayr%m/%d/%Y
-timestring :hour
+datedate :dayr%m/%d/%Y
+timetime :hour
 unknown3string
 unknown4string
 unknown5string

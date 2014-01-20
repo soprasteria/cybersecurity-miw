@@ -11,7 +11,7 @@
 	},
 	{
 	    "name":"time",
-	    "type":"string",
+	    "type":"time",
 	    "key": true,
 	    "processing":"hour"
 	},
