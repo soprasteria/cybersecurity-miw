@@ -34,10 +34,19 @@
 #include "log_definition.pb.h"
 #include <vector>
 #include <string>
+#include <sstream>
 
 namespace miw
 {
 
+  template <class T>
+    static std::string to_string (const T& t)
+    {
+      std::stringstream ss;
+      ss << t;
+      return ss.str();
+    };
+  
   class log_format
   {
   public:

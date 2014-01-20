@@ -4,7 +4,8 @@
     "fields":[
 	{
 	    "name":"date",
-	    "type":"string",
+	    "type":"date",
+	    "date_format":"%d/%m/%Y",
 	    "key":true,
 	    "processing":"day"
 	},

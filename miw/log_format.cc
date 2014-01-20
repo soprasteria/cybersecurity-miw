@@ -30,6 +30,7 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <time.h>
 
 //#define DEBUG
 
@@ -235,21 +236,17 @@ namespace miw
 	std::string ntoken;
 	std::remove_copy(token.begin(),token.end(),std::back_inserter(ntoken),'"');
 	token = ntoken;
-	if (f->processing() == "day" || f->processing() == "month")
+	if (f->processing() == "day" || f->processing() == "month" || f->processing() == "year")
 	  {
-	    std::vector<std::string> elts;
-	    log_format::tokenize(token,-1,elts,"-",""); // XXX: very basic tokenization of dates of the form 2012-12-10.
-	    if (elts.size() != 3)
-	      {
-		elts.clear();
-		log_format::tokenize(token,-1,elts,"\\/",""); // XXX: very basic tokenization of dates of the form 2012/12/10.
-	      }
-	    if (elts.size() == 3)
+	    struct tm tm;
+	    if (strptime(token.c_str(),f->date_format().c_str(),&tm))
 	      {
 		if (f->processing() == "day")
-		  token = elts.at(2);
+		  token = to_string(tm.tm_year) + "-" + to_string(tm.tm_mon) + "-" + to_string(tm.tm_mday);
 		else if (f->processing() == "month")
-		  token = elts.at(1);
+		  token = to_string(tm.tm_year) + "-" + to_string(tm.tm_mon);
+		else if (f->processing() == "year")
+		  token = to_string(tm.tm_year);
 	      }
 	    else std::cerr << "[Warning]: unrecognized date format " << token << std::endl;
 	  }
@@ -262,9 +259,9 @@ namespace miw
 		if (f->processing() == "hour")
 		  token = elts.at(0);
 		else if (f->processing() == "minute")
-		  token = elts.at(1);
+		  token = elts.at(0) + "-" + elts.at(1);
 		else if (f->processing() == "second")
-		  token = elts.at(2);
+		  token = elts.at(0) + "-" + elts.at(1) + "-" + elts.at(2);
 	      }
 	    else std::cerr << "[Warning]: unrecognized time format " << token << std::endl;
 	  }
