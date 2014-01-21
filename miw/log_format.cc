@@ -257,11 +257,23 @@ namespace miw
 	    if (elts.size() == 3)
 	      {
 		if (f->processing() == "hour")
-		  token = elts.at(0);
+		  {
+		    int h = std::stoi(elts.at(0)) % f->processing_offset();
+		    h *= f->processing_offset();
+		    token = (h < 10 ? "0" : "") + to_string(h);
+		  }
 		else if (f->processing() == "minute")
-		  token = elts.at(0) + ":" + elts.at(1);
+		  {
+		    int m = std::stoi(elts.at(1)) / f->processing_offset();
+		    m *= f->processing_offset();
+		    token = elts.at(0) + ":" + (m < 10 ? "0" : "") + to_string(m);
+		  }
 		else if (f->processing() == "second")
-		  token = elts.at(0) + ":" + elts.at(1) + ":" + elts.at(2);
+		  {
+		    int s = std::stoi(elts.at(2)) % f->processing_offset();
+		    s *= f->processing_offset();
+		    token = elts.at(0) + ":" + elts.at(1) + ":" + (s < 10 ? "0" : "") + to_string(s);
+		  }
 	      }
 	    else std::cerr << "[Warning]: unrecognized time format " << token << std::endl;
 	  }

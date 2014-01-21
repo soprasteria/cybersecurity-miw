@@ -13,7 +13,8 @@
 	    "name":"time",
 	    "type":"time",
 	    "key": true,
-	    "processing":"hour"
+	    "processing":"minute",
+	    "processing_offset":10
 	},
 	{
 	    "name":"unknown3",

@@ -143,6 +143,7 @@ Description of the available parameters:
 \item aggregated: true if field values should be aggregated. For an exact same key, other fields can be aggregated;
 \item aggregation: union, sum, max, count. Aggregation operation controls the aggregated fields value, typically for union of IP addresses, and sum or max of transferred bytes for example;
 \item processing: day, month, year, hour, minute, second. Processing allows to only retain part of a date field. Typically, we may want to use the hour from a date field as a key for collapsing all logs within every hour and compute / unionize values across other fields such as IP addresses or amount of transferred data;
+\item processing\_offset: allows to choose the step or offset used to collapse the logs: e.g. a processing\_offset of 10 along with processing option \emph{minute} collapses all logs every 10 minutes;
 \item date\_format: generic specification of log date format, such as \%d/\%m/\%Y;
 \item preprocessing: special formats, such as \emph{evtx} can be pre-processed in order to generate new fields that are not originally encoded as CSV.
 \end{itemize}

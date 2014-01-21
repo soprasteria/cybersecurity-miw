@@ -509,18 +509,4 @@ namespace miw
     //debug
   }
 
-  /*std::string log_record::compress_log_lines(const std::string &line)
-  {
-    std::string output;
-    snappy::Compress(line.data(),line.size(),&output);
-    return output;
-  }
-
-  std::string log_record::uncompress_log_lines(const std::string &cline)
-  {
-    std::string output;
-    snappy::Uncompress(cline.data(),cline.size(),&output);
-    return output;
-    }*/
-  
 }
