@@ -7,14 +7,15 @@
 		{
 			"name":"date",
 			"pos":0,
-			"type":"string",
+			"type":"date",
+			"date_format":"%Y-%m-%d",
 			"key":true,
 			"processing":"day"
 		},
 		{
 			"name":"time",
 			"pos":1,
-			"type":"string",
+			"type":"time",
 			"key":true,
 			"processing":"hour"
 		},
