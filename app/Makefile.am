@@ -1,5 +1,5 @@
 MAXCPUS = $(shell grep -c processor /proc/cpuinfo)
-AM_CXXFLAGS=-Wall -g -pipe -std=c++11 -fpermissive -fopenmp -g @OPT_LEVEL@ \
+AM_CXXFLAGS=-Wall -g -pipe -std=c++11 -fpermissive -fopenmp -g \
 	     -I../miw -I../metis \
 	     -fno-omit-frame-pointer -D_GNU_SOURCE -include ../config.h \
 	     -DJTLS=__thread -DJSHARED_ATTR= \
