@@ -1,7 +1,7 @@
 
-evtx,
-datestring :day
-timestring :hour
+evtx,
+datedate :dayr%m/%d/%Y
+timetime :hour
 timezonestring
 MACBstring
 sourcestring

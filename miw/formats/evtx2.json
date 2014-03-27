@@ -4,13 +4,14 @@
     "fields":[
 	{
 	    "name":"date",
-	    "type":"string",
+	    "type":"date",
 	    "key":true,
-	    "processing":"day"
+	    "processing":"day",
+	    "date_format":"%m/%d/%Y"
 	},
 	{
 	    "name":"time",
-	    "type":"string",
+	    "type":"time",
 	    "key": true,
 	    "processing":"hour"
 	},

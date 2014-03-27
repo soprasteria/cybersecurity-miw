@@ -254,13 +254,14 @@ namespace miw
 	  }
 	else if (f->processing() == "hour" || f->processing() == "minute" || f->processing() == "second")
 	  {
+	    token = chomp_cpp(token);
 	    std::vector <std::string> elts;
 	    log_format::tokenize(token,-1,elts,":",""); // XXX: very basic tokenization of time fields of the form 14:39:02.
 	    if (elts.size() == 3)
 	      {
 		if (f->processing() == "hour")
 		  {
-		    int h = std::stoi(elts.at(0)) % f->processing_offset();
+		    int h = std::stoi(elts.at(0)) / f->processing_offset();
 		    h *= f->processing_offset();
 		    token = (h < 10 ? "0" : "") + to_string(h);
 		  }
@@ -272,7 +273,7 @@ namespace miw
 		  }
 		else if (f->processing() == "second")
 		  {
-		    int s = std::stoi(elts.at(2)) % f->processing_offset();
+		    int s = std::stoi(elts.at(2)) / f->processing_offset();
 		    s *= f->processing_offset();
 		    token = elts.at(0) + ":" + elts.at(1) + ":" + (s < 10 ? "0" : "") + to_string(s);
 		  }
