@@ -409,10 +409,15 @@ namespace miw
       {
 	std::vector<std::string> elts;
 	log_format::tokenize_simple(pairs.at(i),elts,":");
-	if (elts.size() == 2)
+	if (elts.size() >= 2)
 	  {
 	    std::string ename = chomp_cpp(elts.at(0));
 	    std::string val = chomp_cpp(elts.at(1));
+	    if (elts.size() > 2)
+	      {
+		for (size_t j=2;j<elts.size();j++)
+		  val += elts.at(j);
+	      }
 	    if (val.back() == ']')
 	      {
 		val.erase(val.length()-1);
