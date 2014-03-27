@@ -242,7 +242,9 @@ namespace miw
 	    if (strptime(token.c_str(),f->date_format().c_str(),&tm))
 	      {
 		if (f->processing() == "day")
-		  token = to_string(tm.tm_year+1900) + "-" + to_string(tm.tm_mon+1) + "-" + to_string(tm.tm_mday);
+		  {
+		    token = to_string(tm.tm_year+1900) + "-" + to_string(tm.tm_mon+1) + "-" + to_string(tm.tm_mday);
+		  }
 		else if (f->processing() == "month")
 		  token = to_string(tm.tm_year+1900) + "-" + to_string(tm.tm_mon+1);
 		else if (f->processing() == "year")
@@ -402,18 +404,24 @@ namespace miw
 				       std::vector<field*> &nfields)
   {
     std::vector<std::string> pairs;
-    log_format::tokenize_simple(token,pairs," ");
+    log_format::tokenize_simple(token,pairs,"[");
     for (size_t i=0;i<pairs.size();i++)
       {
 	std::vector<std::string> elts;
 	log_format::tokenize_simple(pairs.at(i),elts,":");
 	if (elts.size() == 2)
 	  {
+	    std::string ename = chomp_cpp(elts.at(0));
+	    std::string val = chomp_cpp(elts.at(1));
+	    if (val.back() == ']')
+	      {
+		val.erase(val.length()-1);
+	      }
 	    field *nf = new field();
-	    nf->set_name(elts.at(0));
+	    nf->set_name(ename);
 	    nf->set_type("string");
 	    string_field *ifs = nf->mutable_str_fi();
-	    ifs->add_str_reap(elts.at(1));
+	    ifs->add_str_reap(val);
 	    nfields.push_back(nf);
 	  }
       }
