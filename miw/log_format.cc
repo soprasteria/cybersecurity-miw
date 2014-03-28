@@ -469,12 +469,32 @@ namespace miw
       return 0;
     //std::cerr << "p: " << p << std::endl;
     std::string val = ctoken.substr(p);
-    //std::cerr << "val" << val << std::endl;
+    //std::cerr << "val: " << val << std::endl;
+
+    bool first = true;
+    int i = 0;
+    std::string val_clean;
+    while (i < val.length())
+    {
+      if (val[i] == '(')
+	{
+	  std::string::size_type p = val.substr(i).find_first_of(')');
+	  i+=p;
+	  if (!first)
+	    val_clean += '.';
+	  else first = false;
+	}
+      else val_clean += val[i];
+      ++i;
+    }
+    if (!val.empty())
+      val_clean = val_clean.substr(0,val_clean.size()-1);
+    
     field *nf = new field();
     nf->set_name("target");
     nf->set_type("string");
     string_field *ifs = nf->mutable_str_fi();
-    ifs->add_str_reap(val);
+    ifs->add_str_reap(val_clean);
     nfields.push_back(nf);
     return 0;
   }
