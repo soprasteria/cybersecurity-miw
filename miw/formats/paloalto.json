@@ -1,0 +1,199 @@
+{
+    "format_name":"paloalto",
+    "delims":",",
+    "fields":[
+	{
+	    "name":"Domain",
+	    "type":"string"
+	},
+	{
+	    "name":"Receive Time",
+            "type":"date",
+            "date_format":"%Y/%m/%d %H:%M:%S",
+            "key":true,
+            "processing":"minute"
+	},
+	{
+	    "name":"Serial #",
+	    "type":"string"
+	},
+	{
+	    "name":"Type",
+	    "type":"string"
+	},
+	{
+	    "name":"Threat/Content Type",
+	    "type":"string"
+	},
+	{
+	    "name":"Config Version",
+	    "type":"string"
+	},
+	{
+	    "name":"Generate Time",
+	    "type":"string"
+	},
+	{
+	    "name":"Source address",
+            "key":true,
+	    "type":"string"
+	},
+	{
+	    "name":"Destination address",
+            "key":true,
+	    "type":"string"
+	},
+	{
+	    "name":"NAT Source IP",
+	    "type":"string"
+	},
+	{
+	    "name":"NAT Destination IP",
+	    "type":"string"
+	},
+	{
+	    "name":"Rule",
+	    "type":"string"
+	},
+	{
+	    "name":"Source User",
+	    "type":"string"
+	},
+	{
+	    "name":"Destination User",
+	    "type":"string"
+	},
+	{
+	    "name":"Application",
+	    "type":"string"
+	},
+	{
+	    "name":"Virtual System",
+	    "type":"string"
+	},
+	{
+	    "name":"Source Zone",
+	    "type":"string"
+	},
+	{
+	    "name":"Destination Zone",
+	    "type":"string"
+	},
+	{
+	    "name":"Inbound Interface",
+	    "type":"string"
+	},
+	{
+	    "name":"Outbound Interface",
+	    "type":"string"
+	},
+	{
+	    "name":"Log Action",
+	    "type":"string"
+	},
+	{
+	    "name":"Time Logged",
+	    "type":"string"
+	},
+	{
+	    "name":"Session ID",
+	    "type":"string"
+	},
+	{
+	    "name":"Repeat Count",
+	    "type":"string"
+	},
+	{
+	    "name":"Source Port",
+            "key":true,
+	    "type":"string"
+	},
+	{
+	    "name":"Destination Port",
+            "key":true,
+	    "type":"string"
+	},
+	{
+	    "name":"NAT Source Port",
+	    "type":"string"
+	},
+	{
+	    "name":"NAT Destination Port",
+	    "type":"string"
+	},
+	{
+	    "name":"Flags",
+	    "type":"string"
+	},
+	{
+	    "name":"IP Protocol",
+            "key":true,
+            "key":true,
+	    "type":"string"
+	},
+	{
+	    "name":"Action",
+	    "type":"string"
+	},
+	{
+	    "name":"Bytes",
+	    "type":"string"
+	},
+	{
+	    "name":"Bytes Sent",
+	    "type":"string"
+	},
+	{
+	    "name":"Bytes Received",
+	    "type":"string"
+	},
+	{
+	    "name":"Packets",
+	    "type":"string"
+	},
+	{
+	    "name":"Start Time",
+	    "type":"string"
+	},
+	{
+	    "name":"Elapsed Time (sec)",
+	    "type":"string"
+	},
+	{
+	    "name":"Category",
+	    "type":"string"
+	},
+	{
+	    "name":"Padding",
+	    "type":"string"
+	},
+	{
+	    "name":"seqno",
+	    "type":"string"
+	},
+	{
+	    "name":"actionflags",
+	    "type":"string"
+	},
+	{
+	    "name":"Source Country",
+	    "type":"string"
+	},
+	{
+	    "name":"Destination Country",
+	    "type":"string"
+	},
+	{
+	    "name":"cpadding",
+	    "type":"string"
+	},
+	{
+	    "name":"pkts_sent",
+	    "type":"string"
+	},
+	{
+	    "name":"pkts_received",
+	    "type":"string"
+	}
+    ]
+}

@@ -1,0 +1,52 @@
+
+paloalto,
+Domainstring1
+Receive Timedate :minuter%Y/%m/%d %H:%M:%S
+Serial #string
+Typestring
+Threat/Content Typestring
+Config Versionstring
+Generate Timestring
+Source addressstring 
+Destination addressstring 
+NAT Source IPstring
+NAT Destination IPstring
+Rulestring
+Source Userstring
+Destination Userstring
+Applicationstring
+Virtual Systemstring
+Source Zonestring
+Destination Zonestring
+Inbound Interfacestring
+Outbound Interfacestring
+
+Log Actionstring
+Time Loggedstring
+
+Session IDstring
+Repeat Countstring
+Source Portstring 
+Destination Portstring 
+NAT Source Portstring
+NAT Destination Portstring
+Flagsstring
+IP Protocolstring 
+Actionstring
+Bytesstring
+
+Bytes Sentstring
+Bytes Receivedstring
+Packetsstring
+
+Start Timestring
+Elapsed Time (sec)string
+Categorystring
+Paddingstring
+seqnostring
+actionflagsstring
+Source Countrystring
+Destination Countrystring
+cpaddingstring
+	pkts_sentstring
+pkts_receivedstring

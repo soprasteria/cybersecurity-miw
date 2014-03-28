@@ -501,7 +501,7 @@ namespace miw
       jlrec["appname"] = _ld.appname();
     jlrec["logs"]["inc"] = (int)_sum;
     jlrec["format_name"] = _ld.format_name();
-    jlrec["std_date_dt"] = date + "T" + time + "Z"; 
+    jlrec["std_date_dt"] = (date.find("T")!=std::string::npos) ? date + "Z" : date + "T" + time + "Z"; 
     
     //debug
     //Json::FastWriter writer;

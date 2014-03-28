@@ -236,10 +236,10 @@ namespace miw
 	std::string ntoken;
 	std::remove_copy(token.begin(),token.end(),std::back_inserter(ntoken),'"');
 	token = ntoken;
-	if (f->processing() == "day" || f->processing() == "month" || f->processing() == "year")
+	if (ftype == "date" || f->processing() == "day" || f->processing() == "month" || f->processing() == "year")
 	  {
 	    struct tm tm;
-	    if (strptime(token.c_str(),f->date_format().c_str(),&tm))
+	    if (strptime(token.c_str(),f->date_format().c_str(),&tm) != NULL)
 	      {
 		if (f->processing() == "day")
 		  {
@@ -249,6 +249,18 @@ namespace miw
 		  token = to_string(tm.tm_year+1900) + "-" + to_string(tm.tm_mon+1);
 		else if (f->processing() == "year")
 		  token = to_string(tm.tm_year+1900);
+		else if (f->processing() == "hour")
+		  {
+		    token = to_string(tm.tm_year+1900) + "-" + to_string(tm.tm_mon+1) + "-" + to_string(tm.tm_mday) + "T" + to_string(tm.tm_hour) + ":00:00";
+		  }
+		else if (f->processing() == "minute")
+		  {
+		    token = to_string(tm.tm_year+1900) + "-" + to_string(tm.tm_mon+1) + "-" + to_string(tm.tm_mday) + "T" + to_string(tm.tm_hour) + ":" + to_string(tm.tm_min) + ":00";
+		  }
+		else if (f->processing() == "second")
+		  {
+		    token = to_string(tm.tm_year+1900) + "-" + to_string(tm.tm_mon+1) + "-" + to_string(tm.tm_mday) + "T" + to_string(tm.tm_hour) + ":" + to_string(tm.tm_min) + ":" + to_string(tm.tm_sec);
+		  }
 	      }
 	    else std::cerr << "[Warning]: unrecognized date format " << token << std::endl;
 	  }
