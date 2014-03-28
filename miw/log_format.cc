@@ -137,6 +137,7 @@ namespace miw
         else token = str.substr(lastPos, pos - lastPos);
 	/*std::cerr << "pos: " << pos << " -- lastPos: " << lastPos << std::endl;
 	  std::cerr << "token: " << token << std::endl;*/
+	//if (!token.empty()) // XXX: beware, may break some formats.
 	tokens.push_back(token);
 	if (length != -1 
 	    && (int)pos >= length)
@@ -190,6 +191,8 @@ namespace miw
 				     const bool &compressed,
 				     int &skipped_logs) const
   {
+    if (chomp_cpp(line).empty())
+      return NULL;
     std::string key;
     std::vector<std::string> tokens;
     log_format::tokenize(line,-1,tokens,_ldef.delims(),_ldef.quotechar());
@@ -198,7 +201,8 @@ namespace miw
     for (size_t i=0;i<tokens.size();i++)
     std::cerr << "tok: " << tokens.at(i) << std::endl;*/
 
-    if ((int)tokens.size() > _ldef.fields_size())
+    if ((int)tokens.size() > _ldef.fields_size()
+	&& _ldef.fields(0).pos() == -1)
       {
 	std::cerr << "[Error]: wrong number of tokens detected, " << tokens.size()
 		  << " expected " << _ldef.fields_size() << " for log: " << line << std::endl;
@@ -225,7 +229,7 @@ namespace miw
 	
 	if (f->pos() >= (int)tokens.size())
 	  {
-	    std::cerr << "[Error]: token position " << f->pos() << " is beyond the number of log fields. Skipping. Check your format file\n";
+	    std::cerr << "[Error]: token position " << f->pos() << " is beyond the number of log fields. Skipping line: " << line << std::endl;
 	    continue;
 	  }
 
@@ -334,6 +338,13 @@ namespace miw
 	else if (f->preprocessing() == "evtxcsv2")
 	  {
 	    pre_process_evtxcsv2(f,token,nfields);
+	  }
+	else if (f->preprocessing() == "microsoftdnslogs")
+	  {
+	    std::string tail;
+	    for (size_t j=f->pos();j<tokens.size();j++)
+	      tail += tokens.at(j);
+	    pre_process_microsoftdnslogs(f,tail,nfields);
 	  }
 
 	// process fields that are part of the key.
@@ -445,5 +456,27 @@ namespace miw
       }
     return 0;
   }
-  
+
+  int log_format::pre_process_microsoftdnslogs(field *f,
+					       const std::string &token,
+					       std::vector<field*> &nfields)
+  {
+    /*std::cerr << "mic preproc\n";
+      std::cerr << "token: " << token << std::endl;*/
+    std::string ctoken = chomp_cpp(token);
+    std::string::size_type p = ctoken.find_first_of('(');
+    if (p == std::string::npos)
+      return 0;
+    //std::cerr << "p: " << p << std::endl;
+    std::string val = ctoken.substr(p);
+    //std::cerr << "val" << val << std::endl;
+    field *nf = new field();
+    nf->set_name("target");
+    nf->set_type("string");
+    string_field *ifs = nf->mutable_str_fi();
+    ifs->add_str_reap(val);
+    nfields.push_back(nf);
+    return 0;
+  }
+
 }

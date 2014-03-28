@@ -1,0 +1,39 @@
+{
+    "format_name":"dns",
+    "delims":" ",
+    "fields":[
+	{
+	    "name":"date",
+	    "type":"date",
+	    "pos":"0",
+            "date_format":"%d/%m/%Y",
+	    "key":true,
+	    "processing":"day"
+	},
+	{
+	    "name":"time",
+	    "type":"time",
+	    "pos":"1",
+	    "key":true,
+	    "processing":"minute"
+	},
+	{
+	    "name":"protocol",
+	    "type":"string",
+	    "pos":"5"
+	},
+	{
+	    "name":"source",
+	    "type":"string",
+	    "pos":"7",
+	    "key":true
+	},
+	{
+	    "name":"target",
+	    "type":"string",
+	    "pos":"8",
+	    "preprocessing":"microsoftdnslogs",
+	    "key":true
+	}
+    ]
+}
