@@ -362,7 +362,7 @@ namespace miw
 	string_field *ifs = f.mutable_str_fi();
 	if (ifs->str_reap_size() > 1)
 	  {
-	    json_fname += "_dts";
+	    json_fname += "_ss"; // was dts.
 	    json_fnamec += "s";
 	    for (int i=0;i<ifs->str_reap_size();i++)
 	      {
@@ -373,7 +373,7 @@ namespace miw
 	  }
 	else if (ifs->str_reap_size() == 1)
 	  {
-	    json_fname += "_dt";
+	    json_fname += "_s"; // was dt but solr complains, subsumed by std_date_dt anyways.
 	    jsf = ifs->str_reap(0);
 	    date = ifs->str_reap(0);
 	  }
