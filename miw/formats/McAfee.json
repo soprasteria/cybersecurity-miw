@@ -1,0 +1,171 @@
+{
+    "format_name":"paloalto",
+    "delims":",",
+    "fields":[
+	{
+	    "name":"Event",
+	    "key":true,
+	    "type":"string"
+	},
+	{
+	    "name":"IP Address",
+	    "key":true,
+	    "type":"string"
+	},
+	{
+	    "name":"Computer Name",
+	    "key":true,
+	    "type":"string"
+	},
+	{
+	    "name":"Source",
+	    "type":"string"
+	},
+	{
+	    "name":"Risk Name",
+	    "key":true,
+	    "type":"string"
+	},
+	{
+	    "name":"Occurrences",
+	    "type":"string"
+	},
+	{
+	    "name":"File Path",
+	    "key":true,
+	    "type":"string"
+	},
+	{
+	    "name":"Description",
+	    "type":"string"
+	},
+	{
+	    "name":"Actual Action",
+	    "type":"string"
+	},
+	{
+	    "name":"Requested Action",
+	    "type":"string"
+	},
+	{
+	    "name":"Secondary Action",
+	    "type":"string"
+	},
+	{
+	    "name":"Event Date",
+	    "type":"date",
+	    "date_format":"%m/%d/%Y %H:%M:%S",
+	    "key":true,
+	    "processing":"minute"
+	},
+	{
+	    "name":"Event Insert Time",
+	    "type":"string"
+	},
+	{
+	    "name":"Domain",
+	    "type":"string"
+	},
+	{
+	    "name":"User Name",
+	    "type":"string"
+	},
+	{
+	    "name":"Server",
+	    "type":"string"
+	},
+	{
+	    "name":"Client Group",
+	    "type":"string"
+	},
+	{
+	    "name":"Source Computer Name",
+	    "type":"string"
+	},
+	{
+	    "name":"Source Computer IP",
+	    "type":"string"
+	},
+	{
+	    "name":"Application Name",
+	    "type":"string"
+	},
+	{
+	    "name":"Application Hash",
+	    "type":"string"
+	},
+	{
+	    "name":"Hash Algorithm",
+	    "type":"string"
+	},
+	{
+	    "name":"Company",
+	    "type":"string"
+	},
+	{
+	    "name":"Version",
+	    "type":"string"
+	},
+	{
+	    "name":"File Size",
+	    "type":"string"
+	},
+	{
+	    "name":"Detection Reason",
+	    "type":"string"
+	},
+	{
+	    "name":"Minimum Sensitivity Level",
+	    "type":"string"
+	},
+	{
+	    "name":"Permitted Application Reason",
+	    "type":"string"
+	},
+	{
+	    "name":"Web Domain",
+	    "type":"string"
+	},
+	{
+	    "name":"Download site",
+	    "type":"string"
+	},
+	{
+	    "name":"Downloaded by",
+	    "type":"string"
+	},
+	{
+	    "name":"Prevalence",
+	    "type":"string"
+	},
+	{
+	    "name":"Reputation",
+	    "type":"string"
+	},
+	{
+	    "name":"First Seen",
+	    "type":"string"
+	},
+	{
+	    "name":"URL Tracking Status",
+	    "type":"string"
+	},
+	{
+	    "name":"Event End Date",
+	    "type":"string"
+	},
+	{
+	    "name":"Timestamp",
+	    "type":"string"
+	},
+	{
+	    "name":"Operating System",
+	    "type":"string"
+	},
+	{
+	    "name":"Deleted",
+	    "type":"string"
+	}
+
+    ]
+}

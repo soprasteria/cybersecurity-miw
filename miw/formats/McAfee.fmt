@@ -1,0 +1,47 @@
+
+paloalto,
+Eventstring 
+
+IP Addressstring 
+Computer Namestring 
+Sourcestring
+	Risk Namestring 
+Occurrencesstring
+	File Pathstring 
+Descriptionstring
+Actual Actionstring
+Requested Actionstring
+Secondary Actionstring/
+
+Event Datedate :minuter%m/%d/%Y %H:%M:%S
+Event Insert Timestring
+Domainstring
+	User Namestring
+Serverstring
+Client Groupstring
+Source Computer Namestring
+Source Computer IPstring
+Application Namestring
+Application Hashstring
+Hash Algorithmstring
+Companystring
+Versionstring
+	File Sizestring
+Detection Reasonstring#
+Minimum Sensitivity Levelstring&
+Permitted Application Reasonstring
+
+Web Domainstring
+Download sitestring
+Downloaded bystring
+
+Prevalencestring
+
+Reputationstring
+
+First Seenstring
+URL Tracking Statusstring
+Event End Datestring
+	Timestampstring
+Operating Systemstring
+Deletedstring
