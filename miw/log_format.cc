@@ -165,6 +165,7 @@ namespace miw
 			     const std::string &appname,
 			     const bool &store_content,
 			     const bool &compressed,
+			     const bool &quiet,
 			     std::vector<log_record*> &lrecords) const
   {
     std::vector<std::string> lines;
@@ -178,7 +179,7 @@ namespace miw
       {
 	if (lines.at(i).substr(0,1) == _ldef.commentchar())  // skip comments
 	  continue;
-	log_record *lr = parse_line(lines.at(i),appname,store_content,compressed,skipped_logs);
+	log_record *lr = parse_line(lines.at(i),appname,store_content,compressed,quiet,skipped_logs);
 	if (lr)
 	  lrecords.push_back(lr);
       }
@@ -189,6 +190,7 @@ namespace miw
 				     const std::string &appname,
 				     const bool &store_content,
 				     const bool &compressed,
+				     const bool &quiet,
 				     int &skipped_logs) const
   {
     if (chomp_cpp(line).empty())
@@ -204,8 +206,9 @@ namespace miw
     if ((int)tokens.size() > _ldef.fields_size()
 	&& _ldef.fields(0).pos() == -1)
       {
-	std::cerr << "[Error]: wrong number of tokens detected, " << tokens.size()
-		  << " expected " << _ldef.fields_size() << " for log: " << line << std::endl;
+	if (!quiet)
+	  std::cerr << "[Error]: wrong number of tokens detected, " << tokens.size()
+		    << " expected " << _ldef.fields_size() << " for log: " << line << std::endl;
 	++skipped_logs;
 	return NULL;
       }
@@ -229,7 +232,8 @@ namespace miw
 	
 	if (f->pos() >= (int)tokens.size())
 	  {
-	    std::cerr << "[Error]: token position " << f->pos() << " is beyond the number of log fields. Skipping line: " << line << std::endl;
+	    if (!quiet)
+	      std::cerr << "[Error]: token position " << f->pos() << " is beyond the number of log fields. Skipping line: " << line << std::endl;
 	    return NULL;
 	  }
 

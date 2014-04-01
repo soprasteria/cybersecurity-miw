@@ -76,12 +76,14 @@ namespace miw
 		   const std::string &appname,
 		   const bool &store_content,
 		   const bool &compressed,
+		   const bool &quiet,
 		   std::vector<log_record*> &lrecords) const;
 
     log_record* parse_line(const std::string &line,
 			   const std::string &appname,
 			   const bool &store_content,
 			   const bool &compressed,
+			   const bool &quiet,
 			   int &skipped_logs) const;
 
     // custom pre-processing.
