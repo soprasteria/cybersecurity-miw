@@ -230,7 +230,7 @@ namespace miw
 	if (f->pos() >= (int)tokens.size())
 	  {
 	    std::cerr << "[Error]: token position " << f->pos() << " is beyond the number of log fields. Skipping line: " << line << std::endl;
-	    continue;
+	    return NULL;
 	  }
 
 	std::string token = tokens.at(f->pos());
