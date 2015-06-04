@@ -84,7 +84,7 @@ namespace miw
 	for (int i=0;i<ifs->str_reap_size();i++)
 	  uno.insert(std::pair<std::string,int>(ifs->str_reap(i),i));
 	std::unordered_map<std::string,int>::const_iterator sit;
-	
+
 	for (int j=0;j<f.str_fi().str_reap_size();j++)
 	  {
 	    std::string str = f.str_fi().str_reap(j);
@@ -95,7 +95,9 @@ namespace miw
 	      {
 		ifs->add_str_reap(str);
 		if (count)
-		  ifs->add_str_count(counter);
+		  {
+		    ifs->add_str_count(counter);
+		  }
 	      }
 	    else if (count)
 	      {
@@ -385,6 +387,7 @@ namespace miw
 	  {
 	    json_fname += "_s";
 	    jsf = ifs->str_reap(0);
+	    jsfc = 1;
 	    if (ftype == "time")
 	      {
 		time = ifs->str_reap(0);
