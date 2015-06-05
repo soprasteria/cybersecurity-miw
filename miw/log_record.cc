@@ -198,6 +198,33 @@ namespace miw
   {
     _ld.fields(i).set_count(f.count() + 1);
   }
+
+  //TODO: filters
+  //- check record lines for filter expression, if any line,
+  //  otherwise check every field string
+  //- implement filter types
+  void log_record::filter_fields(log_record *lr,
+				 const field &f)
+  {
+    if (f.filter_type() == "contain")
+      {
+	for (int i=0;i<lr->_ld.fields_size();i++)
+	  {
+	    if (lr->_ld.fields(i).name() == f.filter_field())
+	      {
+		// count hit
+		if (lr->_ld.fields(i).str_fi().str_reap(0).find(f.filter())!=std::string::npos)
+		  {
+		    //f.set_count(f.count()+1);
+		    if (f.int_fi().int_reap_size() == 0)
+		      f.int_fi().add_int_reap(1);
+		    else f.int_fi().set_int_reap(0,f.int_fi().int_reap(0)+1);
+		  }
+		break;
+	      }
+	  }
+      }
+  }
   
   void log_record::merge(log_record *lr)
   {
@@ -205,6 +232,11 @@ namespace miw
     
     if (!lr)
       return;
+
+    //TODO: filters
+    //- check record lines for filter expression, if any line,
+    //  otherwise check every field string
+    //- implement filter types
     
     // look for key fields for each record.
     // iterate remaining fields:
@@ -220,6 +252,8 @@ namespace miw
 		std::string aggregation = lr->_ld.fields(i).aggregation();
 		if (aggregation == "count")
 		  {
+		    /*if (!lr->_ld.fields(i).filter().empty())
+		      filter_fields(lr,lr->_ld.fields(i));*/
 		    aggregation_count(i,lr->_ld.fields(i));
 		  }
 		if (aggregation =="union" || aggregation == "union_count")
@@ -238,6 +272,10 @@ namespace miw
 		  {
 		    aggregation_mean(i,lr->_ld.fields(i));
 		  }
+	      }
+	    else if (!lr->_ld.fields(i).filter().empty())
+	      {
+		filter_fields(lr,lr->_ld.fields(i));
 	      }
 	  }
       }
@@ -314,20 +352,20 @@ namespace miw
     std::string json_fname = f.name(), json_fnamec = f.name() + "_count_i", json_fnameh = f.name() + "_hold_f";
     if (ftype == "int")
       {
-	int_field *ifi = f.mutable_int_fi();
-	if (ifi->int_reap_size() > 1)
+	const int_field &ifi = f.int_fi();
+	if (ifi.int_reap_size() > 1)
 	  {
 	    json_fname += "_is";
-	    for (int i=0;i<ifi->int_reap_size();i++)
-	      jsf.append(ifi->int_reap(i));
+	    for (int i=0;i<ifi.int_reap_size();i++)
+	      jsf.append(ifi.int_reap(i));
 	  }
-	else if (ifi->int_reap_size() == 1)
+	else if (ifi.int_reap_size() == 1)
 	  {
 	    json_fname += "_i";
-	    jsf["inc"] = ifi->int_reap(0);
+	    jsf["inc"] = ifi.int_reap(0);
 	  }
-	if (ifi->holder() != 0)
-	  jsfh["inc"] = ifi->holder();
+	if (ifi.holder() != 0)
+	  jsfh["inc"] = ifi.holder();
       }
     else if (ftype == "string" || ftype == "time")
       {

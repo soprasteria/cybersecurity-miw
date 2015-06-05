@@ -117,7 +117,9 @@
 		{
 			"name":"sc-filter-result",
 			"pos":20,
-			"type":"string"
+		    "type":"string",
+		    "aggregated":true,
+		    "aggregation":"union"
 		},
 		{
 			"name":"cs-categories",

@@ -57,7 +57,7 @@ namespace miw
     
     int read(const std::string &name);
     
-    bool check() const;
+    //bool check() const;  // XXX: unused ?
 
     static std::string chomp_cpp(const std::string &s);
 

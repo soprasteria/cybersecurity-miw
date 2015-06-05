@@ -203,7 +203,8 @@ namespace miw
     for (size_t i=0;i<tokens.size();i++)
     std::cerr << "tok: " << tokens.at(i) << std::endl;*/
 
-    if ((int)tokens.size() > _ldef.fields_size()
+    // if tokenized line has more fields than defined in the format, bail out...
+    /*if ((int)tokens.size() > _ldef.fields_size()
 	&& _ldef.fields(0).pos() == -1)
       {
 	if (!quiet)
@@ -211,7 +212,7 @@ namespace miw
 		    << " expected " << _ldef.fields_size() << " for log: " << line << std::endl;
 	++skipped_logs;
 	return NULL;
-      }
+	}*/
     
     // parse fields according to format.
     int pos = -1;
@@ -230,11 +231,15 @@ namespace miw
 	  }
 	else pos = f->pos();
 	
-	if (f->pos() >= (int)tokens.size())
+	if (f->pos() >= (int)tokens.size() && !f->created())
 	  {
 	    if (!quiet)
 	      std::cerr << "[Error]: token position " << f->pos() << " is beyond the number of log fields. Skipping line: " << line << std::endl;
 	    return NULL;
+	  }
+	else if (f->created())
+	  {
+	    continue;
 	  }
 
 	std::string token = tokens.at(f->pos());
@@ -334,7 +339,7 @@ namespace miw
 	      iff->set_holder(1.f);
 	  }
 
-	// pre-processing of field based on (yet to define) configuration field.
+	// pre-processing of field based on 'preprocessing' configuration field.
 	if (f->preprocessing() == "evtxcsv")
 	  {
 	    pre_process_evtxcsv(f,token,nfields);

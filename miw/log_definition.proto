@@ -40,6 +40,10 @@ message field
 	optional string preprocessing = 13; /* special pre-processing for generating more fields out of a single one */
 	optional string date_format = 14 [default = "%m/%d/%Y"]; /* special formatting, e.g. for dates */
 	optional uint32 processing_offset = 15 [default = 1]; /* offset for minutes and other discrete values */
+	optional bool created = 16;
+	optional string filter = 17;
+	optional string filter_type = 18;
+	optional string filter_field = 19;
 }
 
 message logdef
