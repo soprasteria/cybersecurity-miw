@@ -202,7 +202,7 @@ namespace miw
   void log_record::aggregation_count(const int &i,
 				     const field &f)
   {
-    _ld.fields(i).set_count(f.count() + 1);
+    _ld.mutable_fields(i)->set_count(f.count() + 1);
   }
   
   void log_record::merge(log_record *lr)
@@ -438,8 +438,8 @@ namespace miw
 	  }
 	else jrec[json_fname] = jsf;
       }
-    if (f.count() > 0)
-      jrec["count"] = f.count();
+    if (f.count() > 1)
+      jrec[json_fname + "_count"] = f.count();
   }
 
   void log_record::to_json(const field &f, Json::Value &jrec)

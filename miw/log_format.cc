@@ -323,6 +323,7 @@ namespace miw
 		ifs->add_str_reap(token);
 		if (f->aggregated() && f->aggregation() == "union_count")
 		  ifs->add_str_count(1);
+		f->set_count(1);
 	      }
 	    //std::cerr << "string field size: " << f->str_fi().str_reap_size() << std::endl;
 	  }
