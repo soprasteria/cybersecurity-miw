@@ -256,23 +256,23 @@ namespace miw
 	      {
 		if (f->processing() == "day")
 		  {
-		    token = to_string(tm.tm_year+1900) + "-" + to_string(tm.tm_mon+1) + "-" + to_string(tm.tm_mday);
+		    token = std::to_string(tm.tm_year+1900) + "-" + std::to_string(tm.tm_mon+1) + "-" + std::to_string(tm.tm_mday);
 		  }
 		else if (f->processing() == "month")
-		  token = to_string(tm.tm_year+1900) + "-" + to_string(tm.tm_mon+1);
+		  token = std::to_string(tm.tm_year+1900) + "-" + std::to_string(tm.tm_mon+1);
 		else if (f->processing() == "year")
-		  token = to_string(tm.tm_year+1900);
+		  token = std::to_string(tm.tm_year+1900);
 		else if (f->processing() == "hour")
 		  {
-		    token = to_string(tm.tm_year+1900) + "-" + to_string(tm.tm_mon+1) + "-" + to_string(tm.tm_mday) + "T" + to_string(tm.tm_hour) + ":00:00";
+		    token = std::to_string(tm.tm_year+1900) + "-" + std::to_string(tm.tm_mon+1) + "-" + std::to_string(tm.tm_mday) + "T" + std::to_string(tm.tm_hour) + ":00:00";
 		  }
 		else if (f->processing() == "minute")
 		  {
-		    token = to_string(tm.tm_year+1900) + "-" + to_string(tm.tm_mon+1) + "-" + to_string(tm.tm_mday) + "T" + to_string(tm.tm_hour) + ":" + to_string(tm.tm_min) + ":00";
+		    token = std::to_string(tm.tm_year+1900) + "-" + std::to_string(tm.tm_mon+1) + "-" + std::to_string(tm.tm_mday) + "T" + std::to_string(tm.tm_hour) + ":" + std::to_string(tm.tm_min) + ":00";
 		  }
 		else if (f->processing() == "second")
 		  {
-		    token = to_string(tm.tm_year+1900) + "-" + to_string(tm.tm_mon+1) + "-" + to_string(tm.tm_mday) + "T" + to_string(tm.tm_hour) + ":" + to_string(tm.tm_min) + ":" + to_string(tm.tm_sec);
+		    token = std::to_string(tm.tm_year+1900) + "-" + std::to_string(tm.tm_mon+1) + "-" + std::to_string(tm.tm_mday) + "T" + std::to_string(tm.tm_hour) + ":" + std::to_string(tm.tm_min) + ":" + std::to_string(tm.tm_sec);
 		  }
 	      }
 	    else std::cerr << "[Warning]: unrecognized date format " << token << std::endl;
@@ -288,19 +288,19 @@ namespace miw
 		  {
 		    int h = std::stoi(elts.at(0)) / f->processing_offset();
 		    h *= f->processing_offset();
-		    token = (h < 10 ? "0" : "") + to_string(h);
+		    token = (h < 10 ? "0" : "") + std::to_string(h);
 		  }
 		else if (f->processing() == "minute")
 		  {
 		    int m = std::stoi(elts.at(1)) / f->processing_offset();
 		    m *= f->processing_offset();
-		    token = elts.at(0) + ":" + (m < 10 ? "0" : "") + to_string(m);
+		    token = elts.at(0) + ":" + (m < 10 ? "0" : "") + std::to_string(m);
 		  }
 		else if (f->processing() == "second")
 		  {
 		    int s = std::stoi(elts.at(2)) / f->processing_offset();
 		    s *= f->processing_offset();
-		    token = elts.at(0) + ":" + elts.at(1) + ":" + (s < 10 ? "0" : "") + to_string(s);
+		    token = elts.at(0) + ":" + elts.at(1) + ":" + (s < 10 ? "0" : "") + std::to_string(s);
 		  }
 	      }
 	    else std::cerr << "[Warning]: unrecognized time format " << token << std::endl;
