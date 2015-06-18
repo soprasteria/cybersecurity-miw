@@ -30,6 +30,9 @@
  * Generic framework for defining and processing log formats.
  */
 
+#ifndef LOG_FORMAT_H
+#define LOG_FORMAT_H
+
 #include "log_record.h"
 #include "log_definition.pb.h"
 #include <vector>
@@ -105,3 +108,5 @@ namespace miw
   };
   
 }
+
+#endif

@@ -30,6 +30,9 @@
  * In-memory log record.
  */
 
+#ifndef LOG_RECORD_H
+#define LOG_RECORD_H
+
 #include "log_definition.pb.h"
 #include <string>
 #include <vector>
@@ -92,3 +95,5 @@ namespace miw
   };
   
 }
+
+#endif
