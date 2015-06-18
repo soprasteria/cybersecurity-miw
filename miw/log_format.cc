@@ -372,6 +372,33 @@ namespace miw
 	*f = *nfields.at(i);
 	delete nfields.at(i);
       }
+
+    for (int i=0;i<ldef.fields_size();i++)
+      {
+	field *f = ldef.mutable_fields(i);
+	if (f->created())
+	  {
+	    if (f->filter_type() == "contain")
+	      {
+		if (filter_contain(ldef,i))
+		  break; // XXX: this will not apply once arrays of filtered fields are supported
+		/*for (int j=0;j<ldef.fields_size();j++)
+		  {
+		    if (i == j)
+		      continue;
+		    field *g = ldef.mutable_fields(j);
+		    if (g->name() == f->filter_field())
+		      {
+			int_field *ifi = f->mutable_int_fi();
+			if (g->str_fi().str_reap(0).find(f->filter())!=std::string::npos)
+			  {
+			    ifi->add_int_reap(1);
+			  }
+		      }
+		      }*/
+	      }
+	  }
+      }
     
     //debug
     //std::cerr << "ldef first field string size: " << ldef.fields(0).str_fi().str_reap_size() << std::endl;
@@ -508,4 +535,26 @@ namespace miw
     return 0;
   }
 
+  bool log_format::filter_contain(const logdef &ldef,
+				  const int &i)
+  {
+    field *f = ldef.mutable_fields(i);
+    for (int j=0;j<ldef.fields_size();j++)
+      {
+	if (i == j)
+	  continue;
+	field *g = ldef.mutable_fields(j);
+	if (g->name() == f->filter_field())
+	  {
+	    int_field *ifi = f->mutable_int_fi();
+	    if (g->str_fi().str_reap(0).find(f->filter())!=std::string::npos)
+	      {
+		ifi->add_int_reap(1);
+	      }
+	    return true;
+	  }
+      }
+    return false;
+  }
+  
 }

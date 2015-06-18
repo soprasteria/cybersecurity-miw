@@ -61,7 +61,7 @@ namespace miw
 
     // field filtering.
     void filter_fields(log_record *lr,
-		       const field &f);
+		       const int &j);
     
     // field aggregation functions.
     void aggregation_union(const int &i,

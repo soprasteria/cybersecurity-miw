@@ -98,6 +98,8 @@ namespace miw
     int pre_process_microsoftdnslogs(field *f,
 				     const std::string &token,
 				     std::vector<field*> &nfields);
+
+    bool filter_contain(const logdef &ldef, const int &i);
     
     logdef _ldef;  // protocol buffer object.
   };
