@@ -4,7 +4,7 @@ AC_INIT([miw], [0.2])
 AC_PREREQ(2.60)
 AC_CONFIG_HEADERS([config.h])
 AC_SUBST(ac_configure_args)
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([subdir-objects])
 
 AC_PROG_CXX
 #AC_PROG_CC

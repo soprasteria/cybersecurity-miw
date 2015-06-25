@@ -5,12 +5,17 @@ $(protoc_outputs): $(protoc_inputs)
 
 miwdir = $(libdir)/miw
 
-AM_CXXFLAGS=-Wall -g -pipe -std=c++11 -fpermissive -fopenmp
+MAXCPUS = $(shell grep -c processor /proc/cpuinfo)
+AM_CXXFLAGS=-Wall -g -pipe -std=c++11 -fpermissive -fopenmp -I../metis \
+	     -fno-omit-frame-pointer -D_GNU_SOURCE -include ../config.h \
+	     -DJTLS=__thread -DJSHARED_ATTR= \
+	     -DJOS_CLINE=64 -DCACHE_LINE_SIZE=64 \
+             -DJOS_NCPU=$(MAXCPUS) -D__STDC_FORMAT_MACROS
 AM_CPPFLAGS=`pkg-config --cflags protobuf`
-miw_LIBRARIES=libmiw.a
-libmiw_a_SOURCES=log_format.cc log_format.h \
-		 log_record.cc log_record.h
-nodist_libmiw_a_SOURCES=$(protoc_outputs)
+miw_LTLIBRARIES=libmiw.la
+libmiw_la_SOURCES=log_format.cc log_format.h \
+		 log_record.cc log_record.h mr_job.cc mr_job.h job.cc job.h
+nodist_libmiw_la_SOURCES=$(protoc_outputs)
 
 clean-local:
 	rm -f log_definition.pb.h log_definition.pb.cc

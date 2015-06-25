@@ -54,7 +54,7 @@ namespace miw
 
     void flatten_lines();
     
-    static void to_json(const field &f, Json::Value &jrec,
+    static void to_json(field &f, Json::Value &jrec,
 			std::string &date, std::string &time);
     void to_json(Json::Value &jlrec) const;
 

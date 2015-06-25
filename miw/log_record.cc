@@ -72,13 +72,13 @@ namespace miw
     std::string ftype = f.type();
     if (ftype == "int")
       {
-	int_field *ifi = _ld.fields(i).mutable_int_fi();
+	int_field *ifi = _ld.mutable_fields(i)->mutable_int_fi();
 	for (int j=0;j<f.int_fi().int_reap_size();j++)
 	  ifi->add_int_reap(f.int_fi().int_reap(j));
       }
     else if (ftype == "string" || ftype == "date")
       {
-	string_field *ifs = _ld.fields(i).mutable_str_fi();
+	string_field *ifs = _ld.mutable_fields(i)->mutable_str_fi();
 	
 	std::unordered_map<std::string,int> uno;
 	for (int i=0;i<ifs->str_reap_size();i++)
@@ -115,13 +115,13 @@ namespace miw
       }
     else if (ftype == "bool")
       {
-	bool_field *ifb = _ld.fields(i).mutable_bool_fi();
+	bool_field *ifb = _ld.mutable_fields(i)->mutable_bool_fi();
 	for (int j=0;j<f.bool_fi().bool_reap_size();j++)
 	  ifb->add_bool_reap(f.bool_fi().bool_reap(j));
       }
     else if (ftype == "float")
       {
-	float_field *iff = _ld.fields(i).mutable_real_fi();
+	float_field *iff = _ld.mutable_fields(i)->mutable_real_fi();
 	for (int j=0;j<f.real_fi().float_reap_size();j++)
 	  iff->add_float_reap(f.real_fi().float_reap(j));
       }
@@ -133,7 +133,7 @@ namespace miw
     std::string ftype = f.type();
     if (ftype == "int")
       {
-	int_field *ifi = _ld.fields(i).mutable_int_fi();
+	int_field *ifi = _ld.mutable_fields(i)->mutable_int_fi();
 	if (ifi->int_reap_size() == 0)
 	  ifi->add_int_reap(0);
 	for (int j=0;j<f.int_fi().int_reap_size();j++)
@@ -181,14 +181,14 @@ namespace miw
     std::string ftype = f.type();
     if (ftype == "int")
       {
-	int_field *ifi = _ld.fields(i).mutable_int_fi();
+	int_field *ifi = _ld.mutable_fields(i)->mutable_int_fi();
 	ifi->set_int_reap(0,ifi->int_reap(0) + f.int_fi().int_reap(0));
 	//ifi->set_int_reap(1,ifi->int_reap(1) + f.int_fi().int_reap(1)); // we use the second array index for storing the number of entry.
 	ifi->set_holder(ifi->holder() + f.int_fi().holder());
       }
     else if (ftype == "float")
       {
-	float_field *iff = _ld.fields(i).mutable_real_fi();
+	float_field *iff = _ld.mutable_fields(i)->mutable_real_fi();
 	iff->set_float_reap(0,iff->float_reap(0) + f.real_fi().float_reap(0));
 	//iff->set_float_reap(1,iff->float_reap(1) + f.real_fi().float_reap(1));
 	iff->set_holder(iff->holder() + f.real_fi().holder());
@@ -314,7 +314,7 @@ namespace miw
     return output;
   }
 
-  void log_record::to_json(const field &f, Json::Value &jrec,
+  void log_record::to_json(field &f, Json::Value &jrec,
 			   std::string &date, std::string &time)
   {
     if (!f.preprocessing().empty())

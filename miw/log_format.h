@@ -84,17 +84,17 @@ namespace miw
     // custom pre-processing.
     int pre_process_evtxcsv(field *f,
 			    const std::string &token,
-			    std::vector<field*> &nfields);
+			    std::vector<field*> &nfields) const;
 
     int pre_process_evtxcsv2(field *f,
 			     const std::string &token,
-			     std::vector<field*> &nfields);
+			     std::vector<field*> &nfields) const;
 
     int pre_process_microsoftdnslogs(field *f,
 				     const std::string &token,
-				     std::vector<field*> &nfields);
+				     std::vector<field*> &nfields) const;
 
-    bool filter_contain(const logdef &ldef, const int &i);
+    bool filter_contain(logdef &ldef, const int &i) const;
     
     logdef _ldef;  // protocol buffer object.
   };

@@ -61,7 +61,28 @@ struct defsplitter {
             sum += d_[i];
         return sum;
     }
-    bool split(split_t *ma, int ncore, const char *stop, size_t align = 0);
+  bool split(split_t *ma, int ncores, const char *stop, size_t align = 0) {
+    pthread_mutex_lock(&mu_);
+    if (pos_ >= size_) {
+	pthread_mutex_unlock(&mu_);
+	return false;
+    }
+    if (nsplit_ == 0)
+      nsplit_ = ncores * def_nsplits_per_core;
+
+    ma->data = (void *) &d_[pos_];
+    ma->length = std::min(size_ - pos_, size_ / nsplit_);
+    if (align) {
+        ma->length = round_down(ma->length, align);
+        assert(ma->length);
+    }
+    pos_ += ma->length;
+    for (; pos_ < size_ && stop && !strchr(stop, d_[pos_]); ++pos_, ++ma->length);
+
+    pthread_mutex_unlock(&mu_);
+    return true;
+  };
+  
     void trim(size_t sz) {
         assert(sz <= size_);
         size_ = sz;
@@ -78,28 +99,6 @@ struct defsplitter {
     mmap_file mf_;
     pthread_mutex_t mu_;
 };
-
-bool defsplitter::split(split_t *ma, int ncores, const char *stop, size_t align) {
-    pthread_mutex_lock(&mu_);
-    if (pos_ >= size_) {
-	pthread_mutex_unlock(&mu_);
-	return false;
-    }
-    if (nsplit_ == 0)
-	nsplit_ = ncores * def_nsplits_per_core;
-
-    ma->data = (void *) &d_[pos_];
-    ma->length = std::min(size_ - pos_, size_ / nsplit_);
-    if (align) {
-        ma->length = round_down(ma->length, align);
-        assert(ma->length);
-    }
-    pos_ += ma->length;
-    for (; pos_ < size_ && stop && !strchr(stop, d_[pos_]); ++pos_, ++ma->length);
-
-    pthread_mutex_unlock(&mu_);
-    return true;
-}
 
 struct split_word {
     split_word(split_t *ma) : ma_(ma), pos_(0) {

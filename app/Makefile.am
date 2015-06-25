@@ -6,8 +6,8 @@ AM_CXXFLAGS=-Wall -g -pipe -std=c++11 -fpermissive -fopenmp -g \
 	     -DJOS_CLINE=64 -DCACHE_LINE_SIZE=64 \
              -DJOS_NCPU=$(MAXCPUS) -D__STDC_FORMAT_MACROS `pkg-config --cflags protobuf`
 AM_LDFLAGS=`pkg-config --libs protobuf` -L../miw/ -L../metis
-LDADD=curl_mget.o MurmurHash3.o -lmetis -lmiw -lc -lm -lcurl -lidn -lz -lssl -lcrypto -lpthread -ldl -ljsoncpp -lrt -lprotobuf -lsnappy
-bin_PROGRAMS=kmeans matrix_mult pca wc wr linear_regression hist string_match wrmem matrix_mult2 sf_sample btree_unit search_unit misc bluecoat_log_proc log_compacter solr_commit
+LDADD=curl_mget.o MurmurHash3.o -lmiw -lmetis -lc -lm -lcurl -lidn -lz -lssl -lcrypto -lpthread -ldl -ljsoncpp -lrt -lprotobuf -lsnappy -lgflags
+bin_PROGRAMS=kmeans matrix_mult pca wc wr linear_regression hist string_match wrmem matrix_mult2 sf_sample btree_unit search_unit misc bluecoat_log_proc log_compacter solr_commit miw simple_log_compacter
 
 kmeans_SOURCES=kmeans.cc
 matrix_mult_SOURCES=matrix_mult.cc
@@ -26,3 +26,5 @@ misc_SOURCES=../metis/micro/misc.cc
 bluecoat_log_proc_SOURCES=bluecoat_log_proc.cc
 log_compacter_SOURCES=log_compacter.cc
 solr_commit_SOURCES=solr_commit.cc
+miw_SOURCES=miw.cc
+simple_log_compacter_SOURCES=simple_log_compacter.cc

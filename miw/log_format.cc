@@ -422,7 +422,7 @@ namespace miw
 
   int log_format::pre_process_evtxcsv(field *f,
 				      const std::string &token,
-				      std::vector<field*> &nfields)
+				      std::vector<field*> &nfields) const
   {
     static std::string arrow_start = "->";
     
@@ -462,7 +462,7 @@ namespace miw
 
   int log_format::pre_process_evtxcsv2(field *f,
 				       const std::string &token,
-				       std::vector<field*> &nfields)
+				       std::vector<field*> &nfields) const
   {
     std::vector<std::string> pairs;
     log_format::tokenize_simple(token,pairs,"[");
@@ -496,7 +496,7 @@ namespace miw
 
   int log_format::pre_process_microsoftdnslogs(field *f,
 					       const std::string &token,
-					       std::vector<field*> &nfields)
+					       std::vector<field*> &nfields) const
   {
     /*std::cerr << "mic preproc\n";
       std::cerr << "token: " << token << std::endl;*/
@@ -536,8 +536,8 @@ namespace miw
     return 0;
   }
 
-  bool log_format::filter_contain(const logdef &ldef,
-				  const int &i)
+  bool log_format::filter_contain(logdef &ldef,
+				  const int &i) const
   {
     field *f = ldef.mutable_fields(i);
     for (int j=0;j<ldef.fields_size();j++)

@@ -75,7 +75,7 @@ struct mapreduce_appbase {
         dst->append(*src);
         src->reset();
     }
-    virtual int internal_final_output_compare(const void *p1, const void *p2) = 0;
+  virtual int internal_final_output_compare(const void *p1, const void *p2) = 0;
     virtual reduce_bucket_manager_base *get_reduce_bucket_manager() = 0;
     /* @breif: prepare the application for the next iteraton.
        Everything should be cleaned up, except for that the application should
