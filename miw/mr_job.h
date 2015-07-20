@@ -39,6 +39,7 @@
 #include <inc/sysprof.h>
 #endif
 #include "log_record.h"
+#include "log_format.h"
 #include <fstream>
 
 enum { with_value_modifier = 0 };
@@ -48,8 +49,19 @@ using namespace miw;
 class mr_job : public map_reduce
 {
  public:
- mr_job(const char *f, int nsplit) : defs_(f, nsplit) {}
- mr_job(char *d, const size_t &size, int nsplit) : defs_(d,size,nsplit) {}
+ mr_job(const char *f, int nsplit,
+	const std::string &app_name,
+	log_format *lf,
+	const bool &store_content, const bool &compressed, const bool &quiet)
+   : defs_(f, nsplit),_app_name(app_name),_lf(lf),_store_content(store_content),
+    _compressed(compressed),_quiet(quiet)
+  {}
+ mr_job(char *d, const size_t &size, int nsplit,
+	const std::string &app_name,
+	log_format *lf,
+	const bool &store_content, const bool &compressed, const bool &quiet)
+   : defs_(d,size,nsplit),_app_name(app_name),_lf(lf),
+    _store_content(store_content),_compressed(compressed),_quiet(quiet) {}
   virtual ~mr_job() {}
   
   void free_records(xarray<keyval_t> *wc_vals)
@@ -70,9 +82,11 @@ class mr_job : public map_reduce
   }
   
   void run(const int &nprocs, const int &reduce_tasks,
-	   const int &quiet, const int &json_output, const int &ndisp,
+	   const int &quiet, const std::string output_format, int &ndisp,
 	   std::ofstream &fout)
   {
+    std::cerr << "running mr_job\n";
+    
     set_ncore(nprocs);
     set_reduce_task(reduce_tasks);
     sched_run();
@@ -83,18 +97,20 @@ class mr_job : public map_reduce
     print_top(&results_, ndisp);
     if (fout.is_open()) 
       {
-	if (json_output)
+	if (output_format == "json")
 	  output_json(&results_,fout);
-	else output_all(&results_,fout);
+	//TODO: CSV
+	else if (output_format.empty())
+	  output_all(&results_,fout);
       }
-    else if (json_output)
+    else if (output_format == "json")
       output_json(&results_,std::cout);
     free_records(&results_);
     free_results();
   }
   
   // output functions
-void print_top(xarray<keyval_t> *wc_vals, const int &ndisp);
+  void print_top(xarray<keyval_t> *wc_vals, int &ndisp);
   void output_all(xarray<keyval_t> *wc_vals, std::ostream &fout);
   void output_json(xarray<keyval_t> *wc_vals, std::ostream &fout);
   
@@ -143,6 +159,11 @@ void print_top(xarray<keyval_t> *wc_vals, const int &ndisp);
   
  private:
   defsplitter defs_;
+  std::string _app_name;
+  log_format *_lf;
+  bool _store_content = false;
+  bool _compressed = false;
+  bool _quiet = false;
 };
 
 #endif

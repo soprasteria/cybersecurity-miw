@@ -40,6 +40,7 @@ DEFINE_bool(autosplit,false,"whether to autosplit file based on available memory
 DEFINE_string(ofname,"","output file name");
 DEFINE_string(format_name,"","processing format name");
 DEFINE_string(appname,"","optional application name");
+DEFINE_string(output_format,"","output format (json, csv)");
 DEFINE_bool(store_content,false,"whether to store the original content in the processed output");
 DEFINE_bool(compressed,false,"whether to compress the original content");
 
@@ -70,6 +71,7 @@ int job::execute(int argc, char *argv[])
     _app_name = FLAGS_appname;
     _store_content = FLAGS_store_content;
     _compressed = FLAGS_compressed;
+    _output_format = FLAGS_output_format;
 
     // list input files
     
@@ -77,7 +79,7 @@ int job::execute(int argc, char *argv[])
     _fout.open(_ofname);
     if (!_fout.is_open())
       {
-	std::cerr << "unable to open input file=" << _ofname << std::endl;
+	std::cerr << "unable to open output file=" << _ofname << std::endl;
 	return 1;
       }
     
@@ -106,8 +108,9 @@ int job::execute(int argc, char *argv[])
 	if (!_autosplit)
 	  {
 	    mapreduce_appbase::initialize();
-	    _mrj = new mr_job(fname.c_str(), _map_tasks);
-	    _mrj->run(_nprocs,_reduce_tasks,_quiet,_json_output,_ndisp,_fout);
+	    std::cerr << "creating mr job\n";
+	    _mrj = new mr_job(fname.c_str(), _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
+	    _mrj->run(_nprocs,_reduce_tasks,_quiet,_output_format,_ndisp,_fout);
 	    delete _mrj;
 	    _mrj = nullptr;
 	    mapreduce_appbase::deinitialize();
@@ -132,8 +135,9 @@ int job::execute(int argc, char *argv[])
 		      buf += line + "\n";
 		      std::cout << "--> Chunk #" << ch+1 << " / " << nchunks << std::endl;
 		    mapreduce_appbase::initialize();
-		    _mrj = new mr_job(const_cast<char*>(buf.c_str()),buf.length(),_map_tasks);
-		    _mrj->run(_nprocs,_reduce_tasks,_quiet,_json_output,_ndisp,_fout);
+		    _mrj = new mr_job(const_cast<char*>(buf.c_str()),buf.length(),_map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
+		    int ndisp = _ndisp;
+		    _mrj->run(_nprocs,_reduce_tasks,_quiet,_output_format,ndisp,_fout);
 		    delete _mrj;
 		    _mrj = nullptr;
 		    mapreduce_appbase::deinitialize();
@@ -143,14 +147,16 @@ int job::execute(int argc, char *argv[])
 	    else
 	      {
 		mapreduce_appbase::initialize();
-		_mrj = new mr_job(fname.c_str(), _map_tasks);
-		_mrj->run(_nprocs,_reduce_tasks,_quiet,_json_output,_ndisp,_fout);
+		_mrj = new mr_job(fname.c_str(), _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
+		_mrj->run(_nprocs,_reduce_tasks,_quiet,_output_format,_ndisp,_fout);
 		delete _mrj;
 		_mrj = nullptr;
 		mapreduce_appbase::deinitialize();
 	      }
 	  }
       }
+    if (_fout.is_open())
+      _fout.close();
     return 0;
   }
 

@@ -29,11 +29,13 @@
 #include "mr_job.h"
 #include "defsplitter.hh"
 
+#define DEBUG
+
 void mr_job::map_function(split_t *ma)
 {
-  /*std::vector<log_record*> log_records;
+  std::vector<log_record*> log_records;
   std::string dat = (char*)ma->data;
-  lf.parse_data(dat,ma->length,app_name,store_content,compressed,quiet,log_records);
+  _lf->parse_data(dat,ma->length,_app_name,_store_content,_compressed,_quiet,log_records);
   
 #ifdef DEBUG
   std::cout << "number of mapped records: " << log_records.size() << std::endl;
@@ -44,33 +46,33 @@ void mr_job::map_function(split_t *ma)
       std::string key = log_records.at(i)->key();
       const char *key_str = key.c_str();
       map_emit((void*)key_str,(void*)log_records.at(i),strlen(key_str));
-      }*/
+    }
 }
 
 int mr_job::combine_function(void *key_in, void **vals_in, size_t vals_len)
 {
-  /*log_record **lrecords = (log_record**)vals_in;
+  log_record **lrecords = (log_record**)vals_in;
   for (uint32_t i=1;i<vals_len;i++)
     {
       lrecords[0]->merge(lrecords[i]);
       delete lrecords[i];
     }
-    return 1;*/
+  return 1;
 }
 
 void mr_job::reduce_function(void *key_in, void **vals_in, size_t vals_len)
 {
-  /*log_record **lrecords = (log_record**)vals_in;
+  log_record **lrecords = (log_record**)vals_in;
   for (uint32_t i=1;i<vals_len;i++)
     {
       lrecords[0]->merge(lrecords[i]);
       delete lrecords[i];
     }
-    reduce_emit(key_in,(void*)lrecords[0]);*/
+    reduce_emit(key_in,(void*)lrecords[0]);
 }
 
-void mr_job::print_top(xarray<keyval_t> *wc_vals, const int &ndisp) {
-  /*size_t occurs = 0;
+void mr_job::print_top(xarray<keyval_t> *wc_vals, int &ndisp) {
+  size_t occurs = 0;
     std::multimap<long,std::string,std::greater<long> > ordered_records;
     std::multimap<long,std::string,std::greater<long> >::iterator mit;
     for (uint32_t i = 0; i < wc_vals->size(); i++)
@@ -101,27 +103,27 @@ void mr_job::print_top(xarray<keyval_t> *wc_vals, const int &ndisp) {
 	if (c++ == ndisp)
 	  break;
       }
-      std::cout << std::endl;*/
+    std::cout << std::endl;
 }
 
 void mr_job::output_all(xarray<keyval_t> *wc_vals, std::ostream &fout) 
 {
-  /*for (uint32_t i = 0; i < wc_vals->size(); i++) 
+  for (uint32_t i = 0; i < wc_vals->size(); i++) 
     {
       keyval_t *w = wc_vals->at(i);
       fout << (char*)w->key_ << " - " << static_cast<log_record*>(w->val)->_sum << std::endl;
-      }*/
+    }
 }
 
 void mr_job::output_json(xarray<keyval_t> *wc_vals, std::ostream &fout)
 {
-  /*Json::FastWriter writer;
+  Json::FastWriter writer;
   for (uint32_t i = 0; i < wc_vals->size(); i++) 
     {
       log_record *lr = (log_record*)wc_vals->at(i)->val;
       Json::Value jrec;
       lr->to_json(jrec);
-      if (!compressed)
+      if (!_compressed)
 	lr->flatten_lines();
       else
 	{
@@ -138,5 +140,6 @@ void mr_job::output_json(xarray<keyval_t> *wc_vals, std::ostream &fout)
 	  jrecc["content"]["add"] = lr->_uncompressed_lines;
 	  //fout << "{\"compressed_size\":" << lr->_compressed_size << ",\"content\":{\"add\":\"" << lr->_compressed_lines << "\"},\"id\":" << lr->key()+"_content" << ",\"original_size\":" << lr->_original_size << "}\n";
 	  fout << writer.write(jrecc);
-	  }*/
+	}
     }
+}

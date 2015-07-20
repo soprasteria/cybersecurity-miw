@@ -78,7 +78,7 @@ using namespace miw;
     bool _autosplit = false; // whether to split input files based on heuristic of memory-usage.
     int _nchunks_split = 0;
     double _in_memory_factor = 3; // we expect to use at max 10 times more memory than log volume, for processing them. Very conservative value, used in auto-splitting the log files before processing them.
-    int _json_output = 0; //TODO: output format name
+    std::string _output_format; // other values: json, TODO: csv
     bool _quiet = 0;
 
     int _nprocs = 0; /**< number of used processors, when specified */
