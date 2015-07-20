@@ -314,8 +314,8 @@ namespace miw
     return output;
   }
 
-  void log_record::to_json(field &f, Json::Value &jrec,
-			   std::string &date, std::string &time)
+  /*void log_record::to_json_solr(field &f, Json::Value &jrec,
+				std::string &date, std::string &time)
   {
     if (!f.preprocessing().empty())
       return;
@@ -426,6 +426,123 @@ namespace miw
 	      {
 		jrec[json_fname]["add"] = jsf;
 		jrec[json_fnamec]["add"] = jsfc;
+	      }
+	    else if (f.aggregation() == "sum"
+		     || f.aggregation() == "count"
+		     || f.aggregation() == "mean")
+	      {
+		jrec[json_fname] = jsf;
+		if (!jsfh.isNull())
+		  jrec[json_fnameh] = jsfh;
+	      }
+	  }
+	else jrec[json_fname] = jsf;
+      }
+    if (f.count() > 1)
+      jrec[json_fname + "_count"] = f.count();
+      }*/
+
+  void log_record::to_json(field &f, Json::Value &jrec,
+			   std::string &date, std::string &time)
+  {
+    if (!f.preprocessing().empty())
+      return;
+    std::string ftype = f.type();
+    Json::Value jsf,jsfc,jsfh;
+    std::string json_fname = f.name(), json_fnamec = f.name() + "_count", json_fnameh = f.name() + "_hold";
+    if (ftype == "int")
+      {
+	int_field *ifi = f.mutable_int_fi();
+	int irs = ifi->int_reap_size();
+	if (irs > 1)
+	  {
+	    for (int i=0;i<ifi->int_reap_size();i++)
+	      jsf.append(ifi->int_reap(i));
+	  }
+	else if (ifi->int_reap_size() == 1)
+	  {
+	    jsf = ifi->int_reap(0);
+	  }
+	if (ifi->holder() != 0)
+	  jsfh = ifi->holder();
+      }
+    else if (ftype == "string" || ftype == "time")
+      {
+	string_field *ifs = f.mutable_str_fi();
+	if (ifs->str_reap_size() > 1)
+	  {
+	    for (int i=0;i<ifs->str_reap_size();i++)
+	      {
+		jsf.append(ifs->str_reap(i));
+		if (ifs->str_count_size() > 0)
+		  jsfc.append(ifs->str_count(i));
+	      }
+	  }
+	else if (ifs->str_reap_size() == 1)
+	  {
+	    jsf = ifs->str_reap(0);
+	    jsfc = 1;
+	    if (ifs->str_count_size() > 0)
+	      jsfc = ifs->str_count(0);
+	    if (ftype == "time")
+	      {
+		time = ifs->str_reap(0);
+		if (f.processing() == "hour")
+		  time += ":00:00";
+		else if (f.processing() == "minute")
+		  time += ":00";
+	      }
+	  }
+      }
+    else if (ftype == "date")
+      {
+	string_field *ifs = f.mutable_str_fi();
+	if (ifs->str_reap_size() > 1)
+	  {
+	    for (int i=0;i<ifs->str_reap_size();i++)
+	      {
+		jsf.append(ifs->str_reap(i));
+		if (ifs->str_count_size() > 0)
+		  jsfc.append(ifs->str_count(i));
+	      }
+	  }
+	else if (ifs->str_reap_size() == 1)
+	  {
+	    jsf = ifs->str_reap(0);
+	    date = ifs->str_reap(0);
+	  }
+      }
+    else if (ftype == "bool")
+      {
+	bool_field *ifb = f.mutable_bool_fi();
+	for (int i=0;i<ifb->bool_reap_size();i++)
+	  jsf.append(ifb->bool_reap(i));
+      }
+    else if (ftype == "float")
+      {
+	float_field *iff = f.mutable_real_fi();
+	if (iff->float_reap_size() > 1)
+	  {
+	    for (int i=0;i<iff->float_reap_size();i++)
+	      jsf.append(iff->float_reap(i));
+	  }
+	else if (iff->float_reap_size() == 1)
+	  {
+	    jsf = iff->float_reap(0);
+	  }
+	if (iff->holder() != 0)
+	  jsfh = iff->holder();
+      }
+    if (!jsf.isNull())
+      {
+	if (f.aggregated())
+	  {
+	    if (f.aggregation() == "union")
+	      jrec[json_fname] = jsf;
+	    else if (f.aggregation() == "union_count")
+	      {
+		jrec[json_fname] = jsf;
+		jrec[json_fnamec] = jsfc;
 	      }
 	    else if (f.aggregation() == "sum"
 		     || f.aggregation() == "count"

@@ -54,6 +54,8 @@ namespace miw
 
     void flatten_lines();
     
+    /*static void to_json_solr(field &f, Json::Value &jrec,
+      std::string &date, std::string &time);*/
     static void to_json(field &f, Json::Value &jrec,
 			std::string &date, std::string &time);
     void to_json(Json::Value &jlrec) const;
