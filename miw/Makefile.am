@@ -6,7 +6,8 @@ $(protoc_outputs): $(protoc_inputs)
 miwdir = $(libdir)/miw
 
 MAXCPUS = $(shell grep -c processor /proc/cpuinfo)
-AM_CXXFLAGS=-Wall -g -pipe -std=c++11 -fpermissive -fopenmp -I../metis \
+AM_CXXFLAGS=-Wall -g -pipe -std=c++11 -fpermissive -fopenmp -D_GLIBCXX_USE_CXX11_ABI=0 \
+ 	     -I../metis \
 	     -fno-omit-frame-pointer -D_GNU_SOURCE -include ../config.h \
 	     -DJTLS=__thread -DJSHARED_ATTR= \
 	     -DJOS_CLINE=64 -DCACHE_LINE_SIZE=64 \
