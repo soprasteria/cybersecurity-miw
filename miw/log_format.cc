@@ -383,20 +383,6 @@ namespace miw
 	      {
 		if (filter_contain(ldef,i))
 		  break; // XXX: this will not apply once arrays of filtered fields are supported
-		/*for (int j=0;j<ldef.fields_size();j++)
-		  {
-		    if (i == j)
-		      continue;
-		    field *g = ldef.mutable_fields(j);
-		    if (g->name() == f->filter_field())
-		      {
-			int_field *ifi = f->mutable_int_fi();
-			if (g->str_fi().str_reap(0).find(f->filter())!=std::string::npos)
-			  {
-			    ifi->add_int_reap(1);
-			  }
-		      }
-		      }*/
 	      }
 	  }
       }

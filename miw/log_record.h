@@ -59,6 +59,9 @@ namespace miw
     static void to_json(field &f, Json::Value &jrec,
 			std::string &date, std::string &time);
     void to_json(Json::Value &jlrec) const;
+    static void json_to_csv(const Json::Value &jl,
+			    std::string &csvline,
+			    const bool &header=false);
 
     // compression for storage.
     static std::string compress_log_lines(const std::string &line);

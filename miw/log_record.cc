@@ -630,7 +630,8 @@ namespace miw
     
     if (!_ld.appname().empty())
       jlrec["appname"] = _ld.appname();
-    jlrec["logs"]["inc"] = (int)_sum;
+    //jlrec["logs"]["inc"] = (int)_sum;
+    jlrec["logs"] = static_cast<int>(_sum);
     jlrec["format_name"] = _ld.format_name();
     jlrec["std_date_dt"] = (date.find("T")!=std::string::npos) ? date + "Z" : date + "T" + time + "Z"; 
     
@@ -640,4 +641,64 @@ namespace miw
     //debug
   }
 
+  void log_record::json_to_csv(const Json::Value &jl,
+			       std::string &csvline,
+			       const bool &header)
+  {
+    static std::string separator = ",";
+    std::stringstream sts,stshead;
+    for (Json::ValueIterator itr = jl.begin();itr!=jl.end();itr++)
+      {
+	std::string key = itr.key().asString();
+	if (itr != jl.begin())
+	  {
+	    sts << separator;
+	    if (header)
+	      stshead << separator;
+	  }
+	if (header)
+	  stshead << key;
+	Json::Value val = (*itr);
+	if (key == "logs")
+	  {
+	    sts << val.asInt();
+	  }
+	else
+	  {
+	    if (val.isString())
+	      sts << "\"" << val.asString() << "\"";
+	    else if (val.isInt())
+	      sts << val.asInt();
+	    else if (val.isDouble())
+	      sts << val.asDouble();
+	    else if (val.isBool())
+	      sts << val.asBool();
+	    else if (val.isArray())
+	      {
+		sts << "\"[";
+		int i = 0;
+		for (const Json::Value &va : val)
+		  {
+		    if (i != 0)
+		      sts << separator;
+		    else i++;
+		    if (va.isString())
+		      sts << "\"" << va.asString() << "\"";
+		    else if (va.isInt())
+		      sts << va.asInt();
+		    else if (va.isDouble())
+		      sts << va.asDouble();
+		    else if (va.isBool())
+		      sts << va.asBool();
+		  }
+		sts << "]\"";
+	      }
+	  }
+      }
+    if (header)
+      csvline = stshead.str() + "\n";
+    csvline += sts.str() + "\n";
+    //std::cerr << "csvline=" << csvline << std::endl;
+  }
+  
 }

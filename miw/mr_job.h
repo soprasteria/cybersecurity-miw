@@ -99,7 +99,8 @@ class mr_job : public map_reduce
       {
 	if (output_format == "json")
 	  output_json(&results_,fout);
-	//TODO: CSV
+	else if (output_format == "csv")
+	  output_csv(&results_,fout);
 	else if (output_format.empty())
 	  output_all(&results_,fout);
       }
@@ -113,6 +114,7 @@ class mr_job : public map_reduce
   void print_top(xarray<keyval_t> *wc_vals, int &ndisp);
   void output_all(xarray<keyval_t> *wc_vals, std::ostream &fout);
   void output_json(xarray<keyval_t> *wc_vals, std::ostream &fout);
+  void output_csv(xarray<keyval_t> *wc_vals, std::ostream &fout);
   
   // map reduce
   void map_function(split_t *ma);
