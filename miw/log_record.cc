@@ -683,7 +683,8 @@ namespace miw
 		      sts << separator;
 		    else i++;
 		    if (va.isString())
-		      sts << "\\\"" << va.asString() << "\\\"";
+		      //sts << "\\\"" << va.asString() << "\\\"";
+		      sts << va.asString();
 		    else if (va.isInt())
 		      sts << va.asInt();
 		    else if (va.isDouble())
