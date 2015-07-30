@@ -537,8 +537,9 @@ namespace miw
 	    if (g->str_fi().str_reap(0).find(f->filter())!=std::string::npos)
 	      {
 		ifi->add_int_reap(1);
+		return true;
 	      }
-	    return true;
+	    else ifi->add_int_reap(0);
 	  }
       }
     return false;
