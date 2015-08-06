@@ -109,7 +109,6 @@ int job::execute(int argc, char *argv[])
 	if (!_autosplit)
 	  {
 	    mapreduce_appbase::initialize();
-	    std::cerr << "creating mr job\n";
 	    _mrj = new mr_job(fname.c_str(), _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
 	    _mrj->run(_nprocs,_reduce_tasks,_quiet,_output_format,_ndisp,_fout);
 	    delete _mrj;

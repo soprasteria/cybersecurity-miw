@@ -85,8 +85,6 @@ class mr_job : public map_reduce
 	   const int &quiet, const std::string output_format, int &ndisp,
 	   std::ofstream &fout)
   {
-    std::cerr << "running mr_job\n";
-    
     set_ncore(nprocs);
     set_reduce_task(reduce_tasks);
     sched_run();
