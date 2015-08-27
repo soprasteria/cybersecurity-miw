@@ -105,7 +105,7 @@ namespace miw
 	pos = str.find_first_of(delim, lastPos);
       }
   }
-  
+
   void log_format::tokenize(const std::string &str,
 			    const int &length,
 			    std::vector<std::string> &tokens,
@@ -134,7 +134,7 @@ namespace miw
 	    token = str.substr(lastPos+1,pos-lastPos);
 	    pos += 2;
 	  }
-        else token = str.substr(lastPos, pos - lastPos);
+	else token = str.substr(lastPos, pos - lastPos);
 	/*std::cerr << "pos: " << pos << " -- lastPos: " << lastPos << std::endl;
 	  std::cerr << "token: " << token << std::endl;*/
 	//if (!token.empty()) // XXX: beware, may break some formats.
@@ -148,14 +148,15 @@ namespace miw
 	  lastPos = str.find_first_not_of(delim, pos);
 	if (lastPos != std::string::npos && lastPos - pos > 1) // avoid skipping empty ',,' fields.
 	  lastPos = pos + 1;
+	lastPos = std::min(str.length(),lastPos);
 	
 	//else lastPos = std::min(pos+1,str.length());
 	// Find next "non-delimiter"
-        pos = str.find_first_of(delim, lastPos);
+        pos = std::min(str.length(),str.find_first_of(delim, lastPos));
 	
 	/*std::cerr << "pos end: " << pos << " -- lastPos end: " << lastPos << std::endl;
 	  std::cerr << "str length: " << str.length() << std::endl;*/
-	if (!quotechar.empty() && (pos >= str.length() || lastPos >= str.length()))
+	if (!quotechar.empty() && lastPos >= str.length())
 	  break;
       }
   }
