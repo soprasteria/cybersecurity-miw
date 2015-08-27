@@ -156,7 +156,7 @@ namespace miw
 	
 	/*std::cerr << "pos end: " << pos << " -- lastPos end: " << lastPos << std::endl;
 	  std::cerr << "str length: " << str.length() << std::endl;*/
-	if (!quotechar.empty() && lastPos >= str.length())
+	if (lastPos >= str.length())
 	  break;
       }
   }
