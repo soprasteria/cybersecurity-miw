@@ -382,8 +382,7 @@ namespace miw
 	  {
 	    if (f->filter_type() == "contain")
 	      {
-		if (filter_contain(ldef,i))
-		  break; // XXX: this will not apply once arrays of filtered fields are supported
+		filter_contain(ldef,i);
 	      }
 	  }
       }
