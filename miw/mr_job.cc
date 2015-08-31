@@ -144,7 +144,7 @@ void mr_job::output_json(xarray<keyval_t> *wc_vals, std::ostream &fout)
     }
 }
 
-void mr_job::output_csv(xarray<keyval_t> *wc_vals, std::ostream &fout)
+void mr_job::output_csv(xarray<keyval_t> *wc_vals, const int &nfile, std::ostream &fout)
 {
   for (uint32_t i = 0; i < wc_vals->size(); i++) 
     {
@@ -152,7 +152,7 @@ void mr_job::output_csv(xarray<keyval_t> *wc_vals, std::ostream &fout)
       Json::Value jrec;
       lr->to_json(jrec);
       std::string csvline;
-      if (i == 0)
+      if (i == 0 && nfile == 0)
 	log_record::json_to_csv(jrec,csvline,true); // with header
       else log_record::json_to_csv(jrec,csvline);
       //TODO: add attached logs UUIDs to every entry

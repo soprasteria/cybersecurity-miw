@@ -110,7 +110,7 @@ int job::execute(int argc, char *argv[])
 	  {
 	    mapreduce_appbase::initialize();
 	    _mrj = new mr_job(fname.c_str(), _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
-	    _mrj->run(_nprocs,_reduce_tasks,_quiet,_output_format,_ndisp,_fout);
+	    _mrj->run(_nprocs,_reduce_tasks,_quiet,_output_format,j,_ndisp,_fout);
 	    delete _mrj;
 	    _mrj = nullptr;
 	    mapreduce_appbase::deinitialize();
@@ -137,7 +137,7 @@ int job::execute(int argc, char *argv[])
 		    mapreduce_appbase::initialize();
 		    _mrj = new mr_job(const_cast<char*>(buf.c_str()),buf.length(),_map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
 		    int ndisp = _ndisp;
-		    _mrj->run(_nprocs,_reduce_tasks,_quiet,_output_format,ndisp,_fout);
+		    _mrj->run(_nprocs,_reduce_tasks,_quiet,_output_format,ch,ndisp,_fout);
 		    delete _mrj;
 		    _mrj = nullptr;
 		    mapreduce_appbase::deinitialize();
@@ -148,7 +148,7 @@ int job::execute(int argc, char *argv[])
 	      {
 		mapreduce_appbase::initialize();
 		_mrj = new mr_job(fname.c_str(), _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
-		_mrj->run(_nprocs,_reduce_tasks,_quiet,_output_format,_ndisp,_fout);
+		_mrj->run(_nprocs,_reduce_tasks,_quiet,_output_format,j,_ndisp,_fout);
 		delete _mrj;
 		_mrj = nullptr;
 		mapreduce_appbase::deinitialize();
