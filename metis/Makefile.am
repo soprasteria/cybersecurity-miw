@@ -1,7 +1,7 @@
 metisdir = $(libdir)/metis
 metis_LIBRARIES=libmetis.a
 MAXCPUS := $(shell grep -c processor /proc/cpuinfo)
-AM_CXXFLAGS=-Wall -g -pipe -std=c++11 -fpermissive -fopenmp -g -D_GLIBCXX_USE_CXX11_ABI=0 @OPT_LEVEL@ \
+AM_CXXFLAGS=-Wall -g -pipe -std=c++11 -fpermissive -fopenmp -g -D_GLIBCXX_USE_CXX11_ABI=0 -O2 @OPT_LEVEL@ \
 	     -fno-omit-frame-pointer -D_GNU_SOURCE -include ../config.h \
 	     -DJTLS=__thread -DJSHARED_ATTR= \
 	     -DJOS_CLINE=64 -DCACHE_LINE_SIZE=64 \
