@@ -53,16 +53,25 @@ class mr_job : public map_reduce
 	const std::string &app_name,
 	log_format *lf,
 	const bool &store_content, const bool &compressed, const bool &quiet)
-   : defs_(f, nsplit),_app_name(app_name),_lf(lf),_store_content(store_content),
+   : /*defs_(f, nsplit),*/_app_name(app_name),_lf(lf),_store_content(store_content),
     _compressed(compressed),_quiet(quiet)
-  {}
+  {
+    defs_ = new defsplitter(f,nsplit);
+  }
  mr_job(char *d, const size_t &size, int nsplit,
 	const std::string &app_name,
 	log_format *lf,
 	const bool &store_content, const bool &compressed, const bool &quiet)
-   : defs_(d,size,nsplit),_app_name(app_name),_lf(lf),
-    _store_content(store_content),_compressed(compressed),_quiet(quiet) {}
-  virtual ~mr_job() {}
+   : /*defs_(d,size,nsplit),*/_app_name(app_name),_lf(lf),
+    _store_content(store_content),_compressed(compressed),_quiet(quiet)
+  {
+    defs_ = new defsplitter(d,size,nsplit);
+  }
+  virtual ~mr_job()
+    {
+      if (defs_)
+	delete defs_;
+    }
   
   void free_records(xarray<keyval_t> *wc_vals)
   {
@@ -74,25 +83,42 @@ class mr_job : public map_reduce
   }
   
   bool split(split_t *ma, int ncores) {
-    return defs_.split(ma, ncores, "\n",0);
+    return defs_->split(ma, ncores, "\n",0);
   }
   
   int key_compare(const void *s1, const void *s2) {
     return  strcasecmp((const char *) s1, (const char *) s2);
   }
   
+  void run_no_final(const int &nprocs, const int &reduce_tasks,
+		    const int &quiet, const std::string output_format, const int &nfile,
+		    int &ndisp, std::ofstream &fout)
+  {
+    set_ncore(nprocs);
+    set_reduce_task(reduce_tasks);
+    sched_run_no_final();
+    //std::cerr << "results size=" << get_reduce_bucket_manager()->rb0_size() << std::endl;
+    xarray<keyval_t> *tmp_results = static_cast<reduce_bucket_manager<keyval_t>*>(get_reduce_bucket_manager())->get(0);
+    print_top(tmp_results, ndisp);
+  }
+  
   void run(const int &nprocs, const int &reduce_tasks,
 	   const int &quiet, const std::string output_format, const int &nfile,
-	   int &ndisp,std::ofstream &fout)
+	   int &ndisp, std::ofstream &fout)
   {
     set_ncore(nprocs);
     set_reduce_task(reduce_tasks);
     sched_run();
     print_stats();
-    
+    run_finalize(quiet, output_format, nfile, ndisp, fout);
+  }
+
+  void run_finalize(const int &quiet, const std::string &output_format,
+		    const int &nfile, int &ndisp, std::ofstream &fout)
+  {
     /* get the number of results to display */
     //if (!quiet)
-    print_top(&results_, ndisp);
+    //print_top(&results_, ndisp);
     if (fout.is_open()) 
       {
 	if (output_format == "json")
@@ -156,9 +182,16 @@ class mr_job : public map_reduce
   bool has_value_modifier() const {
     return with_value_modifier;
   }
+
+  void set_defs(const char *fname, const int &nsplit)
+  {
+    if (defs_)
+      delete defs_;
+    defs_ = new defsplitter(fname,nsplit);
+  }
   
- private:
-  defsplitter defs_;
+  //private:
+  defsplitter *defs_ = nullptr;
   std::string _app_name;
   log_format *_lf;
   bool _store_content = false;

@@ -203,10 +203,82 @@ size_t mapreduce_appbase::sched_sample() {
     return prime_lower_bound(predicted_ntask);
 }
 
+int mapreduce_appbase::sched_run_no_final() {
+    assert(threadinfo::initialized() && "Call mapreduce_apppase::initialize first");
+    static_appbase::set_app(this);
+    //assert(clean_);
+    clean_ = false;
+    const int max_ncore = get_core_count();
+    assert(ncore_ <= max_ncore);
+    if (!ncore_)
+	ncore_ = max_ncore;
+
+    verify_before_run();
+    // initialize threads
+    mthread_init(ncore_);
+
+    // pre-split
+    ma_.clear();
+    split_t ma;
+    bzero(&ma, sizeof(ma));
+    while (split(&ma, ncore_)) {
+        ma_.push_back(ma);
+        bzero(&ma, sizeof(ma));
+    }
+    uint64_t real_start = read_tsc();
+    // get the number of reduce tasks by sampling if needed
+    if (skip_reduce_or_group_phase()) {
+        m_ = create_map_bucket_manager(ncore_, 1);
+        get_reduce_bucket_manager()->init(ncore_);
+    } else {
+	if (!nreduce_or_group_task_)
+	    nreduce_or_group_task_ = sched_sample();
+        m_ = create_map_bucket_manager(ncore_, nreduce_or_group_task_);
+	if (!get_reduce_bucket_manager()->get_init())
+	  get_reduce_bucket_manager()->init(nreduce_or_group_task_);
+    }
+
+    uint64_t map_time = 0, reduce_time = 0, merge_time = 0;
+    // map phase
+    run_phase(MAP, ncore_, map_time, nsample_);
+
+    //  re-emit in-store pre-reduced buckets
+    xarray<keyval_t>* prb = static_cast<reduce_bucket_manager<keyval_t>*>(get_reduce_bucket_manager())->get(0);
+    for (uint32_t i=0;i<prb->size();i++)
+      map_emit(prb->at(i)->key_,prb->at(i)->val,strlen((char*)prb->at(i)->key_));
+    get_reduce_bucket_manager()->init(nreduce_or_group_task_);
+    
+    // reduce phase
+    if (!skip_reduce_or_group_phase())
+      run_phase(REDUCE, ncore_, reduce_time);
+    // merge phase
+    const int use_psrs = USE_PSRS;
+    if (use_psrs) {
+        merge_ncore_ = ncore_;
+	run_phase(MERGE, merge_ncore_, merge_time);
+    } else {
+        reduce_bucket_manager_base *r = get_reduce_bucket_manager();
+	merge_ncore_ = std::min(int(r->size()) / 2, ncore_);
+	while (r->size() > 1) {
+	    run_phase(MERGE, merge_ncore_, merge_time);
+            r->trim(merge_ncore_);
+	    merge_ncore_ /= 2;
+	}
+    }
+    //set_final_result();
+    //std::cerr << "rb size=" << get_reduce_bucket_manager()->size() << std::endl;
+    total_map_time_ += map_time;
+    total_reduce_time_ += reduce_time;
+    total_merge_time_ += merge_time;
+    total_real_time_ += read_tsc() - real_start;
+    //reset();  // result everything except for results_
+    return 0;
+}
+
 int mapreduce_appbase::sched_run() {
     assert(threadinfo::initialized() && "Call mapreduce_apppase::initialize first");
     static_appbase::set_app(this);
-    assert(clean_);
+    //assert(clean_);
     clean_ = false;
     const int max_ncore = get_core_count();
     assert(ncore_ <= max_ncore);

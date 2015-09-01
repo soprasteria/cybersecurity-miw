@@ -54,6 +54,7 @@ struct mapreduce_appbase {
     }
     static void initialize();
     static void deinitialize();
+    int sched_run_no_final();
     int sched_run();
     void print_stats();
     /* @brief: called in user defined map function. If keycopy function is

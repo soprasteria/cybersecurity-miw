@@ -32,7 +32,7 @@
 
 DEFINE_string(fnames,"","comma-separated input file names");
 DEFINE_int32(nprocs,0,"number of cores (default = auto)");
-DEFINE_int32(ndisp,0,"number of top records to show");
+DEFINE_int32(ndisp,5,"number of top records to show");
 DEFINE_int32(map_tasks,0,"number of map tasks (default = auto)");
 DEFINE_int32(reduce_tasks,0,"number of reduce tasks (default = auto)");
 DEFINE_bool(quiet,true,"quietness");
@@ -43,6 +43,7 @@ DEFINE_string(appname,"","optional application name");
 DEFINE_string(output_format,"","output format (json, csv)");
 DEFINE_bool(store_content,false,"whether to store the original content in the processed output");
 DEFINE_bool(compressed,false,"whether to compress the original content");
+DEFINE_bool(merge_results,false,"whether to merge results over multiple input files");
 
 std::vector<std::string>& str_split(const std::string &s, char delim, std::vector<std::string> &elems) {
   std::stringstream ss(s);
@@ -72,6 +73,7 @@ int job::execute(int argc, char *argv[])
     _store_content = FLAGS_store_content;
     _compressed = FLAGS_compressed;
     _output_format = FLAGS_output_format;
+    _merge_results = FLAGS_merge_results;
 
     // list input files
     
@@ -106,7 +108,7 @@ int job::execute(int argc, char *argv[])
 	    std::cerr << "[Error] file not found: " << fname << std::endl;
 	    continue;
 	  }
-	if (!_autosplit)
+	if (!_autosplit && !_merge_results)
 	  {
 	    mapreduce_appbase::initialize();
 	    _mrj = new mr_job(fname.c_str(), _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
@@ -114,6 +116,30 @@ int job::execute(int argc, char *argv[])
 	    delete _mrj;
 	    _mrj = nullptr;
 	    mapreduce_appbase::deinitialize();
+	  }
+	else if (!_autosplit && _merge_results)
+	  {
+	    if (j == 0)
+	      {
+		mapreduce_appbase::initialize();
+		_mrj = new mr_job(fname.c_str(), _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
+	      }
+	    else
+	      {
+		_mrj->set_defs(fname.c_str(),_map_tasks);
+	      }
+
+	    _mrj->run_no_final(_nprocs,_reduce_tasks,_quiet,_output_format,j,_ndisp,_fout);
+	    
+	    if (j == _files.size()-1)
+	      {
+		_mrj->set_final_result();
+		_mrj->reset();
+		_mrj->run_finalize(_quiet,_output_format,-1,_ndisp,_fout);
+		delete _mrj;
+		_mrj = nullptr;
+		mapreduce_appbase::deinitialize();
+	      }
 	  }
 	else
 	  {

@@ -28,6 +28,8 @@ struct reduce_bucket_manager_base {
     virtual size_t size() = 0;
     virtual void set_current_reduce_task(int i) = 0;
     virtual void merge_reduced_buckets(int ncpus, int lcpu) = 0;
+    //virtual int rb0_size() = 0;
+    virtual bool get_init() const = 0;
 };
 
 template <typename T>
@@ -37,6 +39,7 @@ struct reduce_bucket_manager : public reduce_bucket_manager_base {
         for (int i = 0; i < n; ++i)
             rb_[i].init();
         set_current_reduce_task(0);
+	_init = true;
     }
     void reset() {
         rb_.resize(0);
@@ -62,7 +65,7 @@ struct reduce_bucket_manager : public reduce_bucket_manager_base {
         For psrs, the result is stored in rb_[0]; for mergesort, the result are
         spread in rb[0..(ncpus - 1)]. */
     void merge_reduced_buckets(int ncpus, int lcpu) {
-        C *out = NULL;
+      C *out = NULL;
         const int use_psrs = USE_PSRS;
         if (!use_psrs) {
             out = mergesort(rb_, ncpus, lcpu,
@@ -82,7 +85,7 @@ struct reduce_bucket_manager : public reduce_bucket_manager_base {
                 shallow_free_subarray(rb_);
         }
         if (out) {
-            rb_[lcpu].swap(*out);
+	  rb_[lcpu].swap(*out);
             delete out;
         }
     }
@@ -90,12 +93,21 @@ struct reduce_bucket_manager : public reduce_bucket_manager_base {
         assert(dst->size() == 0);
         get(p)->swap(*dst);
     }
+   /*int rb0_size()
+    {
+     return rb_[0].size();
+    }*/
+    bool get_init() const
+    {
+      return _init;
+    }
   private:
     int current_task() {
         return threadinfo::current()->cur_reduce_task_;
     }
     xarray<C> rb_; // reduce buckets
     psrs<C> pi_;
+    bool _init = false;
 };
 
 #endif

@@ -27,7 +27,7 @@ struct mmap_file {
         assert(fstat(fd_, &fst) == 0);
         size_ = fst.st_size;
         d_ = (char *)mmap(0, size_ + 1, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd_, 0);
-        assert(d_);
+	assert(d_);
     }
     mmap_file() : fd_(-1) {}
     virtual ~mmap_file() {
@@ -55,6 +55,9 @@ struct defsplitter {
         size_ = mf_.size_;
         d_ = mf_.d_;
     }
+  ~defsplitter()
+  {
+  }
     int prefault() {
         int sum = 0;
         for (size_t i = 0; i < size_; i += 4096)
@@ -69,13 +72,14 @@ struct defsplitter {
     }
     if (nsplit_ == 0)
       nsplit_ = ncores * def_nsplits_per_core;
-
+    
     ma->data = (void *) &d_[pos_];
     ma->length = std::min(size_ - pos_, size_ / nsplit_);
     if (align) {
         ma->length = round_down(ma->length, align);
         assert(ma->length);
     }
+
     pos_ += ma->length;
     for (; pos_ < size_ && stop && !strchr(stop, d_[pos_]); ++pos_, ++ma->length);
 

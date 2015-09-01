@@ -47,10 +47,10 @@ struct app_impl_base : public mapreduce_appbase {
         results_.shallow_free();
     }
 
-  protected:
     void set_final_result() {
         rb_.transfer(0, &results_);
     }
+  protected:
     int internal_final_output_compare(const void *p1, const void *p2) {
         return final_output_compare((T *)p1, (T *)p2);
     }
@@ -73,8 +73,9 @@ struct app_impl_base : public mapreduce_appbase {
     }
 
     void verify_before_run() {
-        assert(!results_.size());
+      assert(!results_.size());
     }
+public:
     void reset() {
         rb_.reset();
         mapreduce_appbase::reset();
