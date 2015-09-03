@@ -189,6 +189,13 @@ class mr_job : public map_reduce
       delete defs_;
     defs_ = new defsplitter(fname,nsplit);
   }
+
+  void set_defs(char *d, const size_t &size, const int &nsplit)
+  {
+    if (defs_)
+      delete defs_;
+    defs_ = new defsplitter(d,size,nsplit);
+  }
   
   //private:
   defsplitter *defs_ = nullptr;

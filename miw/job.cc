@@ -110,36 +110,11 @@ int job::execute(int argc, char *argv[])
 	  }
 	if (!_autosplit && !_merge_results)
 	  {
-	    mapreduce_appbase::initialize();
-	    _mrj = new mr_job(fname.c_str(), _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
-	    _mrj->run(_nprocs,_reduce_tasks,_quiet,_output_format,j,_ndisp,_fout);
-	    delete _mrj;
-	    _mrj = nullptr;
-	    mapreduce_appbase::deinitialize();
+	    run_mr_job(fname.c_str(),j);
 	  }
 	else if (!_autosplit && _merge_results)
 	  {
-	    if (j == 0)
-	      {
-		mapreduce_appbase::initialize();
-		_mrj = new mr_job(fname.c_str(), _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
-	      }
-	    else
-	      {
-		_mrj->set_defs(fname.c_str(),_map_tasks);
-	      }
-
-	    _mrj->run_no_final(_nprocs,_reduce_tasks,_quiet,_output_format,j,_ndisp,_fout);
-	    
-	    if (j == _files.size()-1)
-	      {
-		_mrj->set_final_result();
-		_mrj->reset();
-		_mrj->run_finalize(_quiet,_output_format,-1,_ndisp,_fout);
-		delete _mrj;
-		_mrj = nullptr;
-		mapreduce_appbase::deinitialize();
-	      }
+	    run_mr_job_merge_results(fname.c_str(),j,j==_files.size()-1);
 	  }
 	else
 	  {
@@ -155,18 +130,20 @@ int job::execute(int argc, char *argv[])
 		//char *buf = new char[mfsize];
 		for (size_t ch=0;ch<nchunks;ch++)
 		  {
+		    bool run_end = (j == _files.size()-1) && (ch == nchunks-1);
 		    std::string line,buf;
-		    while(std::getline(fin,line)
-			  && buf.length() < mfsize)
-		      buf += line + "\n";
-		      std::cout << "--> Chunk #" << ch+1 << " / " << nchunks << std::endl;
-		    mapreduce_appbase::initialize();
-		    _mrj = new mr_job(const_cast<char*>(buf.c_str()),buf.length(),_map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
-		    int ndisp = _ndisp;
-		    _mrj->run(_nprocs,_reduce_tasks,_quiet,_output_format,ch,ndisp,_fout);
-		    delete _mrj;
-		    _mrj = nullptr;
-		    mapreduce_appbase::deinitialize();
+		    while(/*std::getline(fin,line)
+			    &&*/ buf.length() < mfsize)
+		      {
+			if (!std::getline(fin,line))
+			  break;
+			buf += line + "\n";
+			//break;
+		      }
+		    std::cout << "--> Chunk #" << ch+1 << " / " << nchunks << std::endl;
+		    if (!_merge_results)
+		      run_mr_job(const_cast<char*>(buf.c_str()),j,buf.length());
+		    else run_mr_job_merge_results(const_cast<char*>(buf.c_str()),j+ch,run_end,buf.length());
 		  }
 		  //delete[] buf;
 	      }
@@ -185,6 +162,48 @@ int job::execute(int argc, char *argv[])
       _fout.close();
     return 0;
   }
+
+void job::run_mr_job(const char *fname, const int &nfile, const size_t &blength)
+{
+  mapreduce_appbase::initialize();
+  if (blength) // from buffer
+    _mrj = new mr_job(const_cast<char*>(fname),blength, _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
+  else _mrj = new mr_job(fname, _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
+  _mrj->run(_nprocs,_reduce_tasks,_quiet,_output_format,nfile,_ndisp,_fout);
+  delete _mrj;
+  _mrj = nullptr;
+  mapreduce_appbase::deinitialize();
+}
+
+void job::run_mr_job_merge_results(const char *fname, const int &nfile,
+				   const bool &run_end, const size_t &blength)
+{
+  if (nfile == 0)
+    {
+      mapreduce_appbase::initialize();
+      if (blength > 0) // from buffer
+	_mrj = new mr_job(const_cast<char*>(fname),blength, _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
+      else _mrj = new mr_job(fname, _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
+    }
+  else
+    {
+      if (blength > 0)
+	_mrj->set_defs(fname,blength,_map_tasks);
+      else _mrj->set_defs(fname,_map_tasks);
+    }
+  
+  _mrj->run_no_final(_nprocs,_reduce_tasks,_quiet,_output_format,nfile,_ndisp,_fout);
+
+  if (run_end)
+    {
+      _mrj->set_final_result();
+      _mrj->reset();
+      _mrj->run_finalize(_quiet,_output_format,-1,_ndisp,_fout);
+      delete _mrj;
+      _mrj = nullptr;
+      mapreduce_appbase::deinitialize();
+    }
+}
 
     size_t job::get_available_memory()
     {
@@ -212,12 +231,12 @@ int job::execute(int argc, char *argv[])
       {
 	size_t ms = get_available_memory();
 	std::cerr << "available memory: " << ms << " -- file size: " << fs << std::endl;
-	if (fs < ms)
+	/*if (fs < ms)
 	  {
 	    std::cerr << "autosplit not needed\n";
 	    mfsize = ms;
 	    return false;
-	  }
+	    }*/
 	nchunks = (size_t)ceil(fs / ((1.0/_in_memory_factor)*ms));
       }
     else nchunks = _nchunks_split;

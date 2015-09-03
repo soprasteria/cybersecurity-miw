@@ -66,6 +66,9 @@ using namespace miw;
 
     int execute();
     int execute(int argc, char *argv[]);
+
+    void run_mr_job(const char *fname, const int &nfile, const size_t &blength=0);
+    void run_mr_job_merge_results(const char *fname, const int &nfile, const bool &run_end, const size_t &blength=0);
     
     long _skipped_logs = 0;
     log_format _lf;
@@ -76,7 +79,7 @@ using namespace miw;
     bool _store_content = false; // whether to store full content into index.
     bool _compressed = false; // whether to compress the original content while working on it.
     bool _autosplit = false; // whether to split input files based on heuristic of memory-usage.
-    bool _merge_results = false; // whether to merge results over multiple input files.
+    bool _merge_results = false; // whether to merge results over multiple inputop
     int _nchunks_split = 0;
     double _in_memory_factor = 3; // we expect to use at max 10 times more memory than log volume, for processing them. Very conservative value, used in auto-splitting the log files before processing them.
     std::string _output_format; // other values: json, TODO: csv
