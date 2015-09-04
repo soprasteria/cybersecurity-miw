@@ -205,9 +205,10 @@ void job::run_mr_job_merge_results(const char *fname, const int &nfile,
     }
 }
 
-    size_t job::get_available_memory()
+    unsigned long job::get_available_memory()
     {
       size_t avail_mem = sysconf(_SC_AVPHYS_PAGES) * sysconf(_SC_PAGESIZE);
+      //std::cerr << "SC_AVPHY=" << sysconf(_SC_AVPHYS_PAGES) << " / PAGESIZE=" << sysconf(_SC_PAGESIZE) << std::endl;
       struct sysinfo sys_info;
       if (sysinfo(&sys_info) != 0)
 	{
@@ -215,11 +216,11 @@ void job::run_mr_job_merge_results(const char *fname, const int &nfile,
 	  return avail_mem;
 	}
       //std::cerr << "total swap: " << sys_info.totalswap << " -- freeswap: " << sys_info.freeswap << std::endl;
-      int freeram = sys_info.freeram;
-#ifdef DEBUG
-      size_t used_swap = sys_info.totalswap - sys_info.freeswap;
+      unsigned long freeram = sys_info.freeram;
+      #ifdef DEBUG
+      int used_swap = sys_info.totalswap - sys_info.freeswap;
       std::cerr << "avail mem: " << avail_mem << " -- totalram: " << sys_info.totalram << " -- freeram: " << freeram << " -- used_swap: " << used_swap << " -- avail_mem: " << freeram - used_swap << std::endl;
-#endif
+      #endif
       return freeram; // - used_swap; // Deactivated: avail memory does not take used swap into accounts, so we're subtracting it here.
     }
     
@@ -229,7 +230,7 @@ void job::run_mr_job_merge_results(const char *fname, const int &nfile,
   {
     if (_nchunks_split == 0)
       {
-	size_t ms = get_available_memory();
+	unsigned long ms = get_available_memory();
 	std::cerr << "available memory: " << ms << " -- file size: " << fs << std::endl;
 	/*if (fs < ms)
 	  {
@@ -237,7 +238,7 @@ void job::run_mr_job_merge_results(const char *fname, const int &nfile,
 	    mfsize = ms;
 	    return false;
 	    }*/
-	nchunks = (size_t)ceil(fs / ((1.0/_in_memory_factor)*ms));
+	nchunks = static_cast<unsigned long>(ceil(fs / ((1.0/_in_memory_factor)*ms)));
       }
     else nchunks = _nchunks_split;
     mfsize = (size_t)ceil(fs / (double)nchunks);

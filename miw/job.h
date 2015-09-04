@@ -52,7 +52,7 @@ using namespace miw;
     ~job() {}
 
     // memory management
-    size_t get_available_memory();
+    unsigned long get_available_memory();
 
     // input management
     bool file_size_autosplit(const size_t &fs,
@@ -81,8 +81,8 @@ using namespace miw;
     bool _autosplit = false; // whether to split input files based on heuristic of memory-usage.
     bool _merge_results = false; // whether to merge results over multiple inputop
     int _nchunks_split = 0;
-    double _in_memory_factor = 3; // we expect to use at max 10 times more memory than log volume, for processing them. Very conservative value, used in auto-splitting the log files before processing them.
-    std::string _output_format; // other values: json, TODO: csv
+    double _in_memory_factor = 10; // we expect to use at max 10 times more memory than log volume, for processing them. Very conservative value, used in auto-splitting the log files before processing them.
+    std::string _output_format; // other values: json, csv
     bool _quiet = 0;
 
     int _nprocs = 0; /**< number of used processors, when specified */
