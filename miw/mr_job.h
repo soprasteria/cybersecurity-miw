@@ -109,7 +109,7 @@ class mr_job : public map_reduce
     set_ncore(nprocs);
     set_reduce_task(reduce_tasks);
     sched_run();
-    print_stats();
+    print_top(&results_, ndisp);
     run_finalize(quiet, output_format, nfile, ndisp, fout);
   }
 
@@ -119,6 +119,7 @@ class mr_job : public map_reduce
     /* get the number of results to display */
     //if (!quiet)
     //print_top(&results_, ndisp);
+    print_stats();
     if (fout.is_open()) 
       {
 	if (output_format == "json")

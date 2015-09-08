@@ -59,11 +59,6 @@ namespace miw
 			     size_t &mfsize,
 			     size_t &nchunks);
     
-    // output functions
-    /*void print_top(xarray<keyval_t> *wc_vals, const int &ndisp);
-    void output_all(xarray<keyval_t> *wc_vals, std::ostream &fout);
-    void output_json(xarray<keyval_t> *wc_vals, std::ostream &fout);*/
-
     int execute();
     int execute(int argc, char *argv[]);
 
