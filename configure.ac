@@ -86,6 +86,57 @@ else
     AC_DEFINE_UNQUOTED([USE_PSRS], [0], [Define if you want to use psrs for sorting])
 fi
 
+# Check if there is google-gflags library installed.
+AC_ARG_WITH(gflags, AS_HELP_STRING[--with-gflags=GFLAGS_DIR],
+  GFLAGS_CFLAGS="-I${with_gflags}/include"
+  GFLAGS_LIBS="-L${with_gflags}/lib -lgflags"
+  CFLAGS="$CFLAGS $GFLAGS_CFLAGS"
+  LIBS="$LIBS $GFLAGS_LIBS"
+)
+AC_CHECK_LIB(gflags, main, ac_cv_have_libgflags=1, ac_cv_have_libgflags=0)
+if test x"$ac_cv_have_libgflags" = x"1"; then
+   AC_DEFINE(HAVE_LIB_GFLAGS, 1, [define if you have google gflags library])
+   if test x"$GFLAGS_LIBS" = x""; then
+      GFLAGS_LIBS="-lgflags"
+   fi
+else
+  GFLAGS_CFLAGS=
+  GFLAGS_LIBS=
+fi
+AC_SUBST(GFLAGS_LIBS)
+AC_SUBST(GFLAGS_CFLAGS)
+AM_CONDITIONAL(HAVE_GFLAGS, test x"$ac_cv_have_libgflags" = x"1")
+
+# Check if there is google-glog library installed.
+AC_ARG_ENABLE(gglog,
+AC_HELP_STRING([--enable-gglog],[Enable google glog (default is NO)]),
+[case "${enableval}" in 
+	yes) gglog=true ;;
+	no) gglog=false ;;
+	*) AC_MSG_ERROR(bad_value ${enableval} for --enable-gglog) ;;
+esac],[gglog=false])
+if test x"$gglog" = x"true"; then
+   AC_DEFINE(HAVE_GLOG,1,[google glog requested])
+fi
+
+AC_ARG_WITH(glog, AS_HELP_STRING[--with-glog=GLOG_DIR],
+  GLOG_CFLAGS="-I${with_glog}/include"
+  GLOG_LIBS="-L${with_glog}/lib -lglog"
+  CFLAGS="$CFLAGS $GLOG_CFLAGS"
+  LIBS="$LIBS $GLOG_LIBS"
+)
+AC_CHECK_LIB(glog, main, ac_cv_have_libglog=1, ac_cv_have_libglog=0)
+if test x"$ac_cv_have_libglog" = x"1"; then
+   AC_DEFINE(HAVE_LIB_GLOG, 1, [define if you have google glog library])
+   if test x"$GLOG_LIBS" = x""; then
+      GLOG_LIBS="-lglog"
+   fi
+else
+  GLOG_CFLAGS=
+  GLOG_LIBS=
+fi
+AC_SUBST(GLOG_LIBS)
+
 dnl Debug mode
 AC_ARG_ENABLE([debug],
               [AS_HELP_STRING([--enable-debug],

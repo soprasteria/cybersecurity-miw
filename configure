@@ -644,6 +644,11 @@ protobuf_CFLAGS
 PKG_CONFIG_LIBDIR
 PKG_CONFIG_PATH
 PKG_CONFIG
+GLOG_LIBS
+HAVE_GFLAGS_FALSE
+HAVE_GFLAGS_TRUE
+GFLAGS_CFLAGS
+GFLAGS_LIBS
 MEM_ALLOCATOR
 CXXCPP
 CPP
@@ -781,6 +786,9 @@ with_malloc
 enable_map_ds
 enable_mode
 enable_sort
+with_gflags
+enable_gglog
+with_glog
 enable_debug
 enable_profile
 '
@@ -1437,6 +1445,7 @@ Optional Features:
                           append. default: btree
   --enable-mode=ARG       mode: $ac_cv_all_modes, default: metis
   --enable-sort=ARG       mode: psrs or mergesort, default: psrs
+  --enable-gglog          Enable google glog (default is NO)
   --enable-debug          mode: -O0 in debug mode; -O3 otherwise, default:
                           false
   --enable-profile        profile: enable performmance counters (see
@@ -1451,6 +1460,8 @@ Optional Packages:
   --with-sysroot=DIR Search for dependent libraries within DIR
                         (or the compiler's sysroot if not specified).
   --with-malloc=TYPE      Memory allocator (malloc|flow|jemalloc)
+                          --with-gflags=GFLAGS_DIR
+                          --with-glog=GLOG_DIR
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -15392,6 +15403,152 @@ _ACEOF
 
 fi
 
+# Check if there is google-gflags library installed.
+
+# Check whether --with-gflags was given.
+if test "${with_gflags+set}" = set; then :
+  withval=$with_gflags; GFLAGS_CFLAGS="-I${with_gflags}/include"
+  GFLAGS_LIBS="-L${with_gflags}/lib -lgflags"
+  CFLAGS="$CFLAGS $GFLAGS_CFLAGS"
+  LIBS="$LIBS $GFLAGS_LIBS"
+
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lgflags" >&5
+$as_echo_n "checking for main in -lgflags... " >&6; }
+if ${ac_cv_lib_gflags_main+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lgflags  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_gflags_main=yes
+else
+  ac_cv_lib_gflags_main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_gflags_main" >&5
+$as_echo "$ac_cv_lib_gflags_main" >&6; }
+if test "x$ac_cv_lib_gflags_main" = xyes; then :
+  ac_cv_have_libgflags=1
+else
+  ac_cv_have_libgflags=0
+fi
+
+if test x"$ac_cv_have_libgflags" = x"1"; then
+
+$as_echo "#define HAVE_LIB_GFLAGS 1" >>confdefs.h
+
+   if test x"$GFLAGS_LIBS" = x""; then
+      GFLAGS_LIBS="-lgflags"
+   fi
+else
+  GFLAGS_CFLAGS=
+  GFLAGS_LIBS=
+fi
+
+
+ if test x"$ac_cv_have_libgflags" = x"1"; then
+  HAVE_GFLAGS_TRUE=
+  HAVE_GFLAGS_FALSE='#'
+else
+  HAVE_GFLAGS_TRUE='#'
+  HAVE_GFLAGS_FALSE=
+fi
+
+
+# Check if there is google-glog library installed.
+# Check whether --enable-gglog was given.
+if test "${enable_gglog+set}" = set; then :
+  enableval=$enable_gglog; case "${enableval}" in
+	yes) gglog=true ;;
+	no) gglog=false ;;
+	*) as_fn_error $? "bad_value ${enableval} for --enable-gglog" "$LINENO" 5 ;;
+esac
+else
+  gglog=false
+fi
+
+if test x"$gglog" = x"true"; then
+
+$as_echo "#define HAVE_GLOG 1" >>confdefs.h
+
+fi
+
+
+# Check whether --with-glog was given.
+if test "${with_glog+set}" = set; then :
+  withval=$with_glog; GLOG_CFLAGS="-I${with_glog}/include"
+  GLOG_LIBS="-L${with_glog}/lib -lglog"
+  CFLAGS="$CFLAGS $GLOG_CFLAGS"
+  LIBS="$LIBS $GLOG_LIBS"
+
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lglog" >&5
+$as_echo_n "checking for main in -lglog... " >&6; }
+if ${ac_cv_lib_glog_main+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lglog  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_glog_main=yes
+else
+  ac_cv_lib_glog_main=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_glog_main" >&5
+$as_echo "$ac_cv_lib_glog_main" >&6; }
+if test "x$ac_cv_lib_glog_main" = xyes; then :
+  ac_cv_have_libglog=1
+else
+  ac_cv_have_libglog=0
+fi
+
+if test x"$ac_cv_have_libglog" = x"1"; then
+
+$as_echo "#define HAVE_LIB_GLOG 1" >>confdefs.h
+
+   if test x"$GLOG_LIBS" = x""; then
+      GLOG_LIBS="-lglog"
+   fi
+else
+  GLOG_CFLAGS=
+  GLOG_LIBS=
+fi
+
+
 # Check whether --enable-debug was given.
 if test "${enable_debug+set}" = set; then :
   enableval=$enable_debug; ac_cv_debug=true
@@ -15904,6 +16061,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_GFLAGS_TRUE}" && test -z "${HAVE_GFLAGS_FALSE}"; then
+  as_fn_error $? "conditional \"HAVE_GFLAGS\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_PROTOBUF_TRUE}" && test -z "${HAVE_PROTOBUF_FALSE}"; then

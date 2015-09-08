@@ -9,8 +9,17 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
+/* google glog requested */
+#undef HAVE_GLOG
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
+
+/* define if you have google gflags library */
+#undef HAVE_LIB_GFLAGS
+
+/* define if you have google glog library */
+#undef HAVE_LIB_GLOG
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H

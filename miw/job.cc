@@ -29,6 +29,7 @@
 #include "job.h"
 #include <sys/sysinfo.h>
 #include <gflags/gflags.h>
+#include <glog/logging.h>
 
 DEFINE_string(fnames,"","comma-separated input file names");
 DEFINE_int32(nprocs,0,"number of cores (default = auto)");
@@ -60,6 +61,9 @@ std::vector<std::string>& str_split(const std::string &s, char delim, std::vecto
 int job::execute(int argc, char *argv[])
   {
     google::ParseCommandLineFlags(&argc,&argv,true);
+    google::InitGoogleLogging(argv[0]);
+    google::SetLogDestination(google::INFO,"");
+    FLAGS_logtostderr = 1;
     str_split(FLAGS_fnames,',',_files);
     _nprocs = FLAGS_nprocs;
     _ndisp = FLAGS_ndisp;
@@ -81,14 +85,14 @@ int job::execute(int argc, char *argv[])
     _fout.open(_ofname);
     if (!_fout.is_open())
       {
-	std::cerr << "unable to open output file=" << _ofname << std::endl;
+	LOG(ERROR) << "unable to open output file=" << _ofname;
 	return 1;
       }
     
     // open processing format file
     if (_lf.read(_format_name) < 0)
       {
-	std::cerr << "Error opening the log format file\n";
+	LOG(ERROR) << "Error opening the log format file";
 	return 1;
       }
     
@@ -97,15 +101,15 @@ int job::execute(int argc, char *argv[])
   
   int job::execute()
   {
-    std::cerr << "files size=" << _files.size() << std::endl;
+    LOG(INFO) << "files size=" << _files.size();
     for (size_t j=0;j<_files.size();j++)
       {
 	std::string fname = _files.at(j);
-	std::cerr << "Processing file=" << fname << std::endl;
+	LOG(INFO) << "Processing file=" << fname;
 	struct stat st;
 	if (stat(fname.c_str(),&st)!=0)
 	  {
-	    std::cerr << "[Error] file not found: " << fname << std::endl;
+	    LOG(ERROR) << "Error file not found: " << fname;
 	    continue;
 	  }
 	if (!_autosplit && !_merge_results)
@@ -121,31 +125,26 @@ int job::execute(int argc, char *argv[])
 	    size_t mfsize = 0;
 	    size_t nchunks = 1;
 	    bool do_autosplit = file_size_autosplit(st.st_size,mfsize,nchunks);
-	    std::cerr << "do_autosplit: " << do_autosplit << std::endl;
+	    LOG(INFO) << "do_autosplit: " << do_autosplit << std::endl;
 	    if (do_autosplit)
 	      {
-		std::cout << "Working on " << nchunks << " splitted chunks of " << mfsize << " bytes\n";
+		LOG(INFO) << "Working on " << nchunks << " splitted chunks of " << mfsize << " bytes\n";
 		std::ifstream fin(fname);
-		//int read_count;
-		//char *buf = new char[mfsize];
 		for (size_t ch=0;ch<nchunks;ch++)
 		  {
 		    bool run_end = (j == _files.size()-1) && (ch == nchunks-1);
 		    std::string line,buf;
-		    while(/*std::getline(fin,line)
-			    &&*/ buf.length() < mfsize)
+		    while(buf.length() < mfsize)
 		      {
 			if (!std::getline(fin,line))
 			  break;
 			buf += line + "\n";
-			//break;
 		      }
-		    std::cout << "--> Chunk #" << ch+1 << " / " << nchunks << std::endl;
+		    LOG(INFO) << "--> Chunk #" << ch+1 << " / " << nchunks;
 		    if (!_merge_results)
 		      run_mr_job(const_cast<char*>(buf.c_str()),j,buf.length());
 		    else run_mr_job_merge_results(const_cast<char*>(buf.c_str()),j+ch,run_end,buf.length());
 		  }
-		  //delete[] buf;
 	      }
 	    else
 	      {
@@ -212,14 +211,14 @@ void job::run_mr_job_merge_results(const char *fname, const int &nfile,
       struct sysinfo sys_info;
       if (sysinfo(&sys_info) != 0)
 	{
-	  std::cerr << "[Warning]: could not access sysinfo data\n";
+	  LOG(ERROR) << "[Warning]: could not access sysinfo data\n";
 	  return avail_mem;
 	}
       //std::cerr << "total swap: " << sys_info.totalswap << " -- freeswap: " << sys_info.freeswap << std::endl;
       unsigned long freeram = sys_info.freeram;
       #ifdef DEBUG
       int used_swap = sys_info.totalswap - sys_info.freeswap;
-      std::cerr << "avail mem: " << avail_mem << " -- totalram: " << sys_info.totalram << " -- freeram: " << freeram << " -- used_swap: " << used_swap << " -- avail_mem: " << freeram - used_swap << std::endl;
+      LOG(INFO) << "avail mem: " << avail_mem << " -- totalram: " << sys_info.totalram << " -- freeram: " << freeram << " -- used_swap: " << used_swap << " -- avail_mem: " << freeram - used_swap << std::endl;
       #endif
       return freeram; // - used_swap; // Deactivated: avail memory does not take used swap into accounts, so we're subtracting it here.
     }
@@ -231,7 +230,7 @@ void job::run_mr_job_merge_results(const char *fname, const int &nfile,
     if (_nchunks_split == 0)
       {
 	unsigned long ms = get_available_memory();
-	std::cerr << "available memory: " << ms << " -- file size: " << fs << std::endl;
+	LOG(INFO) << "available memory: " << ms << " -- file size: " << fs << std::endl;
 	/*if (fs < ms)
 	  {
 	    std::cerr << "autosplit not needed\n";
@@ -242,7 +241,7 @@ void job::run_mr_job_merge_results(const char *fname, const int &nfile,
       }
     else nchunks = _nchunks_split;
     mfsize = (size_t)ceil(fs / (double)nchunks);
-    std::cerr << "max file size: " << mfsize << std::endl;
+    LOG(INFO) << "max file size: " << mfsize << std::endl;
     return true;
   }
     

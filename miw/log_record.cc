@@ -33,6 +33,7 @@
 #include <iostream>
 #include <snappy.h>
 #include <assert.h>
+#include <glog/logging.h>
 
 size_t replace_in_string(std::string &str, const std::string &pattern,
 			 const std::string &repl)
@@ -149,7 +150,7 @@ namespace miw
       }
     else
       {
-	std::cerr << "[Error]: trying to sum up non numerical field\n";
+	LOG(ERROR) << "Error: trying to sum up non numerical field\n";
       }
   }
 
@@ -171,7 +172,7 @@ namespace miw
       }
     else
       {
-	std::cerr << "[Error]: trying max operator on non numerical field\n";
+	LOG(ERROR) << "Error: trying max operator on non numerical field\n";
       }
   }
 
@@ -195,7 +196,7 @@ namespace miw
       }
     else
       {
-	std::cerr << "[Error]: trying mean operator on non numerical field\n";
+	LOG(ERROR) << "Error: trying mean operator on non numerical field\n";
       }
   }
   

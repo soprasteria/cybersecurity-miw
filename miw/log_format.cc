@@ -31,6 +31,7 @@
 #include <fstream>
 #include <iostream>
 #include <time.h>
+#include <glog/logging.h>
 
 //#define DEBUG
 
@@ -53,12 +54,12 @@ namespace miw
     std::fstream input(filename,std::ios::in|std::ios::binary);
     if (!input)
       {
-	std::cerr << filename << ": File not found\n";
+	LOG(ERROR) << filename << ": File not found\n";
 	return -1;
       }
     else if (!_ldef.ParseFromIstream(&input))
       {
-	std::cerr << "Failed to parse log format file " << filename << std::endl;
+	LOG(ERROR) << "Failed to parse log format file " << filename << std::endl;
 	return -2;
       }
     return 0;
@@ -156,7 +157,7 @@ namespace miw
     std::vector<std::string> lines;
     log_format::tokenize(data,length,lines,"\n","");
 #ifdef DEBUG    
-    std::cout << "number of lines in map: " << lines.size() << std::endl;
+    LOG(DEBUG) << "number of lines in map: " << lines.size() << std::endl;
 #endif
 
     int skipped_logs = 0;
@@ -219,7 +220,7 @@ namespace miw
 	if (f->pos() >= (int)tokens.size() && !f->created())
 	  {
 	    if (!quiet)
-	      std::cerr << "[Error]: token position " << f->pos() << " is beyond the number of log fields. Skipping line: " << line << std::endl;
+	      LOG(ERROR) << "Error: token position " << f->pos() << " is beyond the number of log fields. Skipping line: " << line << std::endl;
 	    return NULL;
 	  }
 	else if (f->created())
@@ -260,7 +261,7 @@ namespace miw
 		    token = std::to_string(tm.tm_year+1900) + "-" + std::to_string(tm.tm_mon+1) + "-" + std::to_string(tm.tm_mday) + "T" + std::to_string(tm.tm_hour) + ":" + std::to_string(tm.tm_min) + ":" + std::to_string(tm.tm_sec);
 		  }
 	      }
-	    else std::cerr << "[Warning]: unrecognized date format " << token << std::endl;
+	    else LOG(WARNING) << "Warning: unrecognized date format " << token << std::endl;
 	  }
 	else if (f->processing() == "hour" || f->processing() == "minute" || f->processing() == "second")
 	  {
@@ -288,7 +289,7 @@ namespace miw
 		    token = elts.at(0) + ":" + elts.at(1) + ":" + (s < 10 ? "0" : "") + std::to_string(s);
 		  }
 	      }
-	    else std::cerr << "[Warning]: unrecognized time format " << token << std::endl;
+	    else LOG(WARNING) << "Warning: unrecognized time format " << token << std::endl;
 	  }
 	
 	// apply preprocessing (or not) to field according to type.
@@ -468,16 +469,12 @@ namespace miw
 					       const std::string &token,
 					       std::vector<field*> &nfields) const
   {
-    /*std::cerr << "mic preproc\n";
-      std::cerr << "token: " << token << std::endl;*/
     std::string ctoken = chomp_cpp(token);
     std::string::size_type p = ctoken.find_first_of('(');
     if (p == std::string::npos)
       return 0;
-    //std::cerr << "p: " << p << std::endl;
     std::string val = ctoken.substr(p);
-    //std::cerr << "val: " << val << std::endl;
-
+    
     bool first = true;
     int i = 0;
     std::string val_clean;
