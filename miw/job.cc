@@ -56,8 +56,8 @@ std::vector<std::string>& str_split(const std::string &s, char delim, std::vecto
   return elems;
 }
 
-//namespace miw
-//{    
+namespace miw
+{    
 
 int job::execute(int argc, char *argv[])
   {
@@ -248,4 +248,4 @@ void job::run_mr_job_merge_results(const char *fname, const int &nfile,
     return true;
   }
     
-//}
+}

@@ -42,8 +42,8 @@
 
 using namespace miw;
 
-//namespace miw
-//{
+namespace miw
+{
 
   class job
   {
@@ -97,6 +97,6 @@ using namespace miw;
     std::string _ofname; /**< output file name */
   };
   
-//}
+}
 
 #endif
