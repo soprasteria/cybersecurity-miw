@@ -27,6 +27,7 @@
  */
 
 #include "job.h"
+#include <chrono>
 #include <sys/sysinfo.h>
 #include <gflags/gflags.h>
 #include <glog/logging.h>
@@ -102,6 +103,7 @@ int job::execute(int argc, char *argv[])
   int job::execute()
   {
     LOG(INFO) << "files size=" << _files.size();
+    std::chrono::time_point<std::chrono::system_clock> tstart = std::chrono::system_clock::now();
     for (size_t j=0;j<_files.size();j++)
       {
 	std::string fname = _files.at(j);
@@ -159,6 +161,12 @@ int job::execute(int argc, char *argv[])
       }
     if (_fout.is_open())
       _fout.close();
+
+    // final timing
+    std::chrono::time_point<std::chrono::system_clock> tstop = std::chrono::system_clock::now();
+    double duration = std::chrono::duration_cast<std::chrono::seconds>(tstop-tstart).count();
+    LOG(INFO) << "MR duration=" << duration << " seconds\n";
+    
     return 0;
   }
 
