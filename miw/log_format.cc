@@ -111,53 +111,37 @@ namespace miw
 			    std::vector<std::string> &tokens,
 			    const std::string &delim,
 			    const std::string &quotechar)
+
   {
-    // Skip delimiters at beginning.
-    std::string::size_type lastPos = str.find_first_not_of(delim, 0);
-    std::string::size_type pos = 0;
-    if (!quotechar.empty() && str[0] == quotechar[0])
+    std::stringstream ss(str);
+    std::string item,tmp_item;
+    bool has_quote = false;
+    int pos = 0;
+    while (std::getline(ss, item, delim[0]))
       {
-	// find closing quotechar.
-	pos = str.find_first_of(quotechar,lastPos);
-      }
-    // Find first "non-delimiter".
-    else pos = str.find_first_of(delim, lastPos);
-    
-    while (std::string::npos != pos || std::string::npos != lastPos)
-      {
-	std::string token;
-	// check for quotechar delimited token.
-	if (!quotechar.empty() && str[lastPos] == quotechar[0])
+	if (!item.empty())
 	  {
-	    // find closing quotechar.
-	    pos = str.find_first_of(quotechar, lastPos+1)-1;
-	    token = str.substr(lastPos+1,pos-lastPos);
-	    pos += 2;
+	    if (!has_quote && item.at(0) == quotechar[0])
+	      {
+		tmp_item += item + delim;
+		has_quote = true;
+	      }
+	    if (has_quote && item.at(item.size()-1) == quotechar[0])
+	      {
+		tmp_item += item;
+		item = tmp_item;
+		tmp_item.clear();
+		has_quote = false;
+	      }
 	  }
-	else token = str.substr(lastPos, pos - lastPos);
-	/*std::cerr << "pos: " << pos << " -- lastPos: " << lastPos << std::endl;
-	  std::cerr << "token: " << token << std::endl;*/
-	//if (!token.empty()) // XXX: beware, may break some formats.
-	tokens.push_back(token);
-	if (length != -1 
-	    && (int)pos >= length)
-	  break;
-	
-        // Skip delimiters.  Note the "not_of"
-	if (quotechar.empty())
-	  lastPos = str.find_first_not_of(delim, pos);
-	if (lastPos != std::string::npos && lastPos - pos > 1) // avoid skipping empty ',,' fields.
-	  lastPos = pos + 1;
-	lastPos = std::min(str.length(),lastPos);
-	
-	//else lastPos = std::min(pos+1,str.length());
-	// Find next "non-delimiter"
-        pos = std::min(str.length(),str.find_first_of(delim, lastPos));
-	
-	/*std::cerr << "pos end: " << pos << " -- lastPos end: " << lastPos << std::endl;
-	  std::cerr << "str length: " << str.length() << std::endl;*/
-	if (lastPos >= str.length())
-	  break;
+	if (!has_quote)
+	  {
+	    tokens.push_back(item);
+	    pos += item.length() + 1;
+	    if (length != -1 
+		&& pos >= length)
+	      break;
+	  }
       }
   }
   
