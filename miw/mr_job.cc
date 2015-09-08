@@ -159,3 +159,8 @@ void mr_job::output_csv(xarray<keyval_t> *wc_vals, const int &nfile, std::ostrea
       fout << csvline;
     }
 }
+
+void mr_job::output_mem(xarray<keyval_t> *wc_vals, xarray<keyval_t> *results)
+{
+  wc_vals->swap(*results);
+}

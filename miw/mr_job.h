@@ -73,7 +73,7 @@ class mr_job : public map_reduce
 	delete defs_;
     }
   
-  void free_records(xarray<keyval_t> *wc_vals)
+  static void free_records(xarray<keyval_t> *wc_vals)
   {
     for (uint32_t i=0;i<wc_vals->size();i++)
       {
@@ -104,17 +104,18 @@ class mr_job : public map_reduce
   
   void run(const int &nprocs, const int &reduce_tasks,
 	   const int &quiet, const std::string output_format, const int &nfile,
-	   int &ndisp, std::ofstream &fout)
+	   int &ndisp, std::ofstream &fout, xarray<keyval_t> *results=nullptr)
   {
     set_ncore(nprocs);
     set_reduce_task(reduce_tasks);
     sched_run();
     print_top(&results_, ndisp);
-    run_finalize(quiet, output_format, nfile, ndisp, fout);
+    run_finalize(quiet, output_format, nfile, ndisp, fout, results);
   }
 
   void run_finalize(const int &quiet, const std::string &output_format,
-		    const int &nfile, int &ndisp, std::ofstream &fout)
+		    const int &nfile, int &ndisp, std::ofstream &fout,
+		    xarray<keyval_t> *results=nullptr)
   {
     /* get the number of results to display */
     //if (!quiet)
@@ -131,6 +132,8 @@ class mr_job : public map_reduce
       }
     else if (output_format == "json")
       output_json(&results_,std::cout);
+    else if (output_format == "mem")
+      output_mem(&results_,results);
     free_records(&results_);
     free_results();
   }
@@ -140,6 +143,7 @@ class mr_job : public map_reduce
   void output_all(xarray<keyval_t> *wc_vals, std::ostream &fout);
   void output_json(xarray<keyval_t> *wc_vals, std::ostream &fout);
   void output_csv(xarray<keyval_t> *wc_vals, const int &nfile, std::ostream &fout);
+  void output_mem(xarray<keyval_t> *wc_vals, xarray<keyval_t> *results);
   
   // map reduce
   void map_function(split_t *ma);

@@ -49,7 +49,16 @@ namespace miw
   {
   public:
     job() {}
-    ~job() {}
+    ~job()
+      {
+	if (_results)
+	  {
+	    mr_job::free_records(_results);
+	    for (size_t i = 0; i < _results->size(); ++i)
+	      (*_results)[i].reset();
+	    _results->shallow_free();
+	  }
+      }
 
     // memory management
     unsigned long get_available_memory();
@@ -90,6 +99,9 @@ namespace miw
     mr_job *_mrj = nullptr;
     std::vector<std::string> _files; /**< list of data file names */
     std::string _ofname; /**< output file name */
+
+    // job results, when part of the output
+    xarray<keyval_t> *_results = nullptr;
   };
   
 }

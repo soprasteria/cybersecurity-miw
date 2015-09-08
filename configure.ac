@@ -194,6 +194,6 @@ AC_CHECK_HEADERS([snappy.h])
 
 AC_SUBST([OPT_LEVEL])
 
-AC_CONFIG_FILES(Makefile miw/Makefile miw/formats/Makefile metis/Makefile app/Makefile)
+AC_CONFIG_FILES(Makefile miw/Makefile miw/formats/Makefile metis/Makefile app/Makefile tests/Makefile)
 
 AC_OUTPUT

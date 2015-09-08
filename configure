@@ -15923,7 +15923,7 @@ done
 
 
 
-ac_config_files="$ac_config_files Makefile miw/Makefile miw/formats/Makefile metis/Makefile app/Makefile"
+ac_config_files="$ac_config_files Makefile miw/Makefile miw/formats/Makefile metis/Makefile app/Makefile tests/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -17050,6 +17050,7 @@ do
     "miw/formats/Makefile") CONFIG_FILES="$CONFIG_FILES miw/formats/Makefile" ;;
     "metis/Makefile") CONFIG_FILES="$CONFIG_FILES metis/Makefile" ;;
     "app/Makefile") CONFIG_FILES="$CONFIG_FILES app/Makefile" ;;
+    "tests/Makefile") CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac

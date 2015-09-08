@@ -58,7 +58,7 @@ std::vector<std::string>& str_split(const std::string &s, char delim, std::vecto
 
 namespace miw
 {    
-
+  
 int job::execute(int argc, char *argv[])
   {
     google::ParseCommandLineFlags(&argc,&argv,true);
@@ -81,22 +81,31 @@ int job::execute(int argc, char *argv[])
     _merge_results = FLAGS_merge_results;
 
     // list input files
+
+    std::cerr << "files=" << FLAGS_fnames << std::endl;
+
     
-    // open output file
-    _fout.open(_ofname);
-    if (!_fout.is_open())
+    // if in memory results, allocate the final object
+    if (_output_format == "mem")
+      _results = new xarray<keyval_t>();
+    else
       {
-	LOG(ERROR) << "unable to open output file=" << _ofname;
-	return 1;
+	// open output file
+	_fout.open(_ofname);
+	if (!_fout.is_open())
+	  {
+	    LOG(ERROR) << "unable to open output file=" << _ofname;
+	    return 1;
+	  }
       }
-    
+
     // open processing format file
     if (_lf.read(_format_name) < 0)
       {
 	LOG(ERROR) << "Error opening the log format file";
 	return 1;
       }
-    
+
     return execute();
   }
   
@@ -171,7 +180,7 @@ void job::run_mr_job(const char *fname, const int &nfile, const size_t &blength)
   if (blength) // from buffer
     _mrj = new mr_job(const_cast<char*>(fname),blength, _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
   else _mrj = new mr_job(fname, _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
-  _mrj->run(_nprocs,_reduce_tasks,_quiet,_output_format,nfile,_ndisp,_fout);
+  _mrj->run(_nprocs,_reduce_tasks,_quiet,_output_format,nfile,_ndisp,_fout,_results);
   delete _mrj;
   _mrj = nullptr;
   mapreduce_appbase::deinitialize();
