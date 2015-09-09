@@ -684,8 +684,13 @@ namespace miw
 		      sts << separator;
 		    else i++;
 		    if (va.isString())
-		      //sts << "\\\"" << va.asString() << "\\\"";
-		      sts << va.asString();
+		      {
+			//sts << "\\\"" << va.asString() << "\\\"";
+			std::string vastr = va.asString();
+			if (vastr.find(",")!=std::string::npos)
+			  replace_in_string(vastr,separator,"");
+			sts << va.asString();
+		      }
 		    else if (va.isInt())
 		      sts << va.asInt();
 		    else if (va.isDouble())
