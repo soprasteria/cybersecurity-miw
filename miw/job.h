@@ -73,6 +73,8 @@ namespace miw
 
     void run_mr_job(const char *fname, const int &nfile, const size_t &blength=0);
     void run_mr_job_merge_results(const char *fname, const int &nfile, const bool &run_end, const size_t &blength=0);
+
+    void glog_init(char *argv[]);
     
     long _skipped_logs = 0;
     log_format _lf;
@@ -102,6 +104,9 @@ namespace miw
 
     // job results, when part of the output
     xarray<keyval_t> *_results = nullptr;
+
+    // glog init
+    static bool _glog_init;
   };
   
 }

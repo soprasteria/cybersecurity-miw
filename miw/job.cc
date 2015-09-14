@@ -58,12 +58,23 @@ std::vector<std::string>& str_split(const std::string &s, char delim, std::vecto
 
 namespace miw
 {    
+
+  bool job::_glog_init = false;
+  
+  void job::glog_init(char *argv[])
+  {
+    if (!job::_glog_init)
+      {
+	google::InitGoogleLogging(argv[0]);
+	google::SetLogDestination(google::INFO,"");
+	job::_glog_init = true;
+      }
+  }
   
 int job::execute(int argc, char *argv[])
   {
     google::ParseCommandLineFlags(&argc,&argv,true);
-    google::InitGoogleLogging(argv[0]);
-    google::SetLogDestination(google::INFO,"");
+    glog_init(argv);
     FLAGS_logtostderr = 1;
     str_split(FLAGS_fnames,',',_files);
     _nprocs = FLAGS_nprocs;
