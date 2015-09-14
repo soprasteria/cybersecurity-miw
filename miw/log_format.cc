@@ -226,8 +226,7 @@ namespace miw
 	
 	if (f->pos() >= (int)tokens.size() && !f->created())
 	  {
-	    if (!quiet)
-	      LOG(ERROR) << "Error: token position " << f->pos() << " is beyond the number of log fields. Skipping line: " << line << std::endl;
+	    LOG(ERROR) << "Error: token position " << f->pos() << " is beyond the number of log fields. Skipping line: " << line << std::endl;
 	    return NULL;
 	  }
 	else if (f->created())
