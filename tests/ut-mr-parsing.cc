@@ -46,3 +46,76 @@ TEST(job,proxy_format)
   j.execute(args.size()+1,cargs);
   ASSERT_EQ(2,j._results->size());
 }
+
+TEST(job,domain_controller_format)
+{
+  job j;
+  std::string arg_line = "-fnames ../data/domain_controller_100lines_test.log -format_name ../miw/formats/domain_controller_format -output_format mem --skip_header";
+  std::vector<std::string> args;
+  log_format::tokenize(arg_line,-1,args," ","");
+  char* cargs[args.size()+1];
+  cargs[0] = "miw";
+  for (size_t i=0;i<args.size();i++)
+    cargs[i+1] = const_cast<char*>(args.at(i).c_str());
+  j.execute(args.size()+1,cargs);
+  ASSERT_EQ(4,j._results->size());
+}
+
+TEST(job,evtx)
+{
+  job j;
+  std::string arg_line = "-fnames ../data/SecuritySample_10.csv -format_name ../miw/formats/evtx -output_format mem";
+  std::vector<std::string> args;
+  log_format::tokenize(arg_line,-1,args," ","");
+  char* cargs[args.size()+1];
+  cargs[0] = "miw";
+  for (size_t i=0;i<args.size();i++)
+    cargs[i+1] = const_cast<char*>(args.at(i).c_str());
+  j.execute(args.size()+1,cargs);
+  ASSERT_EQ(1,j._results->size());
+  //TODO: check on per field result
+}
+
+TEST(job,evtx2)
+{
+  job j;
+  std::string arg_line = "-fnames ../data/SecuritySample_10_2.csv -format_name ../miw/formats/evtx2 -output_format mem";
+  std::vector<std::string> args;
+  log_format::tokenize(arg_line,-1,args," ","");
+  char* cargs[args.size()+1];
+  cargs[0] = "miw";
+  for (size_t i=0;i<args.size();i++)
+    cargs[i+1] = const_cast<char*>(args.at(i).c_str());
+  j.execute(args.size()+1,cargs);
+  ASSERT_EQ(1,j._results->size());
+  //TODO: check on per field result
+}
+
+/*TEST(job,firewall_checkpoint)
+{
+  job j;
+  std::string arg_line = "-fnames ../data/fw_checkpoint_100lines.log -format_name ../miw/formats/firewall_checkpoint -output_format mem";
+  std::vector<std::string> args;
+  log_format::tokenize(arg_line,-1,args," ","");
+  char* cargs[args.size()+1];
+  cargs[0] = "miw";
+  for (size_t i=0;i<args.size();i++)
+    cargs[i+1] = const_cast<char*>(args.at(i).c_str());
+  j.execute(args.size()+1,cargs);
+  ASSERT_EQ(1,j._results->size());
+  }*/
+
+TEST(job,allCiscoIportwsa)
+{
+  job j;
+  std::string arg_line = "-fnames ../data/RSSallCisco10.csv -format_name ../miw/formats/allCiscoIportwsa -output_format mem";
+  std::vector<std::string> args;
+  log_format::tokenize(arg_line,-1,args," ","");
+  char* cargs[args.size()+1];
+  cargs[0] = "miw";
+  for (size_t i=0;i<args.size();i++)
+    cargs[i+1] = const_cast<char*>(args.at(i).c_str());
+  j.execute(args.size()+1,cargs);
+  ASSERT_EQ(7,j._results->size());
+  //TODO: check on per field result
+}
