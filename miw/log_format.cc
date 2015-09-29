@@ -244,7 +244,20 @@ namespace miw
 	if (ftype == "date" || f->processing() == "day" || f->processing() == "month" || f->processing() == "year")
 	  {
 	    struct tm tm;
-	    if (strptime(token.c_str(),f->date_format().c_str(),&tm) != NULL)
+	    bool datef_ok = false;
+	    if (f->date_format() == "unix")
+	      {
+		time_t ut = std::stoi(token);
+		gmtime_r(&ut,&tm);
+		datef_ok = true;
+	      }
+	    else
+	      {
+		if (strptime(token.c_str(),f->date_format().c_str(),&tm) != NULL)
+		  datef_ok = true;
+	      }
+
+	    if (datef_ok)
 	      {
 		if (f->processing() == "day")
 		  {
