@@ -531,7 +531,8 @@ namespace miw
 	if (i == j)
 	  continue;
 	field *g = ldef.mutable_fields(j);
-	if (g->name() == f->filter_field())
+	if (g->name() == f->filter_field()
+	    && g->str_fi().str_reap_size())
 	  {
 	    int_field *ifi = f->mutable_int_fi();
 	    if (g->str_fi().str_reap(0).find(f->filter())!=std::string::npos)
