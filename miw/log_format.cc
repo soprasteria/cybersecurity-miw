@@ -159,7 +159,7 @@ namespace miw
     std::vector<std::string> lines;
     log_format::tokenize(data,length,lines,"\n","");
 #ifdef DEBUG    
-    LOG(DEBUG) << "number of lines in map: " << lines.size() << std::endl;
+    LOG(INFO) << "number of lines in map: " << lines.size() << std::endl;
 #endif
 
     int skipped_logs = 0;
