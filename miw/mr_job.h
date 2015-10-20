@@ -41,6 +41,10 @@
 #include "log_record.h"
 #include "log_format.h"
 #include <fstream>
+#include <chrono>
+#include <ctime>
+#include "str_utils.h"
+#include <glog/logging.h>
 
 enum { with_value_modifier = 0 };
 
@@ -92,7 +96,7 @@ class mr_job : public map_reduce
   
   void run_no_final(const int &nprocs, const int &reduce_tasks,
 		    const int &quiet, const std::string output_format, const int &nfile,
-		    int &ndisp, std::ofstream &fout)
+		    int &ndisp, std::ofstream &fout, const std::string &ofname, const bool &tmp_save)
   {
     set_ncore(nprocs);
     set_reduce_task(reduce_tasks);
@@ -100,6 +104,8 @@ class mr_job : public map_reduce
     //std::cerr << "results size=" << get_reduce_bucket_manager()->rb0_size() << std::endl;
     xarray<keyval_t> *tmp_results = static_cast<reduce_bucket_manager<keyval_t>*>(get_reduce_bucket_manager())->get(0);
     print_top(tmp_results, ndisp);
+    if (tmp_save)
+      temp_state_save(output_format,tmp_results,ofname); // ability to store temporary state, e.g. in CSV form
   }
   
   void run(const int &nprocs, const int &reduce_tasks,
@@ -137,7 +143,40 @@ class mr_job : public map_reduce
     free_records(&results_);
     free_results();
   }
-  
+
+  void temp_state_save(const std::string &output_format,
+		       xarray<keyval_t> *results,
+		       const std::string &ofname)
+  {
+    std::chrono::time_point<std::chrono::system_clock> now_tp = std::chrono::system_clock::now();
+    std::time_t now_time = std::chrono::system_clock::to_time_t(now_tp);
+    std::string now_date = std::ctime(&now_time);
+    std::replace(now_date.begin(),now_date.end(),' ','_');
+    std::replace(now_date.begin(),now_date.end(),'?','_');
+    std::replace(now_date.begin(),now_date.end(),'\n','_');
+
+    std::ofstream fout;
+    std::vector<std::string> tmp_ofnamev;
+    str_utils::str_split(ofname,'.',tmp_ofnamev);
+    std::string tmp_ofname = tmp_ofnamev[0] + '_' + now_date + '.' + tmp_ofnamev[1];
+    fout.open(tmp_ofname);
+    if (!fout.is_open())
+      {
+	LOG(ERROR) << "unable to open temporary output file=" << tmp_ofname;
+	return;
+      }
+    else
+      {
+	std::cerr << "output format=" << output_format << std::endl;
+	if (output_format == "csv")
+	  {
+	    output_csv(results,-1,fout);
+	    LOG(INFO) << "temporary result saved in " << tmp_ofname;
+	  }
+      }
+    fout.close();
+  }
+
   // output functions
   void print_top(xarray<keyval_t> *wc_vals, int &ndisp);
   void output_all(xarray<keyval_t> *wc_vals, std::ostream &fout);

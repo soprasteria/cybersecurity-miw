@@ -10,13 +10,15 @@ def multi_replace(text, wordDict):
 
 # class for running one or more MIW jobs
 ## TODO:
-## - main command as parameter
 ## - calling options and defaults in constructor
 class MIWJob:
 
-    def __init__(self,miw_loc):
+    def __init__(self,miw_loc,miw_command=''):
         self.miw_loc = miw_loc
-        self.miw_command = '-fnames $fnames -ofname $ofname -format_name $format_files_repo/$logfile -output_format csv -autosplit -merge_results --memory_factor $memfactor'
+        if miw_command:
+            self.miw_command = miw_command
+        else:
+            self.miw_command = '-fnames $fnames -ofname $ofname -format_name $format_files_repo/$logfile -output_format csv -autosplit -merge_results -memory_factor $memfactor'
                 
     def run(self,miw_options):
         #print miw_options.keys()

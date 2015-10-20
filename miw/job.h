@@ -31,10 +31,6 @@
 
 #include "log_format.h"
 #include "mr_job.h"
-//#include <sys/mman.h>
-//#include "application.hh"
-//#include "defsplitter.hh"
-//#include "bench.hh"
 #include <fstream>
 
 //#define DEFAULT_NDISP 10
@@ -91,6 +87,7 @@ namespace miw
     std::string _output_format; // other values: json, csv
     bool _quiet = false;
     bool _skip_header = false; // whether to skip the first file line
+    bool _tmp_save = false; // ability to save temporary results
     
     int _nprocs = 0; /**< number of used processors, when specified */
     int _map_tasks = 0; /**< number of map tasks, when specified */

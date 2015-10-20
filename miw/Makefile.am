@@ -15,7 +15,7 @@ AM_CXXFLAGS=-Wall -g -pipe -std=c++11 -fpermissive -fopenmp -D_GLIBCXX_USE_CXX11
 AM_CPPFLAGS=`pkg-config --cflags protobuf`
 miw_LTLIBRARIES=libmiw.la
 libmiw_la_SOURCES=log_format.cc log_format.h \
-		 log_record.cc log_record.h mr_job.cc mr_job.h job.cc job.h
+		 log_record.cc log_record.h mr_job.cc mr_job.h job.cc job.h str_utils.h
 nodist_libmiw_la_SOURCES=$(protoc_outputs)
 
 clean-local:

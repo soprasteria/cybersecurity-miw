@@ -48,15 +48,7 @@ DEFINE_bool(compressed,false,"whether to compress the original content");
 DEFINE_bool(merge_results,false,"whether to merge results over multiple input files");
 DEFINE_double(memory_factor,10.0,"heuristic value for autosplit of very large files, representing the expected memory requirement ratio vs the size of the file, e.g. 10 times more memory than log volume");
 DEFINE_bool(skip_header,false,"whether to skip first log line file as header");
-
-std::vector<std::string>& str_split(const std::string &s, char delim, std::vector<std::string> &elems) {
-  std::stringstream ss(s);
-  std::string item;
-  while (std::getline(ss, item, delim)) {
-    elems.push_back(item);
-  }
-  return elems;
-}
+DEFINE_bool(tmp_save,false,"whether to save temporary output of results after each file is processed");
 
 namespace miw
 {    
@@ -78,7 +70,7 @@ int job::execute(int argc, char *argv[])
     google::ParseCommandLineFlags(&argc,&argv,true);
     glog_init(argv);
     FLAGS_logtostderr = 1;
-    str_split(FLAGS_fnames,',',_files);
+    str_utils::str_split(FLAGS_fnames,',',_files);
     _nprocs = FLAGS_nprocs;
     _ndisp = FLAGS_ndisp;
     _map_tasks = FLAGS_map_tasks;
@@ -94,6 +86,7 @@ int job::execute(int argc, char *argv[])
     _merge_results = FLAGS_merge_results;
     _in_memory_factor = FLAGS_memory_factor;
     _skip_header = FLAGS_skip_header;
+    _tmp_save = FLAGS_tmp_save;
     
     // list input files
     std::cerr << "files=" << FLAGS_fnames << std::endl;
@@ -104,6 +97,7 @@ int job::execute(int argc, char *argv[])
       _results = new xarray<keyval_t>();
     else
       {
+	//TODO: open temporary output file if option is on
 	// open output file
 	_fout.open(_ofname);
 	if (!_fout.is_open())
@@ -217,7 +211,7 @@ void job::run_mr_job_merge_results(const char *fname, const int &nfile,
       else _mrj->set_defs(fname,_map_tasks);
     }
   
-  _mrj->run_no_final(_nprocs,_reduce_tasks,_quiet,_output_format,nfile,_ndisp,_fout);
+  _mrj->run_no_final(_nprocs,_reduce_tasks,_quiet,_output_format,nfile,_ndisp,_fout,_ofname,_tmp_save);
 
   if (run_end)
     {
