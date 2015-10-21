@@ -36,6 +36,7 @@
 #include "log_definition.pb.h"
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <jsoncpp/json/json.h>
 
 namespace miw
@@ -56,8 +57,8 @@ namespace miw
     
     /*static void to_json_solr(field &f, Json::Value &jrec,
       std::string &date, std::string &time);*/
-    static void to_json(field &f, Json::Value &jrec,
-			std::string &date, std::string &time);
+    void to_json(field &f, const int &i, Json::Value &jrec,
+		 std::string &date, std::string &time);
     void to_json(Json::Value &jlrec) const;
     static void json_to_csv(const Json::Value &jl,
 			    std::string &csvline,
@@ -74,7 +75,8 @@ namespace miw
     // field aggregation functions.
     void aggregation_union(const int &i,
 			   const field &f,
-			   const bool &count);
+			   const bool &count,
+			   log_record *lr);
     
     void aggregation_sum(const int &i,
 			 const field &f);
@@ -97,6 +99,7 @@ namespace miw
     int _compressed_size;
     int _original_size;
     bool _compressed;
+    std::unordered_map<int,std::unordered_map<std::string,int>> _unos; // cache for string arrays in aggregated unions.
   };
   
 }

@@ -68,7 +68,8 @@ namespace miw
 
   void log_record::aggregation_union(const int &i,
 				     const field &f,
-				     const bool &count)
+				     const bool &count,
+				     log_record *lr)
   {
     std::string ftype = f.type();
     if (ftype == "int")
@@ -80,21 +81,42 @@ namespace miw
     else if (ftype == "string" || ftype == "date")
       {
 	string_field *ifs = _ld.mutable_fields(i)->mutable_str_fi();
-	
-	std::unordered_map<std::string,int> uno;
-	for (int i=0;i<ifs->str_reap_size();i++)
-	  uno.insert(std::pair<std::string,int>(ifs->str_reap(i),i));
-	std::unordered_map<std::string,int>::const_iterator sit;
 
-	for (int j=0;j<f.str_fi().str_reap_size();j++)
+	std::unordered_map<int,std::unordered_map<std::string,int>>::iterator hit,hit2;
+	if ((hit=_unos.find(i))==_unos.end())
 	  {
-	    std::string str = f.str_fi().str_reap(j);
+	    _unos.insert(std::pair<int,std::unordered_map<std::string,int>>(i,std::unordered_map<std::string,int>()));
+	    hit = _unos.find(i);
+	  }
+	if ((*hit).second.empty())
+	  {
+	    for (int j=0;j<ifs->str_reap_size();j++)
+	      (*hit).second.insert(std::pair<std::string,int>(ifs->str_reap(j),j));
+	  }
+	std::unordered_map<std::string,int>::const_iterator sit;
+	
+	
+	if ((hit2=lr->_unos.find(i))==lr->_unos.end())
+	  {
+	    lr->_unos.insert(std::pair<int,std::unordered_map<std::string,int>>(i,std::unordered_map<std::string,int>()));
+	    hit2 = lr->_unos.find(i);
+	  }
+	if ((*hit2).second.empty())
+	  {
+	    for (int j=0;j<f.str_fi().str_reap_size();j++)
+	      (*hit2).second.insert(std::pair<std::string,int>(f.str_fi().str_reap(j),j));
+	  }
+
+	auto hit3 = (*hit2).second.begin();
+	while(hit3!=(*hit2).second.end())
+	  {
+	    std::string str = (*hit3).first;
 	    int counter = 1;
 	    if (count && f.str_fi().str_count_size() > 0)
-	      counter = f.str_fi().str_count(j);
-	    if ((sit=uno.find(str))==uno.end())
+	      counter = f.str_fi().str_count((*hit3).second);
+	    if ((sit=(*hit).second.find(str))==(*hit).second.end())
 	      {
-		ifs->add_str_reap(str);
+		(*hit).second.insert(std::pair<std::string,int>(str,(*hit).second.size())); // store string and position (for counters)
 		if (count)
 		  {
 		    ifs->add_str_count(counter);
@@ -108,6 +130,7 @@ namespace miw
 		  ifs->set_str_count(pos,cval + counter);
 		else ifs->add_str_count(cval + counter);
 	      }
+	    ++hit3;
 	  }
 	//debug
 	/*if (count)
@@ -231,7 +254,7 @@ namespace miw
 		  }
 		if (aggregation =="union" || aggregation == "union_count")
 		  {
-		    aggregation_union(i,lr->_ld.fields(i),(aggregation == "union_count" ? true : false));
+		    aggregation_union(i,lr->_ld.fields(i),(aggregation == "union_count" ? true : false),lr);
 		  }
 		else if (aggregation == "sum")
 		  {
@@ -443,7 +466,7 @@ namespace miw
       jrec[json_fname + "_count"] = f.count();
       }*/
 
-  void log_record::to_json(field &f, Json::Value &jrec,
+  void log_record::to_json(field &f, const int &i, Json::Value &jrec,
 			   std::string &date, std::string &time)
   {
     if (!f.preprocessing().empty())
@@ -457,8 +480,8 @@ namespace miw
 	int irs = ifi->int_reap_size();
 	if (irs > 1)
 	  {
-	    for (int i=0;i<ifi->int_reap_size();i++)
-	      jsf.append(ifi->int_reap(i));
+	    for (int j=0;j<ifi->int_reap_size();j++)
+	      jsf.append(ifi->int_reap(j));
 	  }
 	else if (ifi->int_reap_size() == 1)
 	  {
@@ -470,13 +493,34 @@ namespace miw
     else if (ftype == "string" || ftype == "time")
       {
 	string_field *ifs = f.mutable_str_fi();
+	std::unordered_map<int,std::unordered_map<std::string,int>>::iterator hit;
+	if ((hit=_unos.find(i))==_unos.end())
+	  {
+	    //LOG(ERROR) << "empty cache string field (uno)";
+	    //return; //XXX: beware
+	  }
+	else 
+	  {
+	    if (!(*hit).second.empty())
+	      {
+		ifs->clear_str_reap();
+		for (size_t l=0;l<(*hit).second.size();l++) // start from reap_size if not empty
+		  ifs->add_str_reap("");
+		auto rhit = (*hit).second.begin();
+		while(rhit!=(*hit).second.end())
+		  {
+		    ifs->set_str_reap((*rhit).second,(*rhit).first);
+		    ++rhit;
+		  }
+	      }
+	  }
 	if (ifs->str_reap_size() > 1)
 	  {
-	    for (int i=0;i<ifs->str_reap_size();i++)
+	    for (int j=0;j<ifs->str_reap_size();j++)
 	      {
-		jsf.append(ifs->str_reap(i));
+		jsf.append(ifs->str_reap(j));
 		if (ifs->str_count_size() > 0)
-		  jsfc.append(ifs->str_count(i));
+		  jsfc.append(ifs->str_count(j));
 	      }
 	  }
 	else if (ifs->str_reap_size() == 1)
@@ -500,11 +544,11 @@ namespace miw
 	string_field *ifs = f.mutable_str_fi();
 	if (ifs->str_reap_size() > 1)
 	  {
-	    for (int i=0;i<ifs->str_reap_size();i++)
+	    for (int j=0;j<ifs->str_reap_size();j++)
 	      {
-		jsf.append(ifs->str_reap(i));
+		jsf.append(ifs->str_reap(j));
 		if (ifs->str_count_size() > 0)
-		  jsfc.append(ifs->str_count(i));
+		  jsfc.append(ifs->str_count(j));
 	      }
 	  }
 	else if (ifs->str_reap_size() == 1)
@@ -516,16 +560,16 @@ namespace miw
     else if (ftype == "bool")
       {
 	bool_field *ifb = f.mutable_bool_fi();
-	for (int i=0;i<ifb->bool_reap_size();i++)
-	  jsf.append(ifb->bool_reap(i));
+	for (int j=0;j<ifb->bool_reap_size();j++)
+	  jsf.append(ifb->bool_reap(j));
       }
     else if (ftype == "float")
       {
 	float_field *iff = f.mutable_real_fi();
 	if (iff->float_reap_size() > 1)
 	  {
-	    for (int i=0;i<iff->float_reap_size();i++)
-	      jsf.append(iff->float_reap(i));
+	    for (int j=0;j<iff->float_reap_size();j++)
+	      jsf.append(iff->float_reap(j));
 	  }
 	else if (iff->float_reap_size() == 1)
 	  {
@@ -622,7 +666,7 @@ namespace miw
       {
 	field f = _ld.fields(i);
 	std::string ldate,ltime;
-	log_record::to_json(f,jlrec,ldate,ltime);
+	to_json(f,i,jlrec,ldate,ltime);
 	if (!ldate.empty())
 	  date = ldate;
 	else if (!ltime.empty())
