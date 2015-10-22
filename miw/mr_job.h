@@ -96,7 +96,7 @@ class mr_job : public map_reduce
   
   void run_no_final(const int &nprocs, const int &reduce_tasks,
 		    const int &quiet, const std::string output_format, const int &nfile,
-		    int &ndisp, std::ofstream &fout, const std::string &ofname, const bool &tmp_save)
+		    int &ndisp, std::ofstream &fout, const std::string &ofname, const bool &tmp_save, const bool &newfile)
   {
     set_ncore(nprocs);
     set_reduce_task(reduce_tasks);
@@ -104,7 +104,7 @@ class mr_job : public map_reduce
     //std::cerr << "results size=" << get_reduce_bucket_manager()->rb0_size() << std::endl;
     xarray<keyval_t> *tmp_results = static_cast<reduce_bucket_manager<keyval_t>*>(get_reduce_bucket_manager())->get(0);
     print_top(tmp_results, ndisp);
-    if (tmp_save)
+    if (tmp_save && newfile)
       temp_state_save(output_format,tmp_results,ofname); // ability to store temporary state, e.g. in CSV form
   }
   

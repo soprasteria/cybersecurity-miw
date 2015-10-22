@@ -137,7 +137,7 @@ int job::execute(int argc, char *argv[])
 	  }
 	else if (!_autosplit && _merge_results)
 	  {
-	    run_mr_job_merge_results(fname.c_str(),j,j==_files.size()-1);
+	    run_mr_job_merge_results(fname.c_str(),j,j==_files.size()-1,true);
 	  }
 	else
 	  {
@@ -162,7 +162,7 @@ int job::execute(int argc, char *argv[])
 		    LOG(INFO) << "--> Chunk #" << ch+1 << " / " << nchunks;
 		    if (!_merge_results)
 		      run_mr_job(const_cast<char*>(buf.c_str()),j,buf.length());
-		    else run_mr_job_merge_results(const_cast<char*>(buf.c_str()),j+ch,run_end,buf.length());
+		    else run_mr_job_merge_results(const_cast<char*>(buf.c_str()),j+ch,run_end,buf.length(),ch==0);
 		  }
 	      }
 	    else
@@ -195,7 +195,8 @@ void job::run_mr_job(const char *fname, const int &nfile, const size_t &blength)
 }
 
 void job::run_mr_job_merge_results(const char *fname, const int &nfile,
-				   const bool &run_end, const size_t &blength)
+				   const bool &run_end, const size_t &blength,
+				   const bool &newfile)
 {
   if (nfile == 0)
     {
@@ -211,7 +212,7 @@ void job::run_mr_job_merge_results(const char *fname, const int &nfile,
       else _mrj->set_defs(fname,_map_tasks);
     }
   
-  _mrj->run_no_final(_nprocs,_reduce_tasks,_quiet,_output_format,nfile,_ndisp,_fout,_ofname,_tmp_save);
+  _mrj->run_no_final(_nprocs,_reduce_tasks,_quiet,_output_format,nfile,_ndisp,_fout,_ofname,_tmp_save,newfile);
 
   if (run_end)
     {

@@ -68,7 +68,7 @@ namespace miw
     int execute(int argc, char *argv[]);
 
     void run_mr_job(const char *fname, const int &nfile, const size_t &blength=0);
-    void run_mr_job_merge_results(const char *fname, const int &nfile, const bool &run_end, const size_t &blength=0);
+    void run_mr_job_merge_results(const char *fname, const int &nfile, const bool &run_end, const size_t &blength=0, const bool &newfile=true);
 
     void glog_init(char *argv[]);
     
