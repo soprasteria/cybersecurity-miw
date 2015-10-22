@@ -31,7 +31,11 @@
 #include <fstream>
 #include <iostream>
 #include <time.h>
+#include <boost/network/uri.hpp>
+#include "str_utils.h"
 #include <glog/logging.h>
+
+using namespace boost::network;
 
 //#define DEBUG
 
@@ -310,6 +314,33 @@ namespace miw
 	      }
 	    else LOG(WARNING) << "Warning: unrecognized time format " << token << std::endl;
 	  }
+	if (ftype == "url")
+	  {
+	    
+	    
+	    // - parse field value into tokens
+	    uri::uri uri_token(token);
+	    /*if (!uri_token.is_valid()) // validity appears to not be qualifiying urls properly, cppnetlib bug ?
+	      {
+		LOG(WARNING) << "invalid URL " << token << std::endl;
+		continue;
+		}*/
+	    
+	    // fill out format with tokens
+	    if (!uri_token.scheme().empty())
+	      {
+		std::string nuri = f->url_format();
+		str_utils::replace_in_string(nuri,"%scheme",uri_token.scheme());
+		str_utils::replace_in_string(nuri,"%host",uri_token.host());
+		if (!uri_token.port().empty())
+		  str_utils::replace_in_string(nuri,"%port",":"+uri_token.port());
+		else str_utils::replace_in_string(nuri,"%port","");
+		str_utils::replace_in_string(nuri,"%path",uri_token.path());
+		str_utils::replace_in_string(nuri,"%query",uri_token.query());
+		str_utils::replace_in_string(nuri,"%fragment",uri_token.fragment());
+		token = nuri;
+	      }
+	  }
 	
 	// apply preprocessing (or not) to field according to type.
 	if (ftype == "int")
@@ -319,7 +350,7 @@ namespace miw
 	    if (f->aggregated() && f->aggregation() == "mean")
 	      ifi->set_holder(1);
 	  }
-	else if (ftype == "string" || ftype == "date" || ftype == "time")
+	else if (ftype == "string" || ftype == "date" || ftype == "time" || ftype == "url")
 	  {
 	    string_field *ifs = f->mutable_str_fi();
 	    token = chomp_cpp(token);
@@ -497,7 +528,7 @@ namespace miw
     bool first = true;
     int i = 0;
     std::string val_clean;
-    while (i < val.length())
+    while (i < static_cast<int>(val.length()))
     {
       if (val[i] == '(')
 	{

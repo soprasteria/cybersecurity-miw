@@ -44,6 +44,7 @@ message field
 	optional string filter = 17;
 	optional string filter_type = 18;
 	optional string filter_field = 19;
+	optional string url_format = 20 [default = "%scheme://%host%port"]; /* special formatting for URLs (%scheme, %host, %port, %path, %query, %fragment) */
 }
 
 message logdef

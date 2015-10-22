@@ -45,6 +45,19 @@ namespace miw
       }
       return elems;
     }
+
+    static size_t replace_in_string(std::string &str, const std::string &pattern,
+				    const std::string &repl)
+    {
+      size_t p = 0;
+      while ((p = str.find(pattern,p)) != std::string::npos)
+	{
+	  str.replace(p,pattern.size(),repl);
+	  p += repl.size(); // in case we're replacing with a string that contains the pattern itself.
+	}
+      return p;
+    }
+    
   };
 }
 

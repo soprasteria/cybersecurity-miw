@@ -33,20 +33,8 @@
 #include <iostream>
 #include <snappy.h>
 #include <assert.h>
+#include "str_utils.h"
 #include <glog/logging.h>
-
-size_t replace_in_string(std::string &str, const std::string &pattern,
-			 const std::string &repl)
-{
-  size_t p = 0;
-  while ((p = str.find(pattern,p)) != std::string::npos)
-    {
-      str.replace(p,pattern.size(),repl);
-      p += repl.size(); // in case we're replacing with a string that contains the pattern itself.
-    }
-  return p;
-}
-
 
 namespace miw
 {
@@ -78,7 +66,7 @@ namespace miw
 	for (int j=0;j<f.int_fi().int_reap_size();j++)
 	  ifi->add_int_reap(f.int_fi().int_reap(j));
       }
-    else if (ftype == "string" || ftype == "date")
+    else if (ftype == "string" || ftype == "date" || ftype == "url")
       {
 	string_field *ifs = _ld.mutable_fields(i)->mutable_str_fi();
 
@@ -492,7 +480,7 @@ namespace miw
 	if (ifi->holder() != 0)
 	  jsfh = ifi->holder();
       }
-    else if (ftype == "string" || ftype == "time")
+    else if (ftype == "string" || ftype == "time" || ftype == "url")
       {
 	string_field *ifs = f.mutable_str_fi();
 	std::unordered_map<int,std::unordered_map<std::string,int>>::iterator hit;
@@ -734,7 +722,7 @@ namespace miw
 			//sts << "\\\"" << va.asString() << "\\\"";
 			std::string vastr = va.asString();
 			if (vastr.find(separator)!=std::string::npos)
-			  replace_in_string(vastr,separator,"");
+			  str_utils::replace_in_string(vastr,separator,"");
 			sts << vastr;
 		      }
 		    else if (va.isInt())
