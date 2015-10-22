@@ -92,6 +92,7 @@ namespace miw
 	  {
 	    for (int j=0;j<ifs->str_reap_size();j++)
 	      (*hit).second.insert(std::pair<std::string,int>(ifs->str_reap(j),j));
+	    (*hit).second.max_load_factor(0.5);
 	  }
 	std::unordered_map<std::string,int>::const_iterator sit;
 	
@@ -105,6 +106,7 @@ namespace miw
 	  {
 	    for (int j=0;j<f.str_fi().str_reap_size();j++)
 	      (*hit2).second.insert(std::pair<std::string,int>(f.str_fi().str_reap(j),j));
+	    (*hit2).second.max_load_factor(0.5);
 	  }
 
 	auto hit3 = (*hit2).second.begin();
