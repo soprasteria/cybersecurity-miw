@@ -32,7 +32,7 @@ struct mapreduce_appbase {
     virtual bool split(split_t *ret, int ncore) = 0;
     virtual int key_compare(const void *, const void *) = 0;
     virtual ~mapreduce_appbase();
-    /* @brief: optional function invokded for each new key. */
+    /* @brief: optional function invoked for each new key. */
     virtual void *key_copy(void *k, size_t len) {
         return k;
     }
