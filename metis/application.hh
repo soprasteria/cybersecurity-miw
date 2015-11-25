@@ -41,8 +41,8 @@ struct app_impl_base : public mapreduce_appbase {
     }
     void free_results() {
         for (size_t i = 0; i < results_.size(); ++i) {
-	  //this->key_free(results_[i].key_);
-            results_[i].reset();
+	  this->key_free(results_[i].key_);
+	  results_[i].reset();
         }
         results_.shallow_free();
     }

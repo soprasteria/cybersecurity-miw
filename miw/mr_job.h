@@ -91,7 +91,7 @@ class mr_job : public map_reduce
   }
   
   int key_compare(const void *s1, const void *s2) {
-    return  strcasecmp((const char *) s1, (const char *) s2);
+    return strcasecmp((const char *) s1, (const char *) s2);
   }
   
   void run_no_final(const int &nprocs, const int &reduce_tasks,
@@ -167,7 +167,6 @@ class mr_job : public map_reduce
       }
     else
       {
-	std::cerr << "output format=" << output_format << std::endl;
 	if (output_format == "csv")
 	  {
 	    output_csv(results,-1,fout);
@@ -199,7 +198,9 @@ class mr_job : public map_reduce
    }
   
   void *key_copy(void *src, size_t s) {
-    char *key = static_cast<char*>(src); // no need to strdup((char*)src);
+    char *key = safe_malloc<char>(s + 1);
+    memcpy(key, src, s);
+    key[s] = 0;
     return key;
   }
   
