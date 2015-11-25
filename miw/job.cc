@@ -208,7 +208,7 @@ void job::run_mr_job_merge_results(const char *fname, const int &nfile,
   else
     {
       if (blength > 0)
-	_mrj->set_defs(fname,blength,_map_tasks);
+	_mrj->set_defs(const_cast<char*>(fname),blength,_map_tasks);
       else _mrj->set_defs(fname,_map_tasks);
     }
   
