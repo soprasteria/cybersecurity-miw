@@ -59,7 +59,7 @@ namespace miw
       std::string &date, std::string &time);*/
     void to_json(field &f, const int &i, Json::Value &jrec,
 		 std::string &date, std::string &time);
-    void to_json(Json::Value &jlrec) const;
+    void to_json(Json::Value &jlrec);
     static void json_to_csv(const Json::Value &jl,
 			    std::string &csvline,
 			    const bool &header=false);
