@@ -649,7 +649,7 @@ namespace miw
     //debug
     //std::cerr << "number of fields: " << _ld.fields_size() << std::endl;
     //debug
-
+    
     std::string date = "0000-00-00", time = "00:00:00";
     jlrec["id"] = _key;
     for  (int i=0;i<_ld.fields_size();i++)
