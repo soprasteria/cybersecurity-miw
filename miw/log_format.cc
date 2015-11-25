@@ -174,6 +174,8 @@ namespace miw
 	    //std::cerr << "header line=" << lines.at(i) << std::endl;
 	    continue;
 	  }
+	if (lines.at(i).empty())
+	  continue;
 	if (lines.at(i).substr(0,1) == _ldef.commentchar())  // skip comments
 	  continue;
 	log_record *lr = parse_line(lines.at(i),appname,store_content,compressed,quiet,skipped_logs);
