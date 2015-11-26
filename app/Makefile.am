@@ -7,7 +7,7 @@ AM_CXXFLAGS=-Wall -g -pipe -std=c++11 -fpermissive -fopenmp -O2 -g \
              -DJOS_NCPU=$(MAXCPUS) -D__STDC_FORMAT_MACROS `pkg-config --cflags protobuf`
 AM_LDFLAGS=`pkg-config --libs protobuf` -L../miw/ -L../metis
 LDADD=curl_mget.o MurmurHash3.o -lmiw -lmetis -lc -lm -lcurl -lidn -lz -lssl -lcrypto -lpthread -ldl -ljsoncpp -lrt -lprotobuf -lsnappy $(GLOG_LIBS) $(GFLAGS_LIBS) -lboost_system -lcppnetlib-uri
-bin_PROGRAMS=kmeans matrix_mult pca wc wr linear_regression hist string_match wrmem matrix_mult2 sf_sample btree_unit search_unit misc bluecoat_log_proc log_compacter solr_commit miw simple_log_compacter
+bin_PROGRAMS=kmeans matrix_mult pca wc wr linear_regression hist string_match wrmem matrix_mult2 sf_sample btree_unit search_unit misc solr_commit miw simple_log_compacter
 
 kmeans_SOURCES=kmeans.cc
 matrix_mult_SOURCES=matrix_mult.cc
