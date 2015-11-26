@@ -473,6 +473,9 @@ int main(int argc, char *argv[])
       case 'c':
 	compressed = true;
 	break;
+      case 'n':
+	app_name = optarg;
+	break;
       default:
 	    usage(argv[0]);
 	    exit(EXIT_FAILURE);
