@@ -45,6 +45,7 @@
 		{
 			"name":"DeviceHostName",
 			"pos":7,
+
 			"type":"string"
 		},
 		{
