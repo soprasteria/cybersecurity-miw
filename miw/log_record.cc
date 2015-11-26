@@ -593,58 +593,8 @@ namespace miw
     if (f.count() > 1)
       jrec[json_fname + "_count"] = f.count();
   }
-
-  void log_record::to_json(const field &f, Json::Value &jrec)
-  {
-    //TODO: add 'add' prior to arrays and aggregated values ?
-    std::string ftype = f.type();
-    if (ftype == "int")
-      {
-	int_field *ifi = f.mutable_int_fi();
-	if (ifi->int_reap_size() > 1)
-	  {
-	    for (int i=0;i<ifi->int_reap_size();i++)
-	      jrec[f.name()].append(ifi->int_reap(i));
-	  }
-	else if (ifi->int_reap_size() == 1)
-	  jrec[f.name()] = ifi->int_reap(0);
-      }
-    else if (ftype == "string")
-      {
-	string_field *ifs = f.mutable_str_fi();
-	if (ifs->str_reap_size() > 1)
-	  {
-	    for (int i=0;i<ifs->str_reap_size();i++)
-	      jrec[f.name()].append(ifs->str_reap(i));
-	  }
-	else if (ifs->str_reap_size() == 1)
-	  jrec[f.name()] = ifs->str_reap(0);
-      }
-    else if (ftype == "bool")
-      {
-	bool_field *ifb = f.mutable_bool_fi();
-	if (ifb->bool_reap_size() > 1)
-	  {
-	    for (int i=0;i<ifb->bool_reap_size();i++)
-	      jrec[f.name()].append(ifb->bool_reap(i));
-	  }
-	else if (ifb->bool_reap_size() == 1)
-	  jrec[f.name()] = ifb->bool_reap(0);
-      }
-    else if (ftype == "float")
-      {
-	float_field *iff = f.mutable_real_fi();
-	if (iff->float_reap_size() > 1)
-	  {
-	    for (int i=0;i<iff->float_reap_size();i++)
-	      jrec[f.name()].append(iff->float_reap(0));
-	  }
-	else if (iff->float_reap_size() == 1)
-	  jrec[f.name()] = iff->float_reap(0);
-      }
-  }
-
-  Json::Value log_record::to_json() const
+  
+  void log_record::to_json(Json::Value &jlrec)
   {
     //debug
     //std::cerr << "number of fields: " << _ld.fields_size() << std::endl;
