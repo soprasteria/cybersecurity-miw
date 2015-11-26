@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2013-2015 SopraSteria
+ * Copyright (c) 2015 SopraSteria
  * All rights reserved.
  * Author: Emmanuel Benazera <emmanuel.benazera@deepdetect.com>
  *
@@ -26,50 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Generic framework for defining and processing log formats.
- */
+#include "job.h"
 
-#include "log_record.h"
-#include "log_definition.pb.h"
-#include <vector>
-#include <string>
+using namespace miw;
 
-namespace miw
+int main(int argc, char **argv)
 {
-
-  class log_format
-  {
-  public:
-    log_format();
-    ~log_format();
-
-    int save();
-    
-    int read(const std::string &name);
-    
-    bool check() const;
-
-    static std::string chomp_cpp(const std::string &s);
-
-    static void tokenize(const std::string &str,
-			 const int &length,
-			 std::vector<std::string> &tokens,
-			 const std::string &delim,
-			 const std::string &quotechar);
-    
-    int parse_data(const std::string &data,
-		   const int &length,
-		   const std::string &appname,
-		   const bool &store_content,
-		   std::vector<log_record*> &lrecords) const;
-
-    log_record* parse_line(const std::string &line,
-			   const std::string &appname,
-			   const bool &store_content,
-			   int &skipped_logs) const;
-    
-    logdef _ldef;  // protocol buffer object.
-  };
-  
+  job j;
+  j.execute(argc,argv);
 }
