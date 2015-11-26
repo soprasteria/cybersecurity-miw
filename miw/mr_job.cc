@@ -34,8 +34,8 @@
 void mr_job::map_function(split_t *ma)
 {
   std::vector<log_record*> log_records;
-  std::string dat = (char*)ma->data;
-  _lf->parse_data(dat,ma->length,_app_name,_store_content,_compressed,_quiet,log_records);
+  std::string dat = (char*)ma->data; // XXX: copies the data
+  _lf->parse_data(dat,ma->length,_app_name,_store_content,_compressed,_quiet,ma->pos,_skip_header,log_records);
   
 #ifdef DEBUG
   std::cout << "number of mapped records: " << log_records.size() << std::endl;

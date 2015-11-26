@@ -72,6 +72,8 @@ namespace miw
 		   const bool &store_content,
 		   const bool &compressed,
 		   const bool &quiet,
+		   const size_t &pos,
+		   const bool &skip_header,
 		   std::vector<log_record*> &lrecords) const;
 
     log_record* parse_line(const std::string &line,

@@ -52,18 +52,18 @@ class mr_job : public map_reduce
  mr_job(const char *f, int nsplit,
 	const std::string &app_name,
 	log_format *lf,
-	const bool &store_content, const bool &compressed, const bool &quiet)
-   : /*defs_(f, nsplit),*/_app_name(app_name),_lf(lf),_store_content(store_content),
-    _compressed(compressed),_quiet(quiet)
+	const bool &store_content, const bool &compressed, const bool &quiet, const bool &skip_header)
+   : _app_name(app_name),_lf(lf),_store_content(store_content),
+    _compressed(compressed),_quiet(quiet),_skip_header(skip_header)
   {
     defs_ = new defsplitter(f,nsplit);
   }
  mr_job(char *d, const size_t &size, int nsplit,
 	const std::string &app_name,
 	log_format *lf,
-	const bool &store_content, const bool &compressed, const bool &quiet)
-   : /*defs_(d,size,nsplit),*/_app_name(app_name),_lf(lf),
-    _store_content(store_content),_compressed(compressed),_quiet(quiet)
+	const bool &store_content, const bool &compressed, const bool &quiet, const bool &skip_header)
+   : _app_name(app_name),_lf(lf),
+    _store_content(store_content),_compressed(compressed),_quiet(quiet),_skip_header(skip_header)
   {
     defs_ = new defsplitter(d,size,nsplit);
   }
@@ -205,10 +205,11 @@ class mr_job : public map_reduce
   //private:
   defsplitter *defs_ = nullptr;
   std::string _app_name;
-  log_format *_lf;
+  log_format *_lf = nullptr;
   bool _store_content = false;
   bool _compressed = false;
   bool _quiet = false;
+  bool _skip_header = false;
 };
 
 #endif

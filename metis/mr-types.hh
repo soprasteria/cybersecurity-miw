@@ -24,6 +24,7 @@
 struct split_t {
     void *data;
     size_t length;
+    size_t pos;
 };
 
 struct keyval_t {

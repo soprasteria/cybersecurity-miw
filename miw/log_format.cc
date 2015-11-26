@@ -152,6 +152,8 @@ namespace miw
 			     const bool &store_content,
 			     const bool &compressed,
 			     const bool &quiet,
+			     const size_t &pos,
+			     const bool &skip_header,
 			     std::vector<log_record*> &lrecords) const
   {
     std::vector<std::string> lines;
@@ -163,6 +165,11 @@ namespace miw
     int skipped_logs = 0;
     for (size_t i=0;i<lines.size();i++)
       {
+	if (i == 0 && pos == 0 && skip_header) // we're onto the first line in file, and we are asked to skip it
+	  {
+	    //std::cerr << "header line=" << lines.at(i) << std::endl;
+	    continue;
+	  }
 	if (lines.at(i).substr(0,1) == _ldef.commentchar())  // skip comments
 	  continue;
 	log_record *lr = parse_line(lines.at(i),appname,store_content,compressed,quiet,skipped_logs);

@@ -89,8 +89,9 @@ namespace miw
     int _nchunks_split = 0;
     double _in_memory_factor = 10; // we expect to use at max 10 times more memory than log volume, for processing them. Very conservative value, used in auto-splitting the log files before processing them.
     std::string _output_format; // other values: json, csv
-    bool _quiet = 0;
-
+    bool _quiet = false;
+    bool _skip_header = false; // whether to skip the first file line
+    
     int _nprocs = 0; /**< number of used processors, when specified */
     int _map_tasks = 0; /**< number of map tasks, when specified */
     int _reduce_tasks = 0; /**< number of reduce tasks, when specified */

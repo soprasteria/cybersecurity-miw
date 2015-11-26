@@ -75,6 +75,7 @@ struct defsplitter {
     
     ma->data = (void *) &d_[pos_];
     ma->length = std::min(size_ - pos_, size_ / nsplit_);
+    ma->pos = pos_;
     if (align) {
         ma->length = round_down(ma->length, align);
         assert(ma->length);

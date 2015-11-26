@@ -46,6 +46,8 @@ DEFINE_string(output_format,"","output format (json, csv)");
 DEFINE_bool(store_content,false,"whether to store the original content in the processed output");
 DEFINE_bool(compressed,false,"whether to compress the original content");
 DEFINE_bool(merge_results,false,"whether to merge results over multiple input files");
+DEFINE_double(memory_factor,10.0,"heuristic value for autosplit of very large files, representing the expected memory requirement ratio vs the size of the file, e.g. 10 times more memory than log volume");
+DEFINE_bool(skip_header,false,"whether to skip first log line file as header");
 
 std::vector<std::string>& str_split(const std::string &s, char delim, std::vector<std::string> &elems) {
   std::stringstream ss(s);
@@ -90,9 +92,10 @@ int job::execute(int argc, char *argv[])
     _compressed = FLAGS_compressed;
     _output_format = FLAGS_output_format;
     _merge_results = FLAGS_merge_results;
-
+    _in_memory_factor = FLAGS_memory_factor;
+    _skip_header = FLAGS_skip_header;
+    
     // list input files
-
     std::cerr << "files=" << FLAGS_fnames << std::endl;
 
     
@@ -189,8 +192,8 @@ void job::run_mr_job(const char *fname, const int &nfile, const size_t &blength)
 {
   mapreduce_appbase::initialize();
   if (blength) // from buffer
-    _mrj = new mr_job(const_cast<char*>(fname),blength, _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
-  else _mrj = new mr_job(fname, _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
+    _mrj = new mr_job(const_cast<char*>(fname),blength, _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet, _skip_header);
+  else _mrj = new mr_job(fname, _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet, _skip_header);
   _mrj->run(_nprocs,_reduce_tasks,_quiet,_output_format,nfile,_ndisp,_fout,_results);
   delete _mrj;
   _mrj = nullptr;
@@ -204,8 +207,8 @@ void job::run_mr_job_merge_results(const char *fname, const int &nfile,
     {
       mapreduce_appbase::initialize();
       if (blength > 0) // from buffer
-	_mrj = new mr_job(const_cast<char*>(fname),blength, _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
-      else _mrj = new mr_job(fname, _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet);
+	_mrj = new mr_job(const_cast<char*>(fname),blength, _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet, _skip_header);
+      else _mrj = new mr_job(fname, _map_tasks, _app_name, &_lf, _store_content, _compressed, _quiet, _skip_header);
     }
   else
     {
