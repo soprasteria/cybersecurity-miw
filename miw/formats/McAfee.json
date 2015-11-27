@@ -1,5 +1,5 @@
 {
-    "format_name":"paloalto",
+    "format_name":"McAfee",
     "delims":",",
     "fields":[
 	{
