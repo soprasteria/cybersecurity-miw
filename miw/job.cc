@@ -38,7 +38,7 @@ DEFINE_int32(ndisp,5,"number of top records to show");
 DEFINE_int32(map_tasks,0,"number of map tasks (default = auto)");
 DEFINE_int32(reduce_tasks,0,"number of reduce tasks (default = auto)");
 DEFINE_bool(quiet,true,"quietness");
-DEFINE_bool(autosplit,false,"whether to autosplit file based on available memory (experimental)");
+DEFINE_bool(autosplit,false,"whether to autosplit file based on available memory");
 DEFINE_string(ofname,"","output file name");
 DEFINE_string(format_name,"","processing format name");
 DEFINE_string(appname,"","optional application name");
