@@ -1,2 +1,0 @@
-
-anon_bluecoat 
