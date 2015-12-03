@@ -81,9 +81,25 @@ Flags from job.cc:
 -tmp_save (whether to save temporary output of results after each file is processed) type: bool default: false
 ```
 
-Example:
+Example with a sampel of data from the repository:
 ```
-./app/miw -fnames yourlogfile.log -format_name miw/formats/domain_controller_format -output_format csv -ofname test.csv
+./app/miw -fnames data/web_proxy_10lines.log -format_name miw/formats/proxy_format -output_format csv -ofname test.csv
+```
+should yield
+```
+files=data/web_proxy_10lines.log
+I1203 16:06:42.315526 21243 job.cc:122] files size=1
+I1203 16:06:42.315587 21243 job.cc:127] Processing file=data/web_proxy_10lines.log
+
+logs preprocessing: results (TOP 5 from 2 keys, 4 logs):
+                         2012-11-30_23_NqO3SB - 2
+			 2012-11-30_23_- - 2
+
+Runtime in millisecond [4 cores]
+	Sample:	       15 Map:	0	Reduce:	0	Merge:	0	Sum:	15	Real:	16
+Number of Tasks of last Metis run
+	Sample:	0  Map:	6     Reduce:	67
+I1203 16:06:42.330492 21243 job.cc:180] MR duration=0 seconds	       
 ```
 
 The above call uses an existing format file. However, this is unlikely the provided formats match your logs. To generate your own log format:
