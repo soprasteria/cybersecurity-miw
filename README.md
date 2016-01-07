@@ -20,6 +20,7 @@ Dependencies:
 
 - C++11 compiler + autotools
 - [protocol buffers](https://developers.google.com/protocol-buffers/?hl=en) for configuration and storage;
+- [boost](http://www.boost.org/) for network and tokenizer functionalities;
 - [glog](https://code.google.com/p/google-glog/) for logging events and debug;
 - [gflags](https://code.google.com/p/gflags/) for command line parsing;
 - [jsoncpp](https://github.com/open-source-parsers/jsoncpp) for JSON output;

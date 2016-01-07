@@ -32,6 +32,7 @@
 #include <iostream>
 #include <time.h>
 #include <boost/network/uri.hpp>
+#include <boost/tokenizer.hpp>
 #include "str_utils.h"
 #include <glog/logging.h>
 
@@ -122,7 +123,9 @@ namespace miw
     std::string item,tmp_item;
     bool has_quote = false;
     int pos = 0;
-    while (std::getline(ss, item, delim[0]))
+    boost::char_separator<char> sep(delim.c_str());
+    boost::tokenizer<boost::char_separator<char>> btokens(str,sep);
+    for (std::string item: btokens)
       {
 	if (!item.empty())
 	  {
