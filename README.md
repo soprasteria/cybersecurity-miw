@@ -38,7 +38,7 @@ Below are instructions for Linux systems:
 
 First, install dependencies
 ```
-sudo apt-get install autotools-dev automake autoconf libtool pkg-config libprotobuf-dev protobuf-compiler python-protobuf libjsoncpp-dev libgoogle-glog-dev libgflags-dev libsnappy-dev libcurl4-openssl-dev libcppnetlib-dev
+sudo apt-get install autotools-dev automake autoconf libtool pkg-config libprotobuf-dev protobuf-compiler python-protobuf libjsoncpp-dev libgoogle-glog-dev libgflags-dev libsnappy-dev libcurl4-openssl-dev libcppnetlib-dev python-simplejson
 ```
 
 For compiling:
