@@ -33,5 +33,5 @@ using namespace miw;
 int main(int argc, char **argv)
 {
   job j;
-  j.execute(argc,argv);
+  return j.execute(argc,argv);
 }
