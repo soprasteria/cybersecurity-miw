@@ -129,7 +129,7 @@ int job::execute(int argc, char *argv[])
 	if (stat(fname.c_str(),&st)!=0)
 	  {
 	    LOG(ERROR) << "Error file not found: " << fname;
-	    continue;
+	    return 1;
 	  }
 	if (!_autosplit && !_merge_results)
 	  {
