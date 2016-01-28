@@ -75,14 +75,14 @@ namespace miw
     std::string sc = s;
     size_t p = 0;
 
-    // strip leading whitespace.                                                                                                           
+    // strip leading whitespace.
     while(p < sc.length() && isspace(sc[p]))
       p++;
     sc.erase(0,p);
     if (sc.empty())
       return sc;
 
-    // strip trailing whitespace.                                                                                                          
+    // strip trailing whitespace.
     p = sc.length()-1;
     while(p > 0 && isspace(sc[p]))
       p--;
@@ -223,6 +223,8 @@ namespace miw
     std::vector<field*> nfields;
     /*std::cerr << "fields size: " << ldef.fields_size() << std::endl;
       std::cerr << "tokens size: " << tokens.size() << std::endl;*/
+    bool match = false;
+    bool has_or_match = false;
     for (int i=0;i<ldef.fields_size();i++)
       {
 	field *f = ldef.mutable_fields(i);
@@ -250,6 +252,28 @@ namespace miw
 	std::string ntoken;
 	std::remove_copy(token.begin(),token.end(),std::back_inserter(ntoken),'"');
 	token = ntoken;
+
+	// field string matching: key is a 'and', other fields can be 'or' conditions
+	if (f->has_match())
+	  {
+	    
+	    if (token.find(f->mutable_match()->match_str())==std::string::npos)
+	      {
+		if (f->key() || f->mutable_match()->logic() == "and")
+		  return NULL;
+		else if (f->mutable_match()->logic() == "or")
+		  match = true; // has match specified, if no 'or' match condition kicks in, the data entry should be later killed
+	      }
+	    else
+	      {
+		if (f->mutable_match()->logic() == "or")
+		  {
+		    match = true;
+		    has_or_match = true;
+		  }
+	      }
+	  }
+		
 	if (ftype == "date" || f->processing() == "day" || f->processing() == "month" || f->processing() == "year")
 	  {
 	    struct tm tm;
@@ -408,6 +432,10 @@ namespace miw
 	  }
       }
 
+    // check on 'or' matching conditions
+    if (match && !has_or_match)
+      return NULL;
+    
     // add new fields to ldef if any found in pre-processing step.
     for (size_t i=0;i<nfields.size();i++)
       {
