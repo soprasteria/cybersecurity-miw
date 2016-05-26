@@ -25,7 +25,7 @@
 	    "key":true,
 	    "match":
 	    {
-		"match_str":["root"],
+		"match_str":"root",
 		"logic":"and"
 	    }
 	},
@@ -52,7 +52,7 @@
 	    "aggregation":"union_count",
 	    "match":
 	    {
-		"match_str":["404"],
+		"match_str":"404",
 		"logic":"or"
 	    }
 	},
@@ -71,7 +71,7 @@
 	    "aggregation":"union_count",
 	    "match":
 	    {
-		"match_str":["TCP_CLIENT_REFRESH_MISS:DIRECT"],
+		"match_str":"TCP_CLIENT_REFRESH_MISS:DIRECT",
 		"logic":"or"
 	    }
 	}
