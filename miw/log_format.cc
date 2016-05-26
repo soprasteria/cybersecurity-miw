@@ -256,20 +256,31 @@ namespace miw
 	// field string matching: key is a 'and', other fields can be 'or' conditions
 	if (f->has_match())
 	  {
-	    
-	    if (token.find(f->mutable_match()->match_str())==std::string::npos)
+	    bool negative = f->mutable_match()->negative();
+	    if (!negative) // matching means keeping
 	      {
-		if (f->key() || f->mutable_match()->logic() == "and")
-		  return NULL;
-		else if (f->mutable_match()->logic() == "or")
-		  match = true; // has match specified, if no 'or' match condition kicks in, the data entry should be later killed
-	      }
-	    else
-	      {
-		if (f->mutable_match()->logic() == "or")
+		if (token.find(f->mutable_match()->match_str())==std::string::npos)
 		  {
-		    match = true;
-		    has_or_match = true;
+		    if (f->key() || f->mutable_match()->logic() == "and")
+		      return NULL;
+		    else if (f->mutable_match()->logic() == "or")
+		      match = true; // has match specified, if no 'or' match condition kicks in, the data entry should be later killed
+		  }
+		else
+		  {
+		    if (f->mutable_match()->logic() == "or")
+		      {
+			match = true;
+			has_or_match = true;
+		      }
+		  }
+	      }
+	    else  // matching means killing
+	      {
+		if (token.find(f->mutable_match()->match_str())!=std::string::npos)
+		  {
+		    if (f->key() || f->mutable_match()->logic() == "and")
+		      return NULL;
 		  }
 	      }
 	  }
