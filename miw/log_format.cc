@@ -317,7 +317,10 @@ namespace miw
 		  }
 		else if (f->processing() == "minute")
 		  {
-		    token = std::to_string(tm.tm_year+1900) + "-" + std::to_string(tm.tm_mon+1) + "-" + std::to_string(tm.tm_mday) + "T" + std::to_string(tm.tm_hour) + ":" + std::to_string(tm.tm_min) + ":00";
+		    int m = tm.tm_min / f->processing_offset();
+		    m *= f->processing_offset();
+		    std::string mins_token = (m < 10 ? "0" : "") + std::to_string(m);
+		    token = std::to_string(tm.tm_year+1900) + "-" + std::to_string(tm.tm_mon+1) + "-" + std::to_string(tm.tm_mday) + "T" + std::to_string(tm.tm_hour) + ":" + mins_token + ":00";
 		  }
 		else if (f->processing() == "second")
 		  {
