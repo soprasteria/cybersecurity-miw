@@ -632,7 +632,7 @@ namespace miw
   {
     static std::string separator = ",";
     std::stringstream sts,stshead;
-    for (Json::ValueIterator itr = jl.begin();itr!=jl.end();itr++)
+    for (Json::ValueConstIterator itr = jl.begin();itr!=jl.end();itr++)
       {
 	std::string key = itr.key().asString();
 	if (itr != jl.begin())
