@@ -580,12 +580,17 @@ namespace miw
 		jrec[json_fnamec] = jsfc;
 	      }
 	    else if (f.aggregation() == "sum"
-		     || f.aggregation() == "count"
-		     || f.aggregation() == "mean")
+		     || f.aggregation() == "count")
 	      {
 		jrec[json_fname] = jsf;
 		if (!jsfh.isNull())
 		  jrec[json_fnameh] = jsfh;
+	      }
+	    else if (f.aggregation() == "mean")
+	      {
+		if (!jsfh.isNull())
+		  jrec[json_fname] = jsf.asDouble() / jsfh.asDouble();
+		else jrec[json_fname] = jsf;
 	      }
 	  }
 	else jrec[json_fname] = jsf;
