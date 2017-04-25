@@ -212,7 +212,35 @@ namespace miw
 	LOG(ERROR) << "Error: trying mean operator on non numerical field\n";
       }
   }
-  
+
+  /**
+     Estimated variance (Naive algorithm)
+     https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
+   */
+  void log_record::aggregation_variance(const int &i,
+					const field &f)
+  {
+    std::string ftype = f.type();
+    if (ftype == "int")
+      {
+	int_field *ifi = _ld.mutable_fields(i)->mutable_int_fi();
+	ifi->set_int_reap(0,ifi->int_reap(0) + f.int_fi().int_reap(0));
+	ifi->set_int_reap(1,ifi->int_reap(1) + (f.int_fi().int_reap(0) * f.int_fi().int_reap(0)));
+	ifi->set_holder(ifi->holder() + f.int_fi().holder());
+      }
+    else if (ftype == "float")
+      {
+	float_field *iff = _ld.mutable_fields(i)->mutable_real_fi();
+	iff->set_float_reap(0,iff->float_reap(0) + f.real_fi().float_reap(0));
+	iff->set_float_reap(1,iff->float_reap(1) + (f.real_fi().float_reap(0) * f.real_fi().float_reap(0)));
+	iff->set_holder(iff->holder() + f.real_fi().holder());
+      }
+    else
+      {
+	LOG(ERROR) << "Error: trying variance operator on non numerical field\n";
+      }
+  }
+
   void log_record::aggregation_count(const int &i,
 				     const field &f)
   {
@@ -258,6 +286,11 @@ namespace miw
 		  {
 		    aggregation_mean(i,lr->_ld.fields(i));
 		  }
+		else if (aggregation == "variance")
+		  {
+		    aggregation_variance(i,lr->_ld.fields(i));
+		  }
+
 	      }
 	    else if (!lr->_ld.fields(i).filter().empty())
 	      {
@@ -590,6 +623,13 @@ namespace miw
 	      {
 		if (!jsfh.isNull())
 		  jrec[json_fname] = jsf.asDouble() / jsfh.asDouble();
+		else jrec[json_fname] = jsf;
+	      }
+	    else if (f.aggregation() == "variance")
+	      {
+		if (!jsfh.isNull()) {
+		  jrec[json_fname] = (jsf[1].asDouble() - (jsf[0].asDouble() * jsf[0].asDouble()) / jsfh.asDouble()) / (jsfh.asDouble() - 1);
+		}
 		else jrec[json_fname] = jsf;
 	      }
 	  }

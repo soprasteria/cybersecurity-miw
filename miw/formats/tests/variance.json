@@ -1,0 +1,20 @@
+{
+    "format_name":"variance",
+    "delims":",",
+    "quotechar":"\"",
+    "fields":[
+	{
+	    "name":"id",
+	    "pos":0,
+	    "type":"int",
+	    "key":true
+	},
+	{
+	    "name":"var",
+	    "pos":1,
+	    "type":"float",
+	    "aggregated":true,
+	    "aggregation":"variance"
+	}
+    ]
+}

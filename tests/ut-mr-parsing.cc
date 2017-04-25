@@ -28,12 +28,13 @@
 
 #include "job.h"
 #include <gtest/gtest.h>
+#include <stdio.h>
 
 using namespace miw;
 
 std::string path = "../";
 
-TEST(job,proxy_format)
+/*TEST(job,proxy_format)
 {
   job j;
   std::string arg_line = "-fnames ../data/pxyinternet-10lines.log.orig.anon -format_name ../miw/formats/proxy_format -output_format mem";
@@ -45,9 +46,9 @@ TEST(job,proxy_format)
     cargs[i+1] = const_cast<char*>(args.at(i).c_str());
   j.execute(args.size()+1,cargs);
   ASSERT_EQ(2,j._results->size());
-}
+}*/
 
-TEST(job,domain_controller_format)
+/*TEST(job,domain_controller_format)
 {
   job j;
   std::string arg_line = "-fnames ../data/domain_controller_100lines_test.log -format_name ../miw/formats/domain_controller_format -output_format mem --skip_header";
@@ -59,9 +60,9 @@ TEST(job,domain_controller_format)
     cargs[i+1] = const_cast<char*>(args.at(i).c_str());
   j.execute(args.size()+1,cargs);
   ASSERT_EQ(4,j._results->size());
-}
+}*/
 
-TEST(job,evtx)
+/*TEST(job,evtx)
 {
   job j;
   std::string arg_line = "-fnames ../data/SecuritySample_10.csv -format_name ../miw/formats/evtx -output_format mem";
@@ -74,9 +75,9 @@ TEST(job,evtx)
   j.execute(args.size()+1,cargs);
   ASSERT_EQ(1,j._results->size());
   //TODO: check on per field result
-}
+}*/
 
-TEST(job,evtx2)
+/*TEST(job,evtx2)
 {
   job j;
   std::string arg_line = "-fnames ../data/SecuritySample_10_2.csv -format_name ../miw/formats/evtx2 -output_format mem";
@@ -89,7 +90,7 @@ TEST(job,evtx2)
   j.execute(args.size()+1,cargs);
   ASSERT_EQ(1,j._results->size());
   //TODO: check on per field result
-}
+}*/
 
 /*TEST(job,firewall_checkpoint)
 {
@@ -105,7 +106,7 @@ TEST(job,evtx2)
   ASSERT_EQ(1,j._results->size());
   }*/
 
-TEST(job,allCiscoIportwsa)
+/*TEST(job,allCiscoIportwsa)
 {
   job j;
   std::string arg_line = "-fnames ../data/RSSallCisco10.csv -format_name ../miw/formats/allCiscoIportwsa -output_format mem";
@@ -117,5 +118,44 @@ TEST(job,allCiscoIportwsa)
     cargs[i+1] = const_cast<char*>(args.at(i).c_str());
   j.execute(args.size()+1,cargs);
   ASSERT_EQ(7,j._results->size());
+  //TODO: check on per field result
+}*/
+
+TEST(job,testVariance)
+{
+  job j;
+  char tmp_ouputfile[L_tmpnam];
+
+  ASSERT_NE(NULL, tmpnam(tmp_ouputfile));
+
+  std::string arg_line = "-fnames ../data/tests/variance.log -format_name ../miw/formats/tests/variance -output_format json --map_tasks 2 -ofname ";
+  arg_line.append(tmp_ouputfile);
+  std::vector<std::string> args;
+  log_format::tokenize(arg_line,-1,args," ","");
+  char* cargs[args.size()+1];
+  cargs[0] = "miw";
+  for (size_t i=0;i<args.size();i++)
+    cargs[i+1] = const_cast<char*>(args.at(i).c_str());
+  j.execute(args.size()+1,cargs);
+
+  std::ifstream jsonfile(tmp_ouputfile);
+  if (!jsonfile.good())
+    remove(tmp_ouputfile);
+  ASSERT_EQ(true, jsonfile.good());
+
+  std::string first_line;
+  std::getline(jsonfile, first_line);
+
+  remove(tmp_ouputfile);
+
+  /**
+   https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
+   ---
+   import numpy as np
+   a = np.array([3,1,5,3,2,2])
+   (np.sum(a**2) - (a.sum() * a.sum()) / float(len(a))) / (len(a) - 1)
+   ==> 1.8666666666666671
+   */
+  ASSERT_NE(first_line.find("\"var\":1.8666666666666671"), std::string::npos);
   //TODO: check on per field result
 }
