@@ -129,17 +129,27 @@ namespace miw
       {
 	if (!item.empty())
 	  {
+	    bool begin = false;
 	    if (!has_quote && item.at(0) == quotechar[0])
 	      {
-		tmp_item += item + delim;
+		begin = true;
+		tmp_item += item;
 		has_quote = true;
 	      }
-	    if (has_quote && item.at(item.size()-1) == quotechar[0])
+	    if (has_quote)
 	      {
-		tmp_item += item;
-		item = tmp_item;
-		tmp_item.clear();
-		has_quote = false;
+		if (!begin) {
+		  while (delim.find(str[pos + tmp_item.length()]) != std::string::npos) {
+		    tmp_item += str[pos + tmp_item.length()];
+		  }
+		  tmp_item += item;
+		}
+		if (item.at(item.size()-1) == quotechar[0])
+		  {
+		    item = tmp_item;
+		    tmp_item.clear();
+		    has_quote = false;
+		  }
 	      }
 	  }
 	if (!has_quote)
@@ -151,6 +161,9 @@ namespace miw
 	      break;
 	  }
       }
+    if (!tmp_item.empty()) {
+      tokens.push_back(tmp_item);
+    }
   }
   
   int log_format::parse_data(const std::string &data,
