@@ -90,6 +90,9 @@ namespace miw
     void aggregation_count(const int &i,
 			   const field &f);
 
+    void aggregation_variance(const int &i,
+			      const field &f);
+
     std::string _key;
     long int _sum;
     logdef _ld;

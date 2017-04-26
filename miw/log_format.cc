@@ -404,7 +404,9 @@ namespace miw
 	  {
 	    int_field *ifi = f->mutable_int_fi();
 	    ifi->add_int_reap(atoi(token.c_str()));
-	    if (f->aggregated() && f->aggregation() == "mean")
+	    if (f->aggregation() == "variance")
+	      ifi->add_int_reap(atoi(token.c_str()) * atoi(token.c_str()));
+	    if (f->aggregated() && (f->aggregation() == "mean" or f->aggregation() == "variance"))
 	      ifi->set_holder(1);
 	  }
 	else if (ftype == "string" || ftype == "date" || ftype == "time" || ftype == "url")
@@ -429,7 +431,9 @@ namespace miw
 	  {
 	    float_field *iff = f->mutable_real_fi();
 	    iff->add_float_reap(atof(token.c_str()));
-	    if (f->aggregated() && f->aggregation() == "mean")
+	    if (f->aggregation() == "variance")
+	      iff->add_float_reap(atof(token.c_str()) * atof(token.c_str()));
+	    if (f->aggregated() && (f->aggregation() == "mean" or f->aggregation() == "variance"))
 	      iff->set_holder(1.f);
 	  }
 
