@@ -159,3 +159,68 @@ TEST(job,testVariance)
   ASSERT_NE(first_line.find("\"var\":1.8666666666666671"), std::string::npos);
   //TODO: check on per field result
 }
+
+TEST(job,testVarianceMean)
+{
+  job j;
+  char tmp_ouputfile[L_tmpnam];
+
+  ASSERT_NE(NULL, tmpnam(tmp_ouputfile));
+
+  std::string arg_line = "-fnames ../data/tests/variance.log -format_name ../miw/formats/tests/variance-mean-sum -output_format json --map_tasks 2 -ofname ";
+  arg_line.append(tmp_ouputfile);
+  std::vector<std::string> args;
+  log_format::tokenize(arg_line,-1,args," ","");
+  char* cargs[args.size()+1];
+  cargs[0] = "miw";
+  for (size_t i=0;i<args.size();i++)
+    cargs[i+1] = const_cast<char*>(args.at(i).c_str());
+  j.execute(args.size()+1,cargs);
+
+  std::ifstream jsonfile(tmp_ouputfile);
+  if (!jsonfile.good())
+    remove(tmp_ouputfile);
+  ASSERT_EQ(true, jsonfile.good());
+
+  std::string first_line;
+  std::getline(jsonfile, first_line);
+
+  remove(tmp_ouputfile);
+
+  ASSERT_NE(first_line.find("\"variance\":1.8666666666666671"), std::string::npos);
+  ASSERT_NE(first_line.find("\"mean\":2.6666666666666665"), std::string::npos);
+  ASSERT_NE(first_line.find("\"sum\":16"), std::string::npos);
+  //TODO: check on per field result
+}
+
+TEST(job,testFilter)
+{
+  job j;
+  char tmp_ouputfile[L_tmpnam];
+
+  ASSERT_NE(NULL, tmpnam(tmp_ouputfile));
+
+  std::string arg_line = "-fnames ../data/tests/string.log -format_name ../miw/formats/tests/filter -output_format json --map_tasks 2 -ofname ";
+  arg_line.append(tmp_ouputfile);
+  std::vector<std::string> args;
+  log_format::tokenize(arg_line,-1,args," ","");
+  char* cargs[args.size()+1];
+  cargs[0] = "miw";
+  for (size_t i=0;i<args.size();i++)
+    cargs[i+1] = const_cast<char*>(args.at(i).c_str());
+  j.execute(args.size()+1,cargs);
+
+  std::ifstream jsonfile(tmp_ouputfile);
+  if (!jsonfile.good())
+    remove(tmp_ouputfile);
+  ASSERT_EQ(true, jsonfile.good());
+
+  std::string first_line;
+  std::getline(jsonfile, first_line);
+
+  remove(tmp_ouputfile);
+
+  ASSERT_NE(first_line.find("\"denied_count\":2"), std::string::npos);
+  ASSERT_NE(first_line.find("\"ok_count\":3"), std::string::npos);
+  //TODO: check on per field result
+}

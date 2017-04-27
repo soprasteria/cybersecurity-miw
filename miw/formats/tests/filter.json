@@ -1,0 +1,32 @@
+{
+    "format_name":"filter",
+    "delims":",",
+    "quotechar":"\"",
+    "fields":[
+	{
+	    "name":"id",
+	    "pos":0,
+	    "type":"int",
+	    "key":true
+	},
+	{
+	    "name":"str",
+	    "pos":1,
+	    "type":"string"
+	},	
+	{
+	    "name":"denied_count",
+	    "pos": 1,
+	    "type":"int",
+	    "filter":"denied",
+	    "filter_type":"contain"
+	},
+	{
+	    "name":"ok_count",
+	    "pos": 1,
+	    "type":"int",
+	    "filter":"ok",
+	    "filter_type":"contain"
+	}
+    ]
+}

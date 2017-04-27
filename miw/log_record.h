@@ -68,10 +68,6 @@ namespace miw
     static std::string compress_log_lines(const std::string &line);
     static std::string uncompress_log_lines(const std::string &cline);
 
-    // field filtering.
-    void filter_fields(log_record *lr,
-		       const int &j);
-    
     // field aggregation functions.
     void aggregation_union(const int &i,
 			   const field &f,

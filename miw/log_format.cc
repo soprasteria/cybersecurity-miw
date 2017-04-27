@@ -156,7 +156,7 @@ namespace miw
 	  {
 	    tokens.push_back(item);
 	    pos += item.length() + 1;
-	    if (length != -1 
+	    if (length != -1
 		&& pos >= length)
 	      break;
 	  }
@@ -165,7 +165,7 @@ namespace miw
       tokens.push_back(tmp_item);
     }
   }
-  
+
   int log_format::parse_data(const std::string &data,
 			     const int &length,
 			     const std::string &appname,
@@ -178,7 +178,7 @@ namespace miw
   {
     std::vector<std::string> lines;
     log_format::tokenize(data,length,lines,"\n","");
-#ifdef DEBUG    
+#ifdef DEBUG
     LOG(INFO) << "number of lines in map: " << lines.size() << std::endl;
 #endif
 
@@ -228,7 +228,7 @@ namespace miw
 	++skipped_logs;
 	return NULL;
 	}*/
-    
+
     // parse fields according to format.
     int pos = -1;
     logdef ldef = _ldef;
@@ -247,20 +247,21 @@ namespace miw
 	    f->set_pos(++pos);
 	  }
 	else pos = f->pos();
-	
-	if (f->pos() >= (int)tokens.size() && !f->created())
+
+	if (f->pos() >= (int)tokens.size())
 	  {
 	    LOG(ERROR) << "Error: token position " << f->pos() << " is beyond the number of log fields. Skipping line: " << line << std::endl;
 	    return NULL;
 	  }
-	else if (f->created())
+	else if (f->filter_type() == "contain")
 	  {
 	    continue;
 	  }
 
+
 	std::string token = tokens.at(f->pos());
 	std::string ftype = f->type();
-	
+
 	// processing of token
 	std::string ntoken;
 	std::remove_copy(token.begin(),token.end(),std::back_inserter(ntoken),'"');
@@ -297,7 +298,7 @@ namespace miw
 		  }
 	      }
 	  }
-		
+
 	if (ftype == "date" || f->processing() == "day" || f->processing() == "month" || f->processing() == "year")
 	  {
 	    struct tm tm;
@@ -381,7 +382,7 @@ namespace miw
 		  LOG(WARNING) << "invalid URL " << token << std::endl;
 		  continue;
 		  }*/
-		
+
 		// fill out format with tokens
 		if (!uri_token.scheme().empty())
 		  {
@@ -398,7 +399,7 @@ namespace miw
 		  }
 	      }
 	  }
-	
+
 	// apply preprocessing (or not) to field according to type.
 	if (ftype == "int")
 	  {
@@ -466,7 +467,7 @@ namespace miw
     // check on 'or' matching conditions
     if (match && !has_or_match)
       return NULL;
-    
+
     // add new fields to ldef if any found in pre-processing step.
     for (size_t i=0;i<nfields.size();i++)
       {
@@ -478,15 +479,12 @@ namespace miw
     for (int i=0;i<ldef.fields_size();i++)
       {
 	field *f = ldef.mutable_fields(i);
-	if (f->created())
-	  {
-	    if (f->filter_type() == "contain")
-	      {
+    if (f->filter_type() == "contain")
+      {
 		filter_contain(ldef,i);
-	      }
-	  }
       }
-    
+      }
+
     //debug
     //std::cerr << "ldef first field string size: " << ldef.fields(0).str_fi().str_reap_size() << std::endl;
     //debug
@@ -495,10 +493,10 @@ namespace miw
       key += "_" + appname;
     log_record *lr = new log_record(key,ldef);
     lr->_compressed = compressed;
-    
+
     if (store_content)
       lr->_lines.push_back(line);
-    
+
     //debug
     //std::cerr << "created log record: " << lr->to_json() << std::endl;
     //debug
@@ -511,14 +509,14 @@ namespace miw
 				      std::vector<field*> &nfields) const
   {
     static std::string arrow_start = "->";
-    
+
     std::string ftype = f->type();
     //std::cerr << "token: " << token << std::endl;
 
     // lookup for '->'
     std::string::size_type pos = token.find(arrow_start,0);
     std::string remain = token.substr(pos+2);
-    
+
     // split on '=' and assemble the new fields.
     std::vector<std::string> results;
     log_format::tokenize_simple(remain,results,"=");
@@ -589,7 +587,7 @@ namespace miw
     if (p == std::string::npos)
       return 0;
     std::string val = ctoken.substr(p);
-    
+
     bool first = true;
     int i = 0;
     std::string val_clean;
@@ -608,7 +606,7 @@ namespace miw
     }
     if (!val.empty())
       val_clean = val_clean.substr(0,val_clean.size()-1);
-    
+
     field *nf = new field();
     nf->set_name("target");
     nf->set_type("string");
@@ -627,7 +625,7 @@ namespace miw
 	if (i == j)
 	  continue;
 	field *g = ldef.mutable_fields(j);
-	if (g->name() == f->filter_field()
+	if (j == f->pos()
 	    && g->str_fi().str_reap_size())
 	  {
 	    int_field *ifi = f->mutable_int_fi();
@@ -641,5 +639,5 @@ namespace miw
       }
     return false;
   }
-  
+
 }
