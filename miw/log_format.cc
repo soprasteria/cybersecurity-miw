@@ -625,7 +625,7 @@ namespace miw
 	if (i == j)
 	  continue;
 	field *g = ldef.mutable_fields(j);
-	if (j == f->pos()
+	if (g->pos() == f->pos()
 	    && g->str_fi().str_reap_size())
 	  {
 	    int_field *ifi = f->mutable_int_fi();
