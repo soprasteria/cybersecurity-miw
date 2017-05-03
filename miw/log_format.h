@@ -38,6 +38,8 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <unordered_map>
+#include <unordered_set>
 
 namespace miw
 {
@@ -81,7 +83,7 @@ namespace miw
 			   const bool &store_content,
 			   const bool &compressed,
 			   const bool &quiet,
-			   int &skipped_logs) const;
+			   int &skipped_logs);
 
     // custom pre-processing.
     int pre_process_evtxcsv(field *f,
@@ -97,7 +99,8 @@ namespace miw
 				     std::vector<field*> &nfields) const;
 
     bool filter_contain(logdef &ldef, const int &i) const;
-    
+
+    std::unordered_map<std::string,std::unordered_set<std::string>> _match_file_fields;
     logdef _ldef;  // protocol buffer object.
   };
   
