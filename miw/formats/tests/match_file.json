@@ -1,0 +1,29 @@
+{
+    "format_name":"match",
+    "delims":",",
+    "quotechar":"\"",
+    "fields":[
+	{
+	    "name":"id",
+	    "pos":0,
+	    "type":"string",
+	    "key":true
+	},
+	{
+	    "name":"val",
+	    "pos":1,
+	    "type":"string"
+	},
+	{
+	    "name":"testmatch",
+	    "pos":1,
+	    "type":"string",
+	    "match":
+	    {
+		"match_file":"../data/tests/match_file.txt",
+		"logic":"and",
+		"negative":true
+	    }
+	}
+    ]
+}
