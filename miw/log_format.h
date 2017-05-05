@@ -38,6 +38,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <mutex>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -101,6 +102,7 @@ namespace miw
     bool filter_contain(logdef &ldef, const int &i) const;
 
     std::unordered_map<std::string,std::unordered_set<std::string>> _match_file_fields;
+    std::mutex _loading_match_file_mutex;
     logdef _ldef;  // protocol buffer object.
   };
   

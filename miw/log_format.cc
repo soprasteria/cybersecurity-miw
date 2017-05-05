@@ -276,6 +276,7 @@ namespace miw
 	    if (!f->mutable_match()->match_file().empty())
 	      {
 		std::unordered_map<std::string,std::unordered_set<std::string>>::const_iterator muit;
+		std::lock_guard<std::mutex> lock(_loading_match_file_mutex);
 		if ((muit=_match_file_fields.find(f->name()))==_match_file_fields.end())
 		  {
 		    std::ifstream infile(f->mutable_match()->match_file());
@@ -284,12 +285,16 @@ namespace miw
 			LOG(ERROR) << "Failed opening match file " << f->mutable_match()->match_file() << std::endl;
 			_match_file_fields.insert(std::make_pair(f->name(),matches_str)); // avoids repeating the error
 		      }
+		    LOG(INFO) << "Reading file " << f->mutable_match()->match_file()
+			      << " for field " << f->name() << std::endl;
 		    std::string mstr;
 		    while (infile >> mstr)
 		      {
 			matches_str.insert(mstr);
 		      }
+		    matches_str.rehash(matches_str.size());
 		    _match_file_fields.insert(std::make_pair(f->name(),matches_str));
+		    LOG(INFO) << "Done reading file" << std::endl;
 		  }
 		else
 		  {
