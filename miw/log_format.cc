@@ -675,16 +675,28 @@ namespace miw
 	if (i == j)
 	  continue;
 	field *g = ldef.mutable_fields(j);
-	if (g->pos() == f->pos()
-	    && g->str_fi().str_reap_size())
+	if (g->pos() == f->pos())
 	  {
 	    int_field *ifi = f->mutable_int_fi();
-	    if (g->str_fi().str_reap(0).find(f->filter())!=std::string::npos)
-	      {
-		ifi->add_int_reap(1);
-		return true;
-	      }
-	    else ifi->add_int_reap(0);
+	    field *def = ldef.mutable_fields(g->pos());
+	    if (def->type().compare("string")) {
+	      LOG(WARNING) << "Warning: trying to use filter on "
+			   << def->type() << " field (name: "
+			   << def->name()
+			   << ", pos: "
+			   << def->pos() << "), only string is supported"
+			   << std::endl;
+	      ifi->add_int_reap(0);
+	      continue;
+	    }
+	    if (g->str_fi().str_reap_size()) {
+	      if (g->str_fi().str_reap(0).find(f->filter())!=std::string::npos)
+		{
+		  ifi->add_int_reap(1);
+		  return true;
+		}
+	      else ifi->add_int_reap(0);
+	    }
 	  }
       }
     return false;
