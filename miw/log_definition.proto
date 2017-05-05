@@ -23,9 +23,10 @@ message float_field
 
 message match_field
 {
-	required string match_str = 1;
+	optional string match_str = 1;
 	optional string logic = 2 [default = "or"];
 	optional bool negative = 3 [default = false];
+	optional string match_file = 4;
 }
 
 message field

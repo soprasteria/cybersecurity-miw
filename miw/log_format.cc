@@ -206,7 +206,7 @@ namespace miw
 				     const bool &store_content,
 				     const bool &compressed,
 				     const bool &quiet,
-				     int &skipped_logs) const
+				     int &skipped_logs)
   {
     if (chomp_cpp(line).empty())
       return NULL;
@@ -270,31 +270,81 @@ namespace miw
 	// field string matching: key is a 'and', other fields can be 'or' conditions
 	if (f->has_match())
 	  {
-	    bool negative = f->mutable_match()->negative();
-	    if (!negative) // matching means keeping
+	    std::unordered_set<std::string> matches_str;
+	    
+	    // read match_file once if any
+	    if (!f->mutable_match()->match_file().empty())
 	      {
-		if (token.find(f->mutable_match()->match_str())==std::string::npos)
+		std::unordered_map<std::string,std::unordered_set<std::string>>::const_iterator muit;
+		if ((muit=_match_file_fields.find(f->name()))==_match_file_fields.end())
 		  {
-		    if (f->key() || f->mutable_match()->logic() == "and")
-		      return NULL;
-		    else if (f->mutable_match()->logic() == "or")
-		      match = true; // has match specified, if no 'or' match condition kicks in, the data entry should be later killed
+		    std::ifstream infile(f->mutable_match()->match_file());
+		    if (!infile.is_open())
+		      {
+			LOG(ERROR) << "Failed opening match file " << f->mutable_match()->match_file() << std::endl;
+			_match_file_fields.insert(std::make_pair(f->name(),matches_str)); // avoids repeating the error
+		      }
+		    std::string mstr;
+		    while (infile >> mstr)
+		      {
+			matches_str.insert(mstr);
+		      }
+		    _match_file_fields.insert(std::make_pair(f->name(),matches_str));
 		  }
 		else
 		  {
-		    if (f->mutable_match()->logic() == "or")
+		    matches_str = (*muit).second;
+		  }
+	      }
+	    else
+	      {
+		std::unordered_map<std::string,std::unordered_set<std::string>>::const_iterator muit;
+		if ((muit=_match_file_fields.find(f->name()))==_match_file_fields.end())
+		  {
+		    matches_str.insert(f->mutable_match()->match_str());
+		    _match_file_fields.insert(std::make_pair(f->name(),matches_str));
+		  }
+		else
+		  {
+		    matches_str = (*muit).second;
+		  }
+	      }
+
+	    bool negative = f->mutable_match()->negative();
+	    if (!negative) // matching means keeping
+	      {
+		std::unordered_set<std::string>::const_iterator uit = matches_str.begin();
+		while(uit!=matches_str.end())
+		  {
+		    if (token.find((*uit))==std::string::npos)
 		      {
-			match = true;
-			has_or_match = true;
+			if (f->key() || f->mutable_match()->logic() == "and")
+			  return NULL;
+			else if (f->mutable_match()->logic() == "or")
+			  match = true; // has match specified, if no 'or' match condition kicks in, the data entry should be later killed
 		      }
+		    else
+		      {
+			if (f->mutable_match()->logic() == "or")
+			  {
+			    match = true;
+			    has_or_match = true;
+			  }
+		      }
+		    ++uit;
 		  }
 	      }
 	    else  // matching means killing
 	      {
-		if (token.find(f->mutable_match()->match_str())!=std::string::npos)
+		std::unordered_set<std::string>::const_iterator uit = matches_str.begin();
+		while(uit!=matches_str.end())
 		  {
-		    if (f->key() || f->mutable_match()->logic() == "and")
-		      return NULL;
+		    if (token.find((*uit))!=std::string::npos)
+		      {
+			if (f->key() || f->mutable_match()->logic() == "and")
+			  return NULL;
+		      }
+		    ++uit;
 		  }
 	      }
 	  }
