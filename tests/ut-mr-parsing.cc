@@ -259,6 +259,38 @@ TEST(job,testMatch)
   ASSERT_NE(second_line.find("\"val\":\"OK\""), std::string::npos);
 }
 
+TEST(job,testSum)
+{
+  job j;
+  char tmp_outputfile[L_tmpnam];
+
+  ASSERT_NE(NULL, tmpnam(tmp_outputfile));
+  std::cerr << "TMPFILE=" << tmp_outputfile << std::endl;
+
+  std::string arg_line = "-fnames ../data/tests/sum.log -format_name ../miw/formats/tests/sum -output_format json --map_tasks 2 -ofname ";
+  arg_line.append(tmp_outputfile);
+  std::vector<std::string> args;
+  log_format::tokenize(arg_line,-1,args," ","");
+  char* cargs[args.size()+1];
+  cargs[0] = "miw";
+  for (size_t i=0;i<args.size();i++)
+    cargs[i+1] = const_cast<char*>(args.at(i).c_str());
+  j.execute(args.size()+1,cargs);
+
+  std::ifstream jsonfile(tmp_outputfile);
+  if (!jsonfile.good())
+    remove(tmp_outputfile);
+  ASSERT_EQ(true, jsonfile.good());
+
+  std::string first_line;
+  std::getline(jsonfile, first_line);
+
+  remove(tmp_outputfile);
+
+  ASSERT_NE(first_line.find("\"v1\":16"), std::string::npos);
+  ASSERT_NE(first_line.find("\"v2\":17"), std::string::npos);
+}
+
 TEST(job,testMatchFile)
 {
   job j;
