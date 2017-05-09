@@ -246,7 +246,8 @@ namespace miw
 	    // auto increment wrt previous marked pos log.
 	    f->set_pos(++pos);
 	  }
-	else pos = f->pos();
+	else if (f->aggregation() == "ratio")
+	  pos = f->pos();
 
 	if (f->pos() >= (int)tokens.size())
 	  {

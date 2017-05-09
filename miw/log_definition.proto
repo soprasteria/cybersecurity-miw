@@ -52,6 +52,8 @@ message field
 	optional string filter_type = 18;
 	optional string url_format = 20 [default = "%scheme://%host%port"]; /* special formatting for URLs (%scheme, %host, %port, %path, %query, %fragment) */
 	optional match_field match = 21;
+	optional string numerator = 22;
+	optional string denominator = 23;
 }
 
 message logdef

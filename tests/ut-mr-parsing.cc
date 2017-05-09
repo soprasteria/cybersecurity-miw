@@ -291,7 +291,7 @@ TEST(job,testSum)
   ASSERT_NE(first_line.find("\"v2\":17"), std::string::npos);
 }
 
-TEST(job,testMatchFile)
+TEST(job,testMatchRatio)
 {
   job j;
   char tmp_outputfile[L_tmpnam];
@@ -299,7 +299,7 @@ TEST(job,testMatchFile)
   ASSERT_NE(NULL, tmpnam(tmp_outputfile));
   std::cerr << "TMPFILE=" << tmp_outputfile << std::endl;
   
-  std::string arg_line = "-fnames ../data/tests/matching_file.log -format_name ../miw/formats/tests/match_file -output_format json --map_tasks 2 -ofname ";
+  std::string arg_line = "-fnames ../data/tests/ratio.log -format_name ../miw/formats/tests/ratio -output_format json --map_tasks 2 -ofname ";
   arg_line.append(tmp_outputfile);
   std::vector<std::string> args;
   log_format::tokenize(arg_line,-1,args," ","");
@@ -316,11 +316,7 @@ TEST(job,testMatchFile)
 
   std::string first_line;
   std::getline(jsonfile, first_line);
-  std::string second_line;
-  std::getline(jsonfile, second_line);
-  
-  remove(tmp_outputfile);
 
-  ASSERT_NE(first_line.find("\"val\":\"OK\""), std::string::npos);
-  ASSERT_NE(second_line.find("\"val\":\"OK\""), std::string::npos);
+  ASSERT_NE(first_line.find("\"fratio\":0.57142859697341919"), std::string::npos);
+  ASSERT_NE(first_line.find("\"iratio\":0.57142859697341919"), std::string::npos);
 }
