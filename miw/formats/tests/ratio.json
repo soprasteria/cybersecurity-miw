@@ -1,0 +1,57 @@
+{
+    "format_name":"ratio",
+    "delims":",",
+    "quotechar":"\"",
+    "fields":[
+	{
+	    "name":"id",
+	    "pos":0,
+	    "type":"int",
+	    "key":true
+	},
+	{
+	    "name":"i1",
+	    "pos":1,
+	    "type":"int",
+	    "aggregated":true,
+	    "aggregation":"sum"
+	},
+	{
+	    "name":"i2",
+	    "pos":2,
+	    "type":"int",
+	    "aggregated":true,
+	    "aggregation":"sum"
+	},
+	{
+	    "name":"f1",
+	    "pos":3,
+	    "type":"float",
+	    "aggregated":true,
+	    "aggregation":"sum"
+	},
+	{
+	    "name":"f2",
+	    "pos":4,
+	    "type":"float",
+	    "aggregated":true,
+	    "aggregation":"sum"
+	},
+	{
+	    "name":"iratio",
+	    "numerator": "i1",
+	    "denominator": "i2",
+	    "type":"float",
+	    "aggregated":true,
+	    "aggregation":"ratio"
+	},
+	{
+	    "name":"fratio",
+	    "numerator": "f1",
+	    "denominator": "f2",
+	    "type":"float",
+	    "aggregated":true,
+	    "aggregation":"ratio"
+	}
+    ]
+}

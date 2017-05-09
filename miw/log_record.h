@@ -89,6 +89,9 @@ namespace miw
     void aggregation_variance(const int &i,
 			      const field &f);
 
+    float compute_ratio(const std::string &numerator,
+				    const std::string &denominator);
+
     std::string _key;
     long int _sum;
     logdef _ld;

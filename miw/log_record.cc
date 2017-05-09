@@ -620,6 +620,10 @@ namespace miw
 		if (!jsfh.isNull())
 		  jrec[json_fnameh] = jsfh;
 	      }
+	    else if (f.aggregation() == "ratio")
+	      {
+		jrec[json_fname] = compute_ratio(f.numerator(), f.denominator());
+	      }
 	    else if (f.aggregation() == "mean")
 	      {
 		if (!jsfh.isNull())
@@ -737,5 +741,70 @@ namespace miw
     csvline += sts.str() + "\n";
     //std::cerr << "csvline=" << csvline << std::endl;
   }
-  
+
+  float log_record::compute_ratio(const std::string &numerator,
+				  const std::string &denominator)
+  {
+    const field *num = NULL;
+    const field *denom = NULL;
+
+    for (int i=0;i<_ld.fields_size();i++)
+      {
+	if (!numerator.compare(_ld.fields(i).name())) {
+	  num = &_ld.fields(i);
+	}
+	else if (!denominator.compare(_ld.fields(i).name())) {
+	  denom = &_ld.fields(i);
+	}
+      }
+
+    if (num == NULL)
+      {
+	std::cerr << "Warning: numerator field "
+		  << numerator
+		  << " not found." << std::endl;
+	return 0;
+      }
+    if (denom == NULL)
+      {
+	std::cerr << "Warning: numerator field "
+		  << denominator
+		  << " not found." << std::endl;
+	return 0;
+      }
+
+    float fnum;
+    float fdenom;
+
+    if (num->type() == "int") {
+      const int_field &inum = num->int_fi();
+      fnum = inum.int_reap(0);
+    }
+    else if (num->type() == "float") {
+      const float_field &inum = num->real_fi();
+      fnum = inum.float_reap(0);
+    }
+    else {
+      std::cerr << "Warning: numerator field "
+		<< numerator
+		<< " must be of type int or string." << std::endl;      
+      fnum = 0;
+    }
+
+    if (denom->type() == "int") {
+      const int_field &inum = denom->int_fi();
+      fdenom = inum.int_reap(0);
+    }
+    else if (denom->type() == "float") {
+      const float_field &inum = denom->real_fi();
+      fdenom = inum.float_reap(0);
+    }
+    else {
+      std::cerr << "Warning: denominator field "
+		<< denominator
+		<< " must be of type int or string." << std::endl;      
+      fdenom = 0;
+    }
+    return fnum / fdenom;
+  }
 }
