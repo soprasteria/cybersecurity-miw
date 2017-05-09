@@ -1,0 +1,27 @@
+{
+    "format_name":"sum",
+    "delims":",",
+    "quotechar":"\"",
+    "fields":[
+	{
+	    "name":"id",
+	    "pos":0,
+	    "type":"int",
+	    "key":true
+	},
+	{
+	    "name":"v1",
+	    "pos":1,
+	    "type":"int",
+	    "aggregated":true,
+	    "aggregation":"sum"
+	},
+	{
+	    "name":"v2",
+	    "pos":2,
+	    "type":"float",
+	    "aggregated":true,
+	    "aggregation":"sum"
+	}
+    ]
+}

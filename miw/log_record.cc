@@ -157,9 +157,10 @@ namespace miw
       }
     else if (ftype == "float")
       {
-	float_field iff = _ld.fields(i).real_fi();
-	for (int j=0;j<f.real_fi().float_reap_size();j++)
-	  iff.set_float_reap(0,iff.float_reap(0) + f.real_fi().float_reap(j));
+	float_field *iff = _ld.fields(i).mutable_real_fi();
+	for (int j=0;j<f.real_fi().float_reap_size();j++) {
+	  iff->set_float_reap(0,iff->float_reap(0) + f.real_fi().float_reap(j));
+	}
       }
     else
       {
