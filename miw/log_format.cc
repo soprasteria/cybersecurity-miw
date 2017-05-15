@@ -681,16 +681,15 @@ namespace miw
 	if (i == j)
 	  continue;
 	field *g = ldef.mutable_fields(j);
-	if (g->pos() == f->pos())
+	if (g->pos() == f->pos() && g->filter().size() == 0)
 	  {
 	    int_field *ifi = f->mutable_int_fi();
-	    field *def = ldef.mutable_fields(g->pos());
-	    if (def->type().compare("string")) {
+	    if (g->type().compare("string")) {
 	      LOG(WARNING) << "Warning: trying to use filter on "
-			   << def->type() << " field (name: "
-			   << def->name()
+			   << g->type() << " field (name: "
+			   << g->name()
 			   << ", pos: "
-			   << def->pos() << "), only string is supported"
+			   << g->pos() << "), only string is supported"
 			   << std::endl;
 	      ifi->add_int_reap(0);
 	      continue;
