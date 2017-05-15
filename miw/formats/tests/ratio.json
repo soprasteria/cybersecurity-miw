@@ -52,6 +52,14 @@
 	    "type":"float",
 	    "aggregated":true,
 	    "aggregation":"ratio"
+	},
+	{
+	    "name":"tratio",
+	    "numerator": "f1",
+	    "denominator": "logs",
+	    "type":"float",
+	    "aggregated":true,
+	    "aggregation":"ratio"
 	}
     ]
 }
