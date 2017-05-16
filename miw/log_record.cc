@@ -758,16 +758,16 @@ namespace miw
 	}
       }
 
-    if (num == NULL)
+    if (num == NULL && numerator != "logs")
       {
 	std::cerr << "Warning: numerator field "
 		  << numerator
 		  << " not found." << std::endl;
 	return 0;
       }
-    if (denom == NULL)
+    if (denom == NULL && denominator != "logs")
       {
-	std::cerr << "Warning: numerator field "
+	std::cerr << "Warning: denominator field "
 		  << denominator
 		  << " not found." << std::endl;
 	return 0;
@@ -776,34 +776,44 @@ namespace miw
     float fnum;
     float fdenom;
 
-    if (num->type() == "int") {
-      const int_field &inum = num->int_fi();
-      fnum = inum.int_reap(0);
-    }
-    else if (num->type() == "float") {
-      const float_field &inum = num->real_fi();
-      fnum = inum.float_reap(0);
+    if (num == NULL) {
+      fnum = static_cast<float>(_sum);
     }
     else {
-      std::cerr << "Warning: numerator field "
-		<< numerator
-		<< " must be of type int or string." << std::endl;      
-      fnum = 0;
+      if (num->type() == "int") {
+	const int_field &inum = num->int_fi();
+	fnum = inum.int_reap(0);
+      }
+      else if (num->type() == "float") {
+	const float_field &inum = num->real_fi();
+	fnum = inum.float_reap(0);
+      }
+      else {
+	std::cerr << "Warning: numerator field "
+		  << numerator
+		  << " must be of type int or string." << std::endl;
+	fnum = 0;
+      }
     }
 
-    if (denom->type() == "int") {
-      const int_field &inum = denom->int_fi();
-      fdenom = inum.int_reap(0);
-    }
-    else if (denom->type() == "float") {
-      const float_field &inum = denom->real_fi();
-      fdenom = inum.float_reap(0);
+    if (denom == NULL) {
+      fdenom = static_cast<float>(_sum);
     }
     else {
-      std::cerr << "Warning: denominator field "
-		<< denominator
-		<< " must be of type int or string." << std::endl;      
-      fdenom = 0;
+      if (denom->type() == "int") {
+	const int_field &inum = denom->int_fi();
+	fdenom = inum.int_reap(0);
+      }
+      else if (denom->type() == "float") {
+	const float_field &inum = denom->real_fi();
+	fdenom = inum.float_reap(0);
+      }
+      else {
+	std::cerr << "Warning: denominator field "
+		  << denominator
+		  << " must be of type int or string." << std::endl;
+	fdenom = 0;
+      }
     }
     return fnum / fdenom;
   }
