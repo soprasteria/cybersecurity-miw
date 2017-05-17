@@ -283,8 +283,7 @@ namespace miw
 		    std::ifstream infile(f->mutable_match()->match_file());
 		    if (!infile.is_open())
 		      {
-			LOG(ERROR) << "Failed opening match file " << f->mutable_match()->match_file() << std::endl;
-			_match_file_fields.insert(std::make_pair(f->name(),matches_str)); // avoids repeating the error
+			LOG(FATAL) << "Failed opening match file " << f->mutable_match()->match_file() << std::endl;
 		      }
 		    LOG(INFO) << "Reading file " << f->mutable_match()->match_file()
 			      << " for field " << f->name() << std::endl;
@@ -295,7 +294,8 @@ namespace miw
 		      }
 		    matches_str.rehash(matches_str.size());
 		    _match_file_fields.insert(std::make_pair(f->name(),matches_str));
-		    LOG(INFO) << "Done reading file" << std::endl;
+		    _ldef.mutable_fields(i)->mutable_match()->set_match_file("");
+		    LOG(INFO) << "Done reading " << matches_str.size() << " line in file " << f->mutable_match()->match_file() << std::endl;
 		  }
 		else
 		  {
@@ -320,6 +320,15 @@ namespace miw
 	    if (!negative) // matching means keeping
 	      {
 		std::unordered_set<std::string>::const_iterator uit = matches_str.begin();
+		if ((uit=matches_str.find(token))!=matches_str.end())
+		  {
+		    if (f->key() || f->mutable_match()->logic() == "and")
+		      return NULL;
+		    else if (f->mutable_match()->logic() == "or")
+		      match = true; // has match specified, if no 'or' match condition kicks in, the data entry should be later killed
+		    uit = matches_str.end();
+		  }
+		
 		while(uit!=matches_str.end())
 		  {
 		    if (token.find((*uit))==std::string::npos)
@@ -328,6 +337,7 @@ namespace miw
 			  return NULL;
 			else if (f->mutable_match()->logic() == "or")
 			  match = true; // has match specified, if no 'or' match condition kicks in, the data entry should be later killed
+			break;
 		      }
 		    else
 		      {
@@ -335,6 +345,7 @@ namespace miw
 			  {
 			    match = true;
 			    has_or_match = true;
+			    break;
 			  }
 		      }
 		    ++uit;
@@ -343,12 +354,21 @@ namespace miw
 	    else  // matching means killing
 	      {
 		std::unordered_set<std::string>::const_iterator uit = matches_str.begin();
+		if ((uit=matches_str.find(token))!=matches_str.end())
+		  {
+		    if (f->key() || f->mutable_match()->logic() == "and")
+		      return NULL;
+		    else if (f->mutable_match()->logic() == "or")
+		      match = true; // has match specified, if no 'or' match condition kicks in, the data entry should be later killed
+		    uit = matches_str.end();
+		  }
 		while(uit!=matches_str.end())
 		  {
 		    if (token.find((*uit))!=std::string::npos)
 		      {
 			if (f->key() || f->mutable_match()->logic() == "and")
 			  return NULL;
+			else break;
 		      }
 		    ++uit;
 		  }
