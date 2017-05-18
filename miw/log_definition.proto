@@ -27,6 +27,7 @@ message match_field
 	optional string logic = 2 [default = "or"];
 	optional bool negative = 3 [default = false];
 	optional string match_file = 4;
+	optional bool exact = 5 [default = false];
 }
 
 message field

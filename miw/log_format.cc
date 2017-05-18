@@ -328,27 +328,31 @@ namespace miw
 		      match = true; // has match specified, if no 'or' match condition kicks in, the data entry should be later killed
 		    uit = matches_str.end();
 		  }
-		
-		while(uit!=matches_str.end())
+
+		// reverse linear-time lookup if not exact matching
+		if (!f->mutable_match()->exact())
 		  {
-		    if (token.find((*uit))==std::string::npos)
+		    while(uit!=matches_str.end())
 		      {
-			if (f->key() || f->mutable_match()->logic() == "and")
-			  return NULL;
-			else if (f->mutable_match()->logic() == "or")
-			  match = true; // has match specified, if no 'or' match condition kicks in, the data entry should be later killed
-			break;
-		      }
-		    else
-		      {
-			if (f->mutable_match()->logic() == "or")
+			if (token.find((*uit))==std::string::npos)
 			  {
-			    match = true;
-			    has_or_match = true;
+			    if (f->key() || f->mutable_match()->logic() == "and")
+			      return NULL;
+			    else if (f->mutable_match()->logic() == "or")
+			      match = true; // has match specified, if no 'or' match condition kicks in, the data entry should be later killed
 			    break;
 			  }
+			else
+			  {
+			    if (f->mutable_match()->logic() == "or")
+			      {
+				match = true;
+				has_or_match = true;
+				break;
+			      }
+			  }
+			++uit;
 		      }
-		    ++uit;
 		  }
 	      }
 	    else  // matching means killing
@@ -362,15 +366,20 @@ namespace miw
 		      match = true; // has match specified, if no 'or' match condition kicks in, the data entry should be later killed
 		    uit = matches_str.end();
 		  }
-		while(uit!=matches_str.end())
+		
+		// reverse linear-time lookup if not exact matching
+		if (!f->mutable_match()->exact())
 		  {
-		    if (token.find((*uit))!=std::string::npos)
+		    while(uit!=matches_str.end())
 		      {
-			if (f->key() || f->mutable_match()->logic() == "and")
-			  return NULL;
-			else break;
+			if (token.find((*uit))!=std::string::npos)
+			  {
+			    if (f->key() || f->mutable_match()->logic() == "and")
+			      return NULL;
+			    else break;
+			  }
+			++uit;
 		      }
-		    ++uit;
 		  }
 	      }
 	  }
@@ -555,12 +564,12 @@ namespace miw
     for (int i=0;i<ldef.fields_size();i++)
       {
 	field *f = ldef.mutable_fields(i);
-    if (f->filter_type() == "contain")
-      {
-		filter_contain(ldef,i);
+	if (f->filter_type() == "contain")
+	  {
+	    filter_contain(ldef,i);
+	  }
       }
-      }
-
+    
     //debug
     //std::cerr << "ldef first field string size: " << ldef.fields(0).str_fi().str_reap_size() << std::endl;
     //debug
@@ -726,5 +735,5 @@ namespace miw
       }
     return false;
   }
-
+  
 }

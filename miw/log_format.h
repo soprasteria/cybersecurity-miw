@@ -100,7 +100,7 @@ namespace miw
 				     std::vector<field*> &nfields) const;
 
     bool filter_contain(logdef &ldef, const int &i) const;
-
+    
     std::unordered_map<std::string,std::unordered_set<std::string>> _match_file_fields;
     std::mutex _loading_match_file_mutex;
     logdef _ldef;  // protocol buffer object.
