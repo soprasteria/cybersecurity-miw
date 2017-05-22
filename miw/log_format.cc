@@ -51,6 +51,12 @@ namespace miw
 
   log_format::~log_format()
   {
+    auto hit = _match_file_fields.begin();
+    while(hit!=_match_file_fields.end())
+      {
+	delete (*hit).second;
+	++hit;
+      }
   }
 
   int log_format::read(const std::string &name)
@@ -271,12 +277,13 @@ namespace miw
 	// field string matching: key is a 'and', other fields can be 'or' conditions
 	if (f->has_match())
 	  {
-	    std::unordered_set<std::string> matches_str;
+	    std::unordered_set<std::string> *matches_str;
 	    
 	    // read match_file once if any
 	    if (!f->mutable_match()->match_file().empty())
 	      {
-		std::unordered_map<std::string,std::unordered_set<std::string>>::const_iterator muit;
+		matches_str = new std::unordered_set<std::string>();
+		std::unordered_map<std::string,std::unordered_set<std::string>*>::const_iterator muit;
 		std::lock_guard<std::mutex> lock(_loading_match_file_mutex);
 		if ((muit=_match_file_fields.find(f->name()))==_match_file_fields.end())
 		  {
@@ -290,12 +297,12 @@ namespace miw
 		    std::string mstr;
 		    while (infile >> mstr)
 		      {
-			matches_str.insert(mstr);
+			matches_str->insert(mstr);
 		      }
-		    matches_str.rehash(matches_str.size());
+		    matches_str->rehash(matches_str->size());
 		    _match_file_fields.insert(std::make_pair(f->name(),matches_str));
 		    _ldef.mutable_fields(i)->mutable_match()->set_match_file("");
-		    LOG(INFO) << "Done reading " << matches_str.size() << " line in file " << f->mutable_match()->match_file() << std::endl;
+		    LOG(INFO) << "Done reading " << matches_str->size() << " line in file " << f->mutable_match()->match_file() << std::endl;
 		  }
 		else
 		  {
@@ -304,10 +311,11 @@ namespace miw
 	      }
 	    else
 	      {
-		std::unordered_map<std::string,std::unordered_set<std::string>>::const_iterator muit;
+		matches_str = new std::unordered_set<std::string>();
+		std::unordered_map<std::string,std::unordered_set<std::string>*>::const_iterator muit;
 		if ((muit=_match_file_fields.find(f->name()))==_match_file_fields.end())
 		  {
-		    matches_str.insert(f->mutable_match()->match_str());
+		    matches_str->insert(f->mutable_match()->match_str());
 		    _match_file_fields.insert(std::make_pair(f->name(),matches_str));
 		  }
 		else
@@ -319,20 +327,20 @@ namespace miw
 	    bool negative = f->mutable_match()->negative();
 	    if (!negative) // matching means keeping
 	      {
-		std::unordered_set<std::string>::const_iterator uit = matches_str.begin();
-		if ((uit=matches_str.find(token))!=matches_str.end())
+		std::unordered_set<std::string>::const_iterator uit = matches_str->begin();
+		if ((uit=matches_str->find(token))!=matches_str->end())
 		  {
 		    if (f->key() || f->mutable_match()->logic() == "and")
 		      return NULL;
 		    else if (f->mutable_match()->logic() == "or")
 		      match = true; // has match specified, if no 'or' match condition kicks in, the data entry should be later killed
-		    uit = matches_str.end();
+		    uit = matches_str->end();
 		  }
 
 		// reverse linear-time lookup if not exact matching
 		if (!f->mutable_match()->exact())
 		  {
-		    while(uit!=matches_str.end())
+		    while(uit!=matches_str->end())
 		      {
 			if (token.find((*uit))==std::string::npos)
 			  {
@@ -357,20 +365,21 @@ namespace miw
 	      }
 	    else  // matching means killing
 	      {
-		std::unordered_set<std::string>::const_iterator uit = matches_str.begin();
-		if ((uit=matches_str.find(token))!=matches_str.end())
+		std::unordered_set<std::string>::const_iterator uit;// = matches_str.begin();
+		if ((uit=matches_str->find(token))!=matches_str->end())
 		  {
 		    if (f->key() || f->mutable_match()->logic() == "and")
 		      return NULL;
 		    else if (f->mutable_match()->logic() == "or")
 		      match = true; // has match specified, if no 'or' match condition kicks in, the data entry should be later killed
-		    uit = matches_str.end();
+		    uit = matches_str->end();
 		  }
+
 		
 		// reverse linear-time lookup if not exact matching
 		if (!f->mutable_match()->exact())
 		  {
-		    while(uit!=matches_str.end())
+		    while(uit!=matches_str->end())
 		      {
 			if (token.find((*uit))!=std::string::npos)
 			  {
