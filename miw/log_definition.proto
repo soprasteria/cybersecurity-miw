@@ -1,7 +1,7 @@
 message int_field
 {
-	repeated int32 int_reap = 1;
-	optional int32 holder = 2; /* for holding denominator in mean, etc.... */
+	repeated int64 int_reap = 1;
+	optional int64 holder = 2; /* for holding denominator in mean, etc.... */
 }
 
 message string_field
@@ -17,8 +17,8 @@ message bool_field
 
 message float_field
 {
-	repeated float float_reap = 1;
-	optional float holder = 2; /* for holding denominator in mean, etc.... */
+	repeated double float_reap = 1;
+	optional double holder = 2; /* for holding denominator in mean, etc.... */
 }
 
 message match_field

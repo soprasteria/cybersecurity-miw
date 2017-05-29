@@ -164,7 +164,7 @@ namespace miw
       }
     else
       {
-	LOG(ERROR) << "Error: trying to sum up non numerical field\n";
+	LOG(ERROR) << "Error: trying to sum up non numerical field " << f.name();
       }
   }
 
@@ -225,8 +225,8 @@ namespace miw
     if (ftype == "int")
       {
 	int_field *ifi = _ld.mutable_fields(i)->mutable_int_fi();
-	ifi->set_int_reap(0,ifi->int_reap(0) + f.int_fi().int_reap(0));
-	ifi->set_int_reap(1,ifi->int_reap(1) + (f.int_fi().int_reap(0) * f.int_fi().int_reap(0)));
+	ifi->set_int_reap(0,ifi->int_reap(0) + f.int_fi().int_reap(0)); // sum of values
+	ifi->set_int_reap(1,ifi->int_reap(1) + (f.int_fi().int_reap(0) * f.int_fi().int_reap(0))); // sum of squared values
 	ifi->set_holder(ifi->holder() + f.int_fi().holder());
       }
     else if (ftype == "float")
@@ -505,14 +505,14 @@ namespace miw
 	if (irs > 1)
 	  {
 	    for (int j=0;j<ifi->int_reap_size();j++)
-	      jsf.append(ifi->int_reap(j));
+	      jsf.append(static_cast<long long>(ifi->int_reap(j)));
 	  }
 	else if (ifi->int_reap_size() == 1)
 	  {
-	    jsf = ifi->int_reap(0);
+	    jsf = static_cast<long long>(ifi->int_reap(0));
 	  }
 	if (ifi->holder() != 0)
-	  jsfh = ifi->holder();
+	  jsfh = static_cast<long long>(ifi->holder());
       }
     else if (ftype == "string" || ftype == "time" || ftype == "url")
       {
@@ -632,9 +632,11 @@ namespace miw
 	      }
 	    else if (f.aggregation() == "variance")
 	      {
-		if (!jsfh.isNull()) {
-		  jrec[json_fname] = (jsf[1].asDouble() - (jsf[0].asDouble() * jsf[0].asDouble()) / jsfh.asDouble()) / (jsfh.asDouble() - 1);
-		}
+		if (!jsfh.isNull())
+		  {
+		    jrec[json_fname] = (jsf[1].asDouble() - (jsf[0].asDouble() * jsf[0].asDouble()) / jsfh.asDouble()) / std::max(1.0,(jsfh.asDouble() - 1)); // note we discard Bessel's correction when n=1
+		    //std::cerr << "sum=" << jsf[0].asDouble() << " / sum_of_square=" << jsf[1].asDouble() << " / n=" << jsfh.asDouble() << " / variance=" << jrec[json_fname].asDouble() << std::endl;
+		  }
 		else jrec[json_fname] = jsf;
 	      }
 	  }
@@ -815,6 +817,8 @@ namespace miw
 	fdenom = 0;
       }
     }
+    if (fdenom == 0)
+      return 0.0;
     return fnum / fdenom;
   }
 }
