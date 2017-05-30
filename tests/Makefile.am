@@ -1,5 +1,6 @@
 TESTS = $(check_PROGRAMS)
 check_PROGRAMS=ut_mr_parsing
+bin_PROGRAMS=ut_mr_parsing
 ut_mr_parsing_SOURCES=ut-mr-parsing.cc
 
 MAXCPUS = $(shell grep -c processor /proc/cpuinfo)
