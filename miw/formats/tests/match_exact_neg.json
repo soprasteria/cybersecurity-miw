@@ -20,8 +20,9 @@
 	    "type":"string",
 	    "match":
 	    {
-		"match_str":"OK",
+		"match_str":"KO",
 		"logic":"and",
+		"negative":true,
 		"exact": true
 	    }
 	}

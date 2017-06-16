@@ -286,6 +286,43 @@ TEST(job,testMatchExact)
   std::getline(jsonfile, first_line);
   std::string second_line;
   std::getline(jsonfile, second_line);
+    
+  remove(tmp_outputfile);
+
+  std::cerr << "first_line=" << first_line << std::endl;
+  std::cerr << "second_line=" << second_line << std::endl;
+
+  // lines can come in any order so we check for OK everywhere
+  ASSERT_TRUE((first_line.find("\"val\":\"OK\"") != std::string::npos) && (second_line.find("\"val\":\"OK\"") != std::string::npos));
+}
+
+TEST(job,testMatchExactNeg)
+{
+  job j;
+  char tmp_outputfile[L_tmpnam];
+
+  ASSERT_NE(NULL, tmpnam(tmp_outputfile));
+  std::cerr << "TMPFILE=" << tmp_outputfile << std::endl;
+  
+  std::string arg_line = "-fnames ../data/tests/matching_exact.log -format_name ../miw/formats/tests/match_exact_neg -output_format json -map_tasks 2 -ofname ";
+  arg_line.append(tmp_outputfile);
+  std::vector<std::string> args;
+  log_format::tokenize(arg_line,-1,args," ","");
+  char* cargs[args.size()+1];
+  cargs[0] = "miw";
+  for (size_t i=0;i<args.size();i++)
+    cargs[i+1] = const_cast<char*>(args.at(i).c_str());
+  j.execute(args.size()+1,cargs);
+
+  std::ifstream jsonfile(tmp_outputfile);
+  if (!jsonfile.good())
+    remove(tmp_outputfile);
+  ASSERT_EQ(true, jsonfile.good());
+
+  std::string first_line;
+  std::getline(jsonfile, first_line);
+  std::string second_line;
+  std::getline(jsonfile, second_line);
   std::string third_line;
   std::getline(jsonfile, third_line);
     
@@ -360,4 +397,5 @@ TEST(job,testMatchRatio)
 
   ASSERT_NE(first_line.find("\"fratio\":0.57142859697341919"), std::string::npos);
   ASSERT_NE(first_line.find("\"iratio\":0.57142859697341919"), std::string::npos);
+  ASSERT_NE(first_line.find("\"tratio\":2.6666667461395264"), std::string::npos);
 }
