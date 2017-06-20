@@ -328,7 +328,6 @@ namespace miw
 	    if (!negative) // matching means keeping
 	      {
 		std::unordered_set<std::string>::const_iterator uit = matches_str->begin();
-
 		if ((uit=matches_str->find(token))!=matches_str->end())
 		  {
 		    if (f->mutable_match()->logic() == "or")
@@ -341,14 +340,17 @@ namespace miw
 		// reverse linear-time lookup if not exact matching
 		if (!f->mutable_match()->exact())
 		  {
+		    uit=matches_str->begin();
 		    while(uit!=matches_str->end())
 		      {
 			if (token.find((*uit))==std::string::npos)
 			  {
-			    if (f->key() || f->mutable_match()->logic() == "and")
+			    if (f->key() || f->mutable_match()->logic() == "and") {
 			      return NULL;
-			    else if (f->mutable_match()->logic() == "or")
+			    }
+			    else if (f->mutable_match()->logic() == "or") {
 			      match = true; // has match specified, if no 'or' match condition kicks in, the data entry should be later killed
+			    }
 			    break;
 			  }
 			else
@@ -380,12 +382,14 @@ namespace miw
 		// reverse linear-time lookup if not exact matching
 		if (!f->mutable_match()->exact())
 		  {
+		    uit=matches_str->begin();
 		    while(uit!=matches_str->end())
 		      {
 			if (token.find((*uit))!=std::string::npos)
 			  {
-			    if (f->key() || f->mutable_match()->logic() == "and")
+			    if (f->key() || f->mutable_match()->logic() == "and") {
 			      return NULL;
+			    }
 			    else break;
 			  }
 			++uit;
