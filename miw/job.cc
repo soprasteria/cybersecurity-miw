@@ -235,6 +235,19 @@ void job::run_mr_job_merge_results(const char *fname, const int &nfile,
 	  LOG(ERROR) << "[Warning]: could not access sysinfo data\n";
 	  return avail_mem;
 	}
+
+      // On recent kernel version (>= 3.14) available memory (free + cache) is available in /proc/meminfo
+      std::string line;
+      std::ifstream meminfo("/proc/meminfo");
+      while (meminfo.good() && !meminfo.eof()) {
+	getline(meminfo, line);
+	if (line.find("MemAvailable:") != std::string::npos) {
+	  avail_mem = atoll(line.substr(strlen("MemAvailable:")).c_str()) * 1024;
+	  break;
+	}
+      }
+      meminfo.close();
+
       //std::cerr << "total swap: " << sys_info.totalswap << " -- freeswap: " << sys_info.freeswap << std::endl;
       unsigned long freeram = sys_info.freeram;
       #ifdef DEBUG
