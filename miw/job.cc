@@ -227,7 +227,25 @@ void job::run_mr_job_merge_results(const char *fname, const int &nfile,
 
     unsigned long job::get_available_memory()
     {
-      size_t avail_mem = sysconf(_SC_AVPHYS_PAGES) * sysconf(_SC_PAGESIZE);
+      size_t avail_mem;
+
+      // On recent kernel version (>= 3.14) available memory (free + cache) is available in /proc/meminfo
+      std::string line;
+      bool found_with_new_method = false;
+      std::ifstream meminfo("/proc/meminfo");
+      while (meminfo.good() && !meminfo.eof()) {
+	getline(meminfo, line);
+	if (line.find("MemAvailable:") != std::string::npos) {
+	  avail_mem = atoll(line.substr(strlen("MemAvailable:")).c_str()) * 1024;
+	  found_with_new_method = true;
+	  break;
+	}
+      }
+      meminfo.close();
+
+      if (!found_with_new_method) {
+	avail_mem = sysconf(_SC_AVPHYS_PAGES) * sysconf(_SC_PAGESIZE);
+      }
       //std::cerr << "SC_AVPHY=" << sysconf(_SC_AVPHYS_PAGES) << " / PAGESIZE=" << sysconf(_SC_PAGESIZE) << std::endl;
       struct sysinfo sys_info;
       if (sysinfo(&sys_info) != 0)
@@ -236,24 +254,15 @@ void job::run_mr_job_merge_results(const char *fname, const int &nfile,
 	  return avail_mem;
 	}
 
-      // On recent kernel version (>= 3.14) available memory (free + cache) is available in /proc/meminfo
-      std::string line;
-      std::ifstream meminfo("/proc/meminfo");
-      while (meminfo.good() && !meminfo.eof()) {
-	getline(meminfo, line);
-	if (line.find("MemAvailable:") != std::string::npos) {
-	  avail_mem = atoll(line.substr(strlen("MemAvailable:")).c_str()) * 1024;
-	  break;
-	}
-      }
-      meminfo.close();
-
       //std::cerr << "total swap: " << sys_info.totalswap << " -- freeswap: " << sys_info.freeswap << std::endl;
       unsigned long freeram = sys_info.freeram;
       #ifdef DEBUG
       int used_swap = sys_info.totalswap - sys_info.freeswap;
       LOG(INFO) << "avail mem: " << avail_mem << " -- totalram: " << sys_info.totalram << " -- freeram: " << freeram << " -- used_swap: " << used_swap << " -- avail_mem: " << freeram - used_swap << std::endl;
       #endif
+      if (found_with_new_method) {
+	return avail_mem;
+      }
       return freeram; // - used_swap; // Deactivated: avail memory does not take used swap into accounts, so we're subtracting it here.
     }
     
